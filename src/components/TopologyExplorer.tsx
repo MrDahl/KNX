@@ -106,12 +106,12 @@ export function TopologyExplorer() {
     <div className="space-y-8 font-sans text-slate-705 bg-transparent">
       {/* Search Header Panel */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-indigo-50/20 blur-3xl pointer-events-none -mr-32 -mt-32" />
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-knx-blue/5 blur-3xl pointer-events-none -mr-32 -mt-32" />
         <div className="space-y-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1">
               <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Network className="h-5 w-5 text-indigo-650" />
+                <Network className="h-5 w-5 text-knx-blue" />
                 KNX Hierarchical Tree Topology Capacity Explorer
               </h3>
               <p className="text-slate-500 text-xs font-semibold">
@@ -127,12 +127,12 @@ export function TopologyExplorer() {
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   placeholder="Locate e.g. 1.1.10, 5.0.0, 3.4.64"
-                  className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-800 font-mono focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-200"
+                  className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none focus:ring-1 focus:ring-knx-blue/20"
                 />
               </div>
               <button 
                 type="submit"
-                className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition-colors shrink-0 cursor-pointer shadow-xs"
+                className="bg-knx-blue hover:bg-knx-blue/90 text-white font-bold px-4 py-2 rounded-xl text-xs transition-colors shrink-0 cursor-pointer shadow-xs"
               >
                 Locate Node
               </button>
@@ -147,8 +147,8 @@ export function TopologyExplorer() {
           )}
 
           {searchSuccess && (
-            <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3 flex gap-2 text-xs text-indigo-900 animate-fade-in font-medium max-w-4xl">
-              <CheckCircle className="h-4 w-4 shrink-0 text-indigo-600 mt-0.5" />
+            <div className="bg-knx-blue/5 border border-knx-blue/10 rounded-xl p-3 flex gap-2 text-xs text-knx-blue animate-fade-in font-medium max-w-4xl">
+              <CheckCircle className="h-4 w-4 shrink-0 text-knx-blue mt-0.5" />
               <span>{searchSuccess}</span>
             </div>
           )}
@@ -158,10 +158,10 @@ export function TopologyExplorer() {
       {/* Grid Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { title: "Total Devices", value: "59,687", desc: "Combined lines maximum bounds with PSUs", border: "border-l-indigo-600" },
-          { title: "Backbone Line", value: "257 Nodes", desc: "255 devices + couplers & PSUs", border: "border-l-indigo-400" },
-          { title: "Logical Areas", value: "15 Sections", desc: "Areas x.0.0 (Address Area 1-15)", border: "border-l-slate-405" },
-          { title: "Logical Sub-Lines", value: "225 Lines", desc: "15 lines configured per Area logical boundary", border: "border-l-slate-600" },
+          { title: "Total Devices", value: "59,687", desc: "Combined lines maximum bounds with PSUs", border: "border-l-knx-blue" },
+          { title: "Backbone Line", value: "257 Nodes", desc: "255 devices + couplers & PSUs", border: "border-l-knx-green" },
+          { title: "Logical Areas", value: "15 Sections", desc: "Areas x.0.0 (Address Area 1-15)", border: "border-l-knx-grey" },
+          { title: "Logical Sub-Lines", value: "225 Lines", desc: "15 lines configured per Area logical boundary", border: "border-l-slate-400" },
         ].map((item, i) => (
           <div key={`stat-${i}`} className={`bg-white p-5 rounded-2xl border border-slate-200 border-l-4 ${item.border} shadow-sm hover:translate-y-[-2px] transition-all`}>
             <span className="text-[10px] text-slate-550 uppercase font-bold tracking-wider block mb-1">{item.title}</span>
@@ -181,7 +181,7 @@ export function TopologyExplorer() {
         ].map((item, idx) => (
           <div key={`breakdown-${idx}`} className="bg-white border border-slate-200 p-5 rounded-xl space-y-3.5 font-sans shadow-xs">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-2 text-slate-800">
-              <Calculator className="h-4 w-4 text-indigo-600 shrink-0" />
+              <Calculator className="h-4 w-4 text-knx-blue shrink-0" />
               <span className="font-extrabold text-xs uppercase tracking-wider">{item.label}</span>
             </div>
             <div className="space-y-1.5 text-xs text-slate-500">
@@ -194,7 +194,7 @@ export function TopologyExplorer() {
                 <span className="text-slate-805 font-bold">{item.psu}</span>
               </div>
             </div>
-            <div className="bg-indigo-50 p-2.5 rounded-lg text-center text-xs font-mono font-bold text-indigo-700 border border-indigo-100">
+            <div className="bg-knx-blue/5 p-2.5 rounded-lg text-center text-xs font-mono font-bold text-knx-blue border border-knx-blue/10">
               {item.total}
             </div>
           </div>
@@ -202,8 +202,8 @@ export function TopologyExplorer() {
       </div>
 
       {/* Sump Power draw check */}
-      <div className="bg-indigo-50 border border-indigo-100 p-5 rounded-2xl text-center shadow-xs">
-        <div className="flex items-center justify-center gap-2.5 text-indigo-700 font-extrabold text-base">
+      <div className="bg-knx-blue/5 border border-knx-blue/10 p-5 rounded-2xl text-center shadow-xs">
+        <div className="flex items-center justify-center gap-2.5 text-knx-blue font-extrabold text-base">
           <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0" />
           General Network Current Capacity: ~573.7 Amperes
         </div>
@@ -215,15 +215,15 @@ export function TopologyExplorer() {
 
       {/* Read Me guide */}
       <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
-        <label className="text-xs font-bold text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+        <label className="text-xs font-bold text-knx-blue uppercase tracking-widest flex items-center gap-2">
           <Info className="h-4 w-4" />
           Technical Handbook: How to read network topologies
         </label>
         <div className="text-xs text-slate-600 leading-relaxed space-y-2 font-medium">
           <p>
             An address on the TP1 bus is formatted as <strong className="text-slate-900">Area.Line.Device</strong>.
-            A backbone coupler always sits as <strong className="text-indigo-650 font-bold">x.0.0</strong> to connect and map area lines together. 
-            Line couplers occupy address <strong className="text-indigo-650 font-bold">x.y.0</strong> on each subsegment.
+            A backbone coupler always sits as <strong className="text-knx-blue font-bold">x.0.0</strong> to connect and map area lines together. 
+            Line couplers occupy address <strong className="text-knx-blue font-bold">x.y.0</strong> on each subsegment.
           </p>
           <p>
             Lines can expand via <strong>segment couplers</strong> configured at device addresses <strong className="text-rose-650 font-bold">64</strong>, <strong className="text-rose-650 font-bold">128</strong> and <strong className="text-rose-650 font-bold">192</strong> respectively. 
@@ -235,7 +235,7 @@ export function TopologyExplorer() {
       {/* Interactive network directory explorer */}
       <div className="space-y-4">
         <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-          <Cpu className="h-5 w-5 text-indigo-600" />
+          <Cpu className="h-5 w-5 text-knx-blue" />
           Hierarchical Bus Node Map Directory
         </h4>
 
@@ -248,8 +248,8 @@ export function TopologyExplorer() {
               className="w-full flex items-center justify-between p-4 bg-white hover:bg-slate-50 transition-colors text-left focus:outline-none"
             >
               <div className="flex items-center gap-2 font-bold text-slate-800">
-                {openFolders["backbone"] ? <ChevronDown className="h-4 w-4 text-indigo-600" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
-                <Network className="h-4 w-4 text-indigo-550" />
+                {openFolders["backbone"] ? <ChevronDown className="h-4 w-4 text-knx-blue" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
+                <Network className="h-4 w-4 text-knx-blue" />
                 Backbone line (0.0.x)
               </div>
               <span className="font-mono text-slate-500 text-[11px] font-bold">255 programmable nodes + 2 power supplies</span>
@@ -269,8 +269,8 @@ export function TopologyExplorer() {
                         id={addrId}
                         className={`px-1.5 py-1.5 text-center rounded border transition-all text-[11px] font-bold ${
                           isHighlighted 
-                            ? "bg-indigo-600 border-indigo-700 text-white font-extrabold scale-105 shadow-md animate-pulse" 
-                            : "bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:text-indigo-650"
+                            ? "bg-knx-blue border-knx-blue/90 text-white font-extrabold scale-105 shadow-md animate-pulse" 
+                            : "bg-white border-slate-200 text-slate-600 hover:border-knx-blue/30 hover:text-knx-blue"
                         }`}
                       >
                         0.0.{d}
@@ -295,8 +295,8 @@ export function TopologyExplorer() {
                   className="w-full flex items-center justify-between p-4 bg-white hover:bg-slate-50 transition-colors text-left focus:outline-none"
                 >
                   <div className="flex items-center gap-2 font-bold text-slate-800">
-                    {isAreaOpen ? <ChevronDown className="h-4 w-4 text-indigo-600" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
-                    <Server className="h-4 w-4 text-indigo-500 animate-pulse-slow" />
+                    {isAreaOpen ? <ChevronDown className="h-4 w-4 text-knx-blue" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
+                    <Server className="h-4 w-4 text-knx-blue animate-pulse-slow" />
                     Area {areaNum} mainline (coupler address: {areaNum}.0.0)
                   </div>
                   <span className="font-mono text-slate-500 text-[11px] font-bold">15 logical sublines available</span>
@@ -310,8 +310,8 @@ export function TopologyExplorer() {
                         id={`dev-${areaNum}-0-0`}
                         className={`vcard px-1.5 py-1.5 text-center text-[10px] rounded border font-bold ${
                           highlightedAddress === `dev-${areaNum}-0-0`
-                            ? "bg-indigo-600 border-indigo-700 text-white font-extrabold scale-105 shadow-md animate-pulse"
-                            : "bg-indigo-50 border-indigo-200 text-indigo-700"
+                            ? "bg-knx-blue border-knx-blue/90 text-white font-extrabold scale-105 shadow-md animate-pulse"
+                            : "bg-knx-blue/5 border-knx-blue/10 text-knx-blue"
                         }`}
                         title="Area Backbone Coupler - Bridging Section Area to primary high-speed backbone"
                       >
@@ -333,8 +333,8 @@ export function TopologyExplorer() {
                               className="w-full flex items-center justify-between px-3 py-2.5 bg-white hover:bg-slate-50 transition-colors text-left focus:outline-none"
                             >
                               <div className="flex items-center gap-2 font-bold text-slate-700">
-                                {isLineOpen ? <ChevronDown className="h-3.5 w-3.5 text-indigo-600" /> : <ChevronRight className="h-3.5 w-3.5 text-slate-400" />}
-                                <Network className="h-3.5 w-3.5 text-indigo-500" />
+                                {isLineOpen ? <ChevronDown className="h-3.5 w-3.5 text-knx-blue" /> : <ChevronRight className="h-3.5 w-3.5 text-slate-400" />}
+                                <Network className="h-3.5 w-3.5 text-knx-blue" />
                                 Sub-Line {areaNum}.{lineNum}
                               </div>
                               <span className="font-mono text-slate-500 text-[10px] font-bold">256 slots + segment couplers</span>
@@ -348,8 +348,8 @@ export function TopologyExplorer() {
                                     id={`dev-${areaNum}-${lineNum}-0`}
                                     className={`px-1.5 py-1 text-center text-[10px] rounded border font-bold ${
                                       highlightedAddress === `dev-${areaNum}-${lineNum}-0`
-                                        ? "bg-indigo-600 border-indigo-700 text-white font-extrabold scale-105 shadow-md animate-pulse"
-                                        : "bg-indigo-100 border-indigo-200 text-indigo-700"
+                                        ? "bg-knx-blue border-knx-blue/90 text-white font-extrabold scale-105 shadow-md animate-pulse"
+                                        : "bg-knx-blue/10 border-knx-blue/20 text-knx-blue"
                                     }`}
                                     title="Line Coupler - Maps data from mainline down onto this line"
                                   >
@@ -370,8 +370,8 @@ export function TopologyExplorer() {
                                             id={devAddressStr}
                                             className={`px-1.5 py-1 text-center text-[10px] rounded border font-bold ${
                                               isHighlighted
-                                                ? "bg-indigo-600 border-indigo-700 text-white font-extrabold scale-105 shadow-md animate-pulse"
-                                                : "bg-indigo-50 border-indigo-200 text-indigo-700"
+                                                ? "bg-knx-blue border-knx-blue/90 text-white font-extrabold scale-105 shadow-md animate-pulse"
+                                                : "bg-knx-blue/5 border-knx-blue/10 text-knx-blue"
                                             }`}
                                             title="Segment Coupler - Physically extends line distance limitations. Consumes 1 logical address on line."
                                           >
@@ -388,8 +388,8 @@ export function TopologyExplorer() {
                                         id={devAddressStr}
                                         className={`px-1 text-center py-1 rounded border text-[11px] font-bold ${
                                           isHighlighted 
-                                            ? "bg-indigo-600 border-indigo-700 text-white font-extrabold scale-105 shadow-md animate-pulse" 
-                                            : "bg-white border-slate-200 text-slate-550 hover:border-indigo-305 hover:text-indigo-600"
+                                            ? "bg-knx-blue border-knx-blue/90 text-white font-extrabold scale-105 shadow-md animate-pulse" 
+                                            : "bg-white border-slate-200 text-slate-550 hover:border-knx-blue/30 hover:text-knx-blue"
                                         }`}
                                       >
                                         {areaNum}.{lineNum}.{deviceNum}

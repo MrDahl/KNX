@@ -4,4 +4,8 @@
 @theme {
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: "Roboto Mono", monospace;
+  
+  --color-knx-blue: #003DA5;
+  --color-knx-green: #509E2F;
+  --color-knx-grey: #7C878E;
 }

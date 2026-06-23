@@ -4,6 +4,8 @@ An interactive, responsive, and highly polished education-first web application 
 
 Based on the official instructional material and Tutor course syllabi provided by the **KNX Association**, this suite provides fully visualized simulation modules.
 
+🚀 Try it for yourself at: **https://mrdahl.github.io/KNX/**
+
 ---
 
 ## 🚀 Interactive Modules
@@ -37,73 +39,7 @@ Based on the official instructional material and Tutor course syllabi provided b
 
 ---
 
-## 💻 Local Development
-
-Follow these simple steps to run and build the application on your computer:
-
-### 1. Prerequisites
-Ensure you have [Node.js](https://nodejs.org/) (v18 or higher) installed.
-
-### 2. Install Dependencies
-Clone/unzip the project folder, open your terminal inside, and install the package modules:
-```bash
-npm install
-```
-
-### 3. Run Development Server
-Boot up the fast local development server:
-```bash
-npm run dev
-```
-Open your browser and navigate to the displayed host URL (typically `http://localhost:3000` or `http://localhost:5173`).
-
-### 4. Production Build
-Compile a highly optimized static bundle into the `dist/` workspace:
-```bash
-npm run build
-```
-
----
-
-## 📦 Pushing to GitHub & Deploying to GitHub Pages
-
-Since your repository name is **https://github.com/MrDahl/KNX**, the application has been optimized to compile automatically for your personal URL space at `https://mrdahl.github.io/KNX/`.
-
-### 1. Initialize Git and Push to GitHub
-If you haven't initialized your Git repository locally, run the following commands in the project folder to set up and push your code:
-
-```bash
-# Initialize local git directory
-git init
-
-# Add all files to staging
-git add .
-
-# Create the initial commit
-git commit -m "feat: Initial KNX Explorer application and deployment setup"
-
-# Create/rename your primary branch to 'main'
-git branch -M main
-
-# Add your official GitHub repository target
-git remote add origin https://github.com/MrDahl/KNX.git
-
-# Push your files up to the remote host
-git push -u origin main
-```
-
-### 2. Activate Automated GitHub Pages (GitHub Actions)
-Rather than manually managing complex deployment branches, this project uses the modern, official **GitHub Actions** deployment pipeline.
-
-To activate the automated deployment:
-1. Open your web browser and go to your GitHub repository: **`https://github.com/MrDahl/KNX`**
-2. Click on the **Settings** tab at the top.
-3. In the sidebar on the left, click **Pages** (under the "Code and automation" section).
-4. Under **Build and deployment** -> **Source**, change the dropdown from **Deploy from a branch** to **GitHub Actions**.
-
-✨ **That is it!** 
-
-On your next push (or immediately upon configuring the settings), GitHub will trigger the `.github/workflows/deploy.yml` workflow, build your Vite React app, and deploy it straight to your live site at: **https://mrdahl.github.io/KNX/**
+🚀 Try it for yourself at: **https://mrdahl.github.io/KNX/**
 
 ---
 
