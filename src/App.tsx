@@ -101,7 +101,7 @@ export default function App() {
         </p>
         <div className="pt-2">
           <p className="text-slate-400 text-[10px] font-sans">
-            Marc Sonne Dahl - KNX++ Tutor © 2026. Made with ❤️ for automation & electrical students.
+            Marc Sonne Dahl - KNX++ Tutor © 2026. Made with ❤️ for KNX, automation & electrical students.
           </p>
         </div>
       </footer>
