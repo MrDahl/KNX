@@ -101,20 +101,20 @@ export const APCI_DEFS: APCIDefinition[] = [
 
 export const DPT_DEFS: DPTDefinition[] = [
   {
-    id: "1",
+    id: "1.001",
     name: "DPT 1.xxx (1-bit / Switching/Boolean)",
     sizeBits: 1,
-    description: "Simplest binary control data. Represents On/Off, Up/Down, Start/Stop, Enable/Disable, or Open/Close settings.",
+    description: "Simplest binary control data. Represents On/Off (e.g. 1.001 DPT_Switch), True/False (1.002 DPT_Bool), Enable/Disable (1.003 DPT_Enable), Up/Down (1.008 DPT_UpDown), Occupancy (1.018 DPT_Occupancy), Window/Door (1.019 DPT_Window_Door), or Day/Night (1.024 DPT_DayNight).",
     exampleValues: [
-      { value: "On", display: "On (1)", binary: "1" },
-      { value: "Off", display: "Off (0)", binary: "0" },
+      { value: "On", display: "On / True / Up (1)", binary: "1" },
+      { value: "Off", display: "Off / False / Down (0)", binary: "0" },
     ],
   },
   {
-    id: "2",
+    id: "2.001",
     name: "DPT 2.xxx (2-bit / Priority Control)",
     sizeBits: 2,
-    description: "Usually used for prioritized override commands (with forced control state). Bit 0 is state, Bit 1 activates override.",
+    description: "Used for prioritized override commands (forced control state, e.g. 2.001 DPT_Switch_Control). Bit 1 operates override activation, Bit 0 represents override state.",
     exampleValues: [
       { value: "Forced On", display: "Forced On (11)", binary: "11" },
       { value: "Forced Off", display: "Forced Off (10)", binary: "10" },
@@ -122,10 +122,10 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "3",
+    id: "3.007",
     name: "DPT 3.xxx (4-bit / Dimming Control)",
     sizeBits: 4,
-    description: "Transmits dimming direction (Up=1/Down=0) paired with step code (e.g. increase by 25%).",
+    description: "Transmits step-by-step relative dimming requests (3.007 DPT_Control_Dimming) or blind slat control. Bit 3 indicates direction (Up=1/Down=0) and Bits 2-0 holds the step span (e.g., 001 for 1 step, 000 for stop).",
     exampleValues: [
       { value: "Dim Up 100%", display: "Dim Up (Step 100%)", binary: "1001" },
       { value: "Dim Down 25%", display: "Dim Down (Step 25%)", binary: "0011" },
@@ -133,10 +133,20 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "5",
+    id: "4.001",
+    name: "DPT 4.001 (8-bit / ASCII Character)",
+    sizeBits: 8,
+    description: "Represents a single 8-bit character from the ISO 8859-1 (Latin 1) or ASCII character sets, such as letter key presses, status indicators, or keypad entries.",
+    exampleValues: [
+      { value: "A", display: "Letter 'A' (Hex 41h)", binary: "01000001" },
+      { value: "Z", display: "Letter 'Z' (Hex 5Ah)", binary: "01011010" },
+    ],
+  },
+  {
+    id: "5.001",
     name: "DPT 5.001 (8-bit / Scaling Percentage)",
     sizeBits: 8,
-    description: "Unsigned 1-byte value mapped linearly from 0-100% represents temperature, level, dimming slider (0 corresponds to 0, 255 to 100%).",
+    description: "Unsigned 1-byte value mapped linearly from 0-100% (Decimal 0 corresponds to 0%, 255 to 100%). Extensively used for dimmer levels, cooling coil openings, and screen levels.",
     exampleValues: [
       { value: "50%", display: "50% (Dec 128)", binary: "10000000" },
       { value: "100%", display: "100% (Dec 255)", binary: "11111111" },
@@ -144,7 +154,27 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "6",
+    id: "5.003",
+    name: "DPT 5.003 (8-bit / Angle 0°..360°)",
+    sizeBits: 8,
+    description: "Maps unsigned 8-bit integers (0..255) linearly to visual rotation angles between 0° and 360° (constant resolution of ~1.4° per step). Ideal for window slat rotation trims.",
+    exampleValues: [
+      { value: "90°", display: "90° rotation (Dec 64)", binary: "01000000" },
+      { value: "180°", display: "180° rotation (Dec 128)", binary: "10000000" },
+    ],
+  },
+  {
+    id: "5.010",
+    name: "DPT 5.010 (8-bit / Unsigned Decimal Counter)",
+    sizeBits: 8,
+    description: "An unsigned 8-bit raw decimal counter ranging from 0 to 255 (DPT_Value_1_Ucount). Often used for alarm counts, error totals, scene indexes, and system iterations.",
+    exampleValues: [
+      { value: "42", display: "Count 42", binary: "00101010" },
+      { value: "250", display: "Count 250", binary: "11111010" },
+    ],
+  },
+  {
+    id: "6.001",
     name: "DPT 6.xxx (8-bit / Signed Percent/Relative Value)",
     sizeBits: 8,
     description: "Signed 1-byte relative offset/offset percentage value ranging from -128% to +127%. Used for fan offsets, angle trims, or HVAC control adjustments.",
@@ -154,7 +184,7 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "7",
+    id: "7.001",
     name: "DPT 7.xxx (2-byte / 16-bit Unsigned Integer)",
     sizeBits: 16,
     description: "Standard counter, pulse counts, time intervals (msec, min, hours) or generic magnitude measurements between 0 and 65,535.",
@@ -164,7 +194,7 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "8",
+    id: "8.001",
     name: "DPT 8.xxx (2-byte / 16-bit Signed Integer)",
     sizeBits: 16,
     description: "Signed 2-byte value from -32,768 to 32,767 representing delta temperature, altitude, relative angles, or length differences.",
@@ -174,26 +204,46 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "9",
+    id: "9.001",
     name: "DPT 9.001 (2-byte / 16-bit float / Temperature)",
     sizeBits: 16,
-    description: "KNX-specific 2-byte float representing temperature values, using a 1-bit sign, 4-bit exponent, and 11-bit mantissa.",
+    description: "KNX-specific 2-byte float representing temperature values, using a 1-bit sign, 4-bit exponent, and 11-bit mantissa. Resolution of 0.01.",
     exampleValues: [
       { value: "21.0", display: "21.0 °C", binary: "0001010001001010" },
       { value: "23.5", display: "23.5 °C", binary: "0001010001111011" },
     ],
   },
   {
-    id: "10",
-    name: "DPT 10.001 (3-byte / Date)",
-    sizeBits: 24,
-    description: "Packs Day of Week, Day of Month, Month, and Year into 24 bits.",
+    id: "9.007",
+    name: "DPT 9.007 (2-byte / 16-bit float / Humidity %)",
+    sizeBits: 16,
+    description: "KNX-specific 2-byte float representing relative humidity percentage values from 0.0% to 100%. Uses the standard 16-bit KNX float format.",
     exampleValues: [
-      { value: "Today", display: "Standard Date Block", binary: "001000110000011000011010" },
+      { value: "45.0%", display: "45.0% rH", binary: "0001010111000100" },
+      { value: "62.8%", display: "62.8% rH", binary: "0001011001111010" },
     ],
   },
   {
-    id: "12",
+    id: "10.001",
+    name: "DPT 10.001 (3-byte / 24-bit Time of Day)",
+    sizeBits: 24,
+    description: "Packs Day of Week (bits 23-21, 1=Mon, 7=Sun), Hours (bits 19-15), Minutes (bits 13-8), and Seconds (bits 5-0) into 3 bytes total.",
+    exampleValues: [
+      { value: "12:00:00 Tuesday", display: "12:00:00 Tue", binary: "010011000011000000000000" },
+      { value: "08:30:15 Monday", display: "08:30:15 Mon", binary: "001010000001111000001111" },
+    ],
+  },
+  {
+    id: "11.001",
+    name: "DPT 11.001 (3-byte / 24-bit Date)",
+    sizeBits: 24,
+    description: "Packs Day of Month (bits 20-16), Month (bits 11-8), and Year offset from 1900 or 2000 (bits 6-0) into 3 bytes total.",
+    exampleValues: [
+      { value: "23 June 2026", display: "23.06.2026", binary: "000101110000011000011010" },
+    ],
+  },
+  {
+    id: "12.001",
     name: "DPT 12.xxx (4-byte / 32-bit Unsigned Value)",
     sizeBits: 32,
     description: "Unsigned 4-byte high capacity counter ranging from 0 to 4,294,967,295 for fluid volume, gas volume, or energy meters.",
@@ -202,7 +252,7 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "13",
+    id: "13.001",
     name: "DPT 13.xxx (4-byte / 32-bit Signed Value / Active Energy)",
     sizeBits: 32,
     description: "Signed 4-byte counter from -2.14B to +2.14B typically counting active electrical energy consumption in Wh or Wh pulses.",
@@ -211,7 +261,7 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "14",
+    id: "14.000",
     name: "DPT 14.xxx (4-byte / 32-bit Single Precision Float)",
     sizeBits: 32,
     description: "IEEE 754 float represent generic electrical parameters, volume, power draw, or high-accuracy floats.",
@@ -220,7 +270,7 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "16",
+    id: "16.000",
     name: "DPT 16.xxx (14-byte / ASCII Text)",
     sizeBits: 112,
     description: "14 character positions encoded as string values inside APDU packet lines.",
@@ -229,7 +279,27 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "19",
+    id: "17.001",
+    name: "DPT 17.001 (8-bit / Scene Number)",
+    sizeBits: 8,
+    description: "Loads or references preset scene indices (0 to 63) stored in target light dimmers or shutter actuators. Leftmost two bits are reserved, offset range 0..63.",
+    exampleValues: [
+      { value: "Scene 5", display: "Activate Scene index 5", binary: "00000100" },
+      { value: "Scene 12", display: "Activate Scene index 12", binary: "00001011" },
+    ],
+  },
+  {
+    id: "18.001",
+    name: "DPT 18.001 (8-bit / Scene Control)",
+    sizeBits: 8,
+    description: "Combines the Scene Index (0-63 in lower 6 bits) with a Control Flag in Bit 7 (1 = Save Scene / Learn Mode, 0 = Recall/Activate Scene).",
+    exampleValues: [
+      { value: "Save Scene 4", display: "Learn / Save Scene 4 (Dec 131)", binary: "10000011" },
+      { value: "Recall Scene 4", display: "Recall Scene 4 (Dec 3)", binary: "00000011" },
+    ],
+  },
+  {
+    id: "19.001",
     name: "DPT 19.001 (8-byte / 64-bit Date and Time)",
     sizeBits: 64,
     description: "Packs Year (offset 1900), Month, Day, Day of Week, Hour, Minute, Second, and execution status attributes into 8 bytes.",
@@ -238,7 +308,26 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "232",
+    id: "20.102",
+    name: "DPT 20.102 (8-bit / HVAC operating mode)",
+    sizeBits: 8,
+    description: "1-byte mode select representing climate controller target operational states: 1 = Comfort, 2 = Standby, 3 = Economy/Night, 4 = Building Protection, 0 = Auto.",
+    exampleValues: [
+      { value: "Comfort Mode", display: "Comfort state (1)", binary: "00000001" },
+      { value: "Economy Mode", display: "Economy/Night state (3)", binary: "00000011" },
+    ],
+  },
+  {
+    id: "221.001",
+    name: "DPT 221.001 (6-byte / 48-bit Device Serial Number)",
+    sizeBits: 48,
+    description: "Represents the unique, hardware-programmed 6-byte electronic serial number of a KNX device. Crucial for hardware identification and auto-discovery algorithms.",
+    exampleValues: [
+      { value: "Serial X", display: "Serial 00:AB:89:C5:11:FE", binary: "000000001010101110001001110001010001000111111110" },
+    ],
+  },
+  {
+    id: "232.600",
     name: "DPT 232.600 (3-byte / 24-bit RGB Colour Control)",
     sizeBits: 24,
     description: "Packs Red, Green, and Blue intensity channels as three distinct 8-bit octets into 3 bytes total. Beautiful for full-spectrum ambient setups.",
@@ -247,7 +336,7 @@ export const DPT_DEFS: DPTDefinition[] = [
     ],
   },
   {
-    id: "256",
+    id: "256.001",
     name: "DPT 256.001 (16-byte / 128-bit DateTime Period / Download Block)",
     sizeBits: 128,
     description: "Highly robust DPT packing both Start and Stop DateTime blocks. Commonly used as the core data format for scheduler automation and device firmware/configuration download blocks. Takes exactly ~40.2ms of active transit time on a 9600 bps Twisted Pair line.",
@@ -401,7 +490,7 @@ export const PRESET_TELEGRAMS = [
       destination: { main: 1, middle: 0, sub: 1 }, // Group Address 1/0/1
       routingCounter: 6,
       priority: "11", // Low (Normal)
-      dptType: "1", // 1-bit Switch value "On"
+      dptType: "1.001", // 1-bit Switch value "On"
       ackType: "CC" as const,
     },
     payloadValue: "1" // On
@@ -416,7 +505,7 @@ export const PRESET_TELEGRAMS = [
       destination: { main: 3, middle: 2, sub: 10 }, // Group Address 3/2/10
       routingCounter: 5,
       priority: "11",
-      dptType: "5", // 8-bit scale
+      dptType: "5.001", // 8-bit scale
       ackType: "CC" as const,
     },
     payloadValue: "11000000" // 192/255 = ~75%
@@ -431,7 +520,7 @@ export const PRESET_TELEGRAMS = [
       destination: { main: 4, middle: 1, sub: 2 }, // 4/1/2
       routingCounter: 6,
       priority: "11",
-      dptType: "1", // 1-bit switching (ignored in read, but length is 1 byte)
+      dptType: "1.001", // 1-bit switching (ignored in read, but length is 1 byte)
       ackType: "CC" as const,
     },
     payloadValue: "0"
@@ -446,7 +535,7 @@ export const PRESET_TELEGRAMS = [
       destination: { main: 4, middle: 1, sub: 2 }, // 4/1/2
       routingCounter: 6,
       priority: "11",
-      dptType: "9", // Float temperature
+      dptType: "9.001", // Float temperature
       ackType: "CC" as const,
     },
     payloadValue: "0001010001111011" // 23.5 encoded float
@@ -461,7 +550,7 @@ export const PRESET_TELEGRAMS = [
       destination: { main: 0, middle: 5, sub: 12 }, // 0/5/12
       routingCounter: 6,
       priority: "10", // Alarm Priority
-      dptType: "1",
+      dptType: "1.001",
       ackType: "CC" as const,
     },
     payloadValue: "1"

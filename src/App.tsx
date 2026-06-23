@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { Sliders, Network, BookOpen, GraduationCap, Network as NetIcon } from "lucide-react";
+import { Sliders, Network, BookOpen, Layers } from "lucide-react";
 import { TelegramVisualizer } from "./components/TelegramVisualizer";
 import { TopologyExplorer } from "./components/TopologyExplorer";
 import { EducationalHandbook } from "./components/EducationalHandbook";
-import { QuizSection } from "./components/QuizSection";
+import { DatapointTypesList } from "./components/DatapointTypesList";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"visualizer" | "topology" | "handbook" | "quiz">("visualizer");
+  const [activeTab, setActiveTab] = useState<"visualizer" | "topology" | "datapointtypes" | "handbook">("visualizer");
 
   const navigationItems = [
     { id: "visualizer" as const, label: "Telegram Visualiser", icon: Sliders, color: "text-cyan-400" },
     { id: "topology" as const, label: "Topology Capacity Explorer", icon: Network, color: "text-indigo-400" },
-    { id: "handbook" as const, label: "Educational Training Handbook", icon: BookOpen, color: "text-emerald-400" },
-    { id: "quiz" as const, label: "Knowledge Checking Quiz", icon: GraduationCap, color: "text-amber-400" },
+    { id: "datapointtypes" as const, label: "Datapoint Types Matrix", icon: Layers, color: "text-sky-400" },
+    { id: "handbook" as const, label: "Training Handbook", icon: BookOpen, color: "text-emerald-400" },
   ];
 
   return (
@@ -35,7 +35,7 @@ export default function App() {
               <div className="w-4.5 h-4.5 border-2 border-white rotate-45"></div>
             </div>
             <div className="text-left">
-              <h1 className="text-lg font-bold tracking-tight text-slate-900">KNX TP Bus Multi-Tool Suite</h1>
+              <h1 className="text-lg font-bold tracking-tight text-slate-900">KNX TP Explorer</h1>
               <p className="text-xs text-slate-500 font-medium">Educational Bus Analysis Tool v4.0</p>
             </div>
           </div>
@@ -73,8 +73,8 @@ export default function App() {
         <main className="w-full">
           {activeTab === "visualizer" && <TelegramVisualizer />}
           {activeTab === "topology" && <TopologyExplorer />}
+          {activeTab === "datapointtypes" && <DatapointTypesList />}
           {activeTab === "handbook" && <EducationalHandbook />}
-          {activeTab === "quiz" && <QuizSection />}
         </main>
 
       </div>
@@ -82,7 +82,7 @@ export default function App() {
       {/* High-quality Academic Credits footer */}
       <footer className="relative z-10 w-full max-w-7xl mx-auto px-4 py-8 border-t border-slate-200 text-center space-y-2 selection:bg-indigo-100 selection:text-indigo-950">
         <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">
-          KNX TP Telegram Visualiser & Topology Explorer Dashboard — Version 4.0 Pro
+          KNX TP Explorer Dashboard — Version 4.0 Pro
         </p>
         <p className="text-slate-600 text-[11px] leading-relaxed">
           Based on the official Tutor & Advanced instruction course material provided by the{" "}

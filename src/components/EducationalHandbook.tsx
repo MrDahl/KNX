@@ -7,7 +7,9 @@ export function EducationalHandbook() {
   const segments = [
     { id: "physical", label: "TP1 Physical Signalling", icon: Zap },
     { id: "timing", label: "Transmission & Timing Specs", icon: Clock },
+    { id: "arbitration", label: "CSMA/CA Lane Arbitration", icon: Binary },
     { id: "crosscheck", label: "Checksum & Cross Checks", icon: Layers },
+    { id: "topology_rules", label: "TP1 Power & Cable Specs", icon: BookOpen },
     { id: "cemivstp", label: "TP Bus vs cEMI Wrapper format", icon: HardDrive },
   ];
 
@@ -131,6 +133,63 @@ export function EducationalHandbook() {
           </div>
         )}
 
+        {activeSegment === "arbitration" && (
+          <div className="space-y-5 animate-fade-in text-xs leading-relaxed text-slate-600 font-medium font-sans">
+            <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <Binary className="h-5 w-5 text-indigo-600" />
+              CSMA/CA Lane Arbitration & Priority Classes
+            </h3>
+
+            <p>
+              KNX TP1 implements <strong>CSMA/CA (Carrier Sense Multiple Access with Collision Avoidance)</strong> to govern media access. This ensures that no frames collide or get mangled when multiple devices attempt to transmit simultaneously.
+            </p>
+
+            <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 space-y-3 font-sans">
+              <span className="font-bold text-slate-805 block text-sm">How Bit-Level Arbitration Works</span>
+              <p>
+                Before sending, a device listens to the bus. If the bus is idle for at least a specific period (priority-dependent pause <em>t1</em>), transmission starts.
+              </p>
+              <p>
+                When multiple devices transmit simultaneously, they send out bits bit-by-bit. Remember, a logical '0' is active dominant (pulls bus low), while logical '1' is passive (rests at 29V).
+              </p>
+              <ul className="list-disc pl-4 space-y-1.5 text-slate-605">
+                <li>If Device A transmits '0' and Device B transmits '1', the wire drops to the low active level (dominant '0').</li>
+                <li>Device B, which was trying to send a '1', reads back a '0' from the wire.</li>
+                <li>Device B immediately detects this conflict, suspends further transmission, and falls back to receiver mode.</li>
+                <li>Device A continues sending its telegram without a single bit of interruption or decay!</li>
+              </ul>
+            </div>
+
+            <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
+              <span className="font-bold text-indigo-950 block text-[12px]">Four Standard Priority Classes</span>
+              <p className="text-slate-600 font-medium">
+                Arbitration priorities are determined by the Control Field Byte 0 (specifically the Priority bits). This is enforced by adjusting the pre-arbitration pause times (t1) that transceivers wait before attempting to transmit:
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 font-mono text-[9.5px] text-center">
+                <div className="bg-white border border-rose-100 text-rose-700 p-2 rounded shadow-2xs">
+                  <span className="font-extrabold block text-rose-800">1. System (00)</span>
+                  <span className="text-[9px] text-slate-550 block font-sans">t1 = 50 bits (5.2 ms)</span>
+                </div>
+                <div className="bg-white border border-amber-100 text-amber-700 p-2 rounded shadow-2xs">
+                  <span className="font-extrabold block text-amber-800">2. Alarm (10)</span>
+                  <span className="text-[9px] text-slate-550 block font-sans">t1 = 60 bits (6.24 ms)</span>
+                </div>
+                <div className="bg-white border border-indigo-100 text-indigo-700 p-2 rounded shadow-2xs">
+                  <span className="font-extrabold block text-indigo-850">3. High (01)</span>
+                  <span className="text-[9px] text-slate-550 block font-sans">t1 = 70 bits (7.28 ms)</span>
+                </div>
+                <div className="bg-white border border-slate-255 text-slate-600 p-2 rounded shadow-2xs">
+                  <span className="font-extrabold block text-slate-700">4. Low (11)</span>
+                  <span className="text-[9px] text-slate-550 block font-sans">t1 = 80 bits (8.32 ms)</span>
+                </div>
+              </div>
+              <p className="text-[10px] text-slate-500 font-sans italic pt-1 leading-normal font-medium">
+                Because high-priority frames wait a shorter duration (fewer wait bits) than lower-priority frames, they grasp the bus first, winning line arbitration easily before lower-priority frames can even start transmitting!
+              </p>
+            </div>
+          </div>
+        )}
+
         {activeSegment === "crosscheck" && (
           <div className="space-y-5 animate-fade-in text-xs leading-relaxed text-slate-600 font-medium">
             <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
@@ -182,6 +241,50 @@ export function EducationalHandbook() {
             <p className="text-[10px] text-slate-500 font-semibold italic">
               * By combining horizontal even parity on each character and vertical odd parity across the whole message, receivers can perform immediate 1-bit error isolation and automatically request a diagnostic repeat from the sender.
             </p>
+          </div>
+        )}
+
+        {activeSegment === "topology_rules" && (
+          <div className="space-y-5 animate-fade-in text-xs leading-relaxed text-slate-600 font-medium font-sans">
+            <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <BookOpen className="h-5 w-5 text-indigo-600 animate-pulse" />
+              TP1 Power & Bus Cable Infrastructure Specifications
+            </h3>
+
+            <p>
+              The twisted-pair installation rules are mathematically designed to prevent voltage degradation and signal wave reflections. Following these rules guarantees standard, error-free operation of up to 9600 bps signals.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-slate-50/75 p-4 rounded-xl border border-slate-200/80 space-y-2">
+                <span className="font-bold text-slate-850 block text-indigo-900 text-[13px] border-b border-slate-100 pb-1">Cable & Voltage Requirements</span>
+                <ul className="list-disc pl-4 space-y-1.5 text-slate-650 leading-relaxed text-[11px] font-sans font-medium">
+                  <li><strong>Standard Cable:</strong> YCYM 2x2x0.8 or J-Y(St)Y 2x2x0.8 shielded twisted pair with red/black cores (bus power/signals) and yellow/white cores (auxiliary power).</li>
+                  <li><strong>Operating Voltage:</strong> Nominal continuous supply holds the cable pairs at <strong>29V DC</strong>.</li>
+                  <li><strong>Lower Tolerance Limit:</strong> Devices must operate correctly down to <strong>21V DC</strong>, offering an 8V insulation margin for line impedance losses.</li>
+                </ul>
+              </div>
+
+              <div className="bg-slate-50/75 p-4 rounded-xl border border-slate-200/80 space-y-2">
+                <span className="font-bold text-slate-850 block text-indigo-900 text-[13px] border-b border-slate-100 pb-1">Critical Boundary Segment Limits</span>
+                <ul className="list-disc pl-4 space-y-1.5 text-slate-650 leading-relaxed text-[11px] font-sans font-medium">
+                  <li><strong>Power Supply to Device:</strong> Max 350 meters. Prevents extreme static voltage drop.</li>
+                  <li><strong>Device to Device:</strong> Max 700 meters. Restricts signal attenuation over the copper cores.</li>
+                  <li><strong>Total Wire Length in Segment:</strong> Max 1000 meters. Keeps the cumulative capacitance under the system threshold (~120 nF/km).</li>
+                  <li><strong>Choke Requirement:</strong> A power supply requires a choke coil to prevent the power supply capacitors from absorbing the high-frequency active signaling pulses.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="p-4 bg-amber-50/80 text-amber-950 border border-amber-100 rounded-xl flex gap-3">
+              <Clock className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="font-sans text-[11px] leading-relaxed">
+                <strong className="text-amber-950 text-[12px]">Important Star/Tree Topology Rule:</strong>
+                <p className="mt-1 text-slate-700 font-medium font-sans">
+                  While KNX TP1 permits arbitrary bus architectures (line, tree, star, or mixed structures), <strong>closed loop wiring rings are strictly forbidden</strong>. Doing so causes infinite magnetic wave loops and conflicts signal reflections!
+                </p>
+              </div>
+            </div>
           </div>
         )}
 

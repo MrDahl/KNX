@@ -13,7 +13,7 @@ export function WaveformRenderer({ bitStream, ackBits, ackType }: WaveformRender
 
   // Constants for waveform coordinates
   const bitWidth = 34; // visual width of one bit-period
-  const t1Width = 140; // pre-telegram idle gap check (increased to avoid left-side text overlaps)
+  const t1Width = 190; // pre-telegram idle gap check (increased by about 30%+ to avoid left-side overlaps)
   const t2Bits = 15;   // 15 bits for T2 inter-frame gap pause in KNX TP1 spec
   const t2Width = t2Bits * bitWidth;
   const ackWidth = 11 * bitWidth; // ACK character (11 bits)
@@ -139,6 +139,23 @@ export function WaveformRenderer({ bitStream, ackBits, ackType }: WaveformRender
             strokeDasharray="2 2"
           />
           <text x={15} y={activeY + 14} className="fill-rose-600 text-[9px] font-sans font-extrabold uppercase tracking-wider">~24V DC (Active '0' dominant drop of ~5V)</text>
+
+          {/* Theoretical 0V Ground Reference Line & Axis Break */}
+          <line 
+            x1={0} y1={216} 
+            x2={totalWidth} y2={216} 
+            stroke="#94a3b8"
+            strokeWidth="1.5"
+            strokeDasharray="3 3"
+          />
+          <text x={15} y={229} className="fill-slate-600 text-[9px] font-sans font-extrabold uppercase tracking-wider">0V DC (Theoretical Ground Level — Never reached during data transmission)</text>
+
+          {/* Axis Break Indicator on the left */}
+          <g className="opacity-80">
+            <line x1={8} y1={203} x2={16} y2={199} stroke="#64748b" strokeWidth="1.5" />
+            <line x1={8} y1={207} x2={16} y2={203} stroke="#64748b" strokeWidth="1.5" />
+            <text x={22} y={205} className="fill-slate-400 text-[8px] font-sans font-semibold italic">Scale break: 24V down to 0V is highly compressed</text>
+          </g>
 
           <line 
             x1={0} y1={overshootY} 
@@ -300,10 +317,10 @@ export function WaveformRenderer({ bitStream, ackBits, ackType }: WaveformRender
       {/* Educational details callout */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5 text-[11px] text-slate-500 leading-relaxed font-sans">
         <div className="bg-slate-50 p-4 rounded-xl border border-slate-150 flex gap-2.5">
-          <Zap className="h-4 w-4 text-indigo-605 shrink-0 mt-0.5" />
+          <Zap className="h-4 w-4 text-indigo-650 shrink-0 mt-0.5" />
           <div>
-            <span className="text-slate-800 font-bold block mb-1">CSMA/CA Collision Resolution</span>
-            Under baseband transmission, the passive log state '1' is easily overridden when another device drives the bus active ('0'). This ensures continuous transmission with zero packet collision data loss.
+            <span className="text-slate-800 font-bold block mb-1">No Zero-Volt Drops</span>
+            A standard KNX logical '0' is active dominant but drops the voltage by only ~5V (forcing a ~24V level). If signals dropped down to 0V, or crossed a zero potential line, bus devices would suffer a total power loss during long telegram transmissions!
           </div>
         </div>
         <div className="bg-slate-50 p-4 rounded-xl border border-slate-150 flex gap-2.5">

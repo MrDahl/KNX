@@ -16,7 +16,7 @@ export function TelegramVisualizer() {
     destination: { main: 1, middle: 0, sub: 1 },
     routingCounter: 6,
     priority: "11",
-    dptType: "1",
+    dptType: "1.001",
     ackType: "CC",
   });
 
@@ -76,46 +76,9 @@ export function TelegramVisualizer() {
 
   // Dynamic binary payload encoding based on selected DPT format
   const encodePayload = (dpt: string, val: string): string => {
-    switch (dpt) {
-      case "1": // 1-bit boolean
-        return val === "1" ? "1" : "0";
-      case "2": // 2-bit overwrite
-        return val.padStart(2, "0").slice(0, 2);
-      case "3": // 4-bit dimmer step
-        return val.padStart(4, "0").slice(0, 4);
-      case "5": // 8-bit scale percentage
-        const perc = parseFloat(val) || 0;
-        const val8 = Math.min(255, Math.max(0, Math.round((perc / 100) * 255)));
-        return padBinary(val8, 8);
-      case "6": // 8-bit signed relative value (8 bits)
-        return val.padEnd(8, "0").slice(0, 8);
-      case "7": // 16-bit unsigned count
-        const num16 = Math.min(65535, Math.max(0, parseInt(val) || 0));
-        return padBinary(num16, 16);
-      case "8": // 16-bit signed integer (16 bits)
-        return val.padEnd(16, "0").slice(0, 16);
-      case "9": // 16-bit DPT 9 float temperature
-        const temp = parseFloat(val) || 0;
-        return encodeKnxFloat(temp);
-      case "10": // 3-byte date, using simulated date or raw input
-        return val.padEnd(24, "0").slice(0, 24);
-      case "12": // 32-bit unsigned integer (32 bits)
-        return val.padEnd(32, "0").slice(0, 32);
-      case "13": // 32-bit signed active energy (32 bits)
-        return val.padEnd(32, "0").slice(0, 32);
-      case "14": // 4-byte 32-bit single float
-        return val.padEnd(32, "0").slice(0, 32);
-      case "16": // 14-byte raw ASCII values
-        return val.padEnd(112, "0").slice(0, 112);
-      case "19": // 8-byte date & time (64 bits)
-        return val.padEnd(64, "0").slice(0, 64);
-      case "232": // 3-byte RGB colour control (24 bits)
-        return val.padEnd(24, "0").slice(0, 24);
-      case "256": // 16-byte DateTime_Period / Download Block (128 bits)
-        return val.padEnd(128, "0").slice(0, 128);
-      default: // default fallback size in case of edge values or files
-        return val.padEnd(8, "0").slice(0, 8);
-    }
+    const d = DPT_DEFS.find((x) => x.id === dpt);
+    const size = d ? d.sizeBits : 8;
+    return val.padEnd(size, "0").slice(0, size);
   };
 
   // Refreshes and recompute entire raw TP1 bus telegram structure from selections
@@ -596,7 +559,7 @@ export function TelegramVisualizer() {
               <label className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block mb-1">
                 DPT Payload Data Value
               </label>
-              {params.dptType === "1" ? (
+              {params.dptType === "1.001" ? (
                 <select
                   value={dptValue}
                   onChange={(e) => { setDptValue(e.target.value); setCurrentPreset(-1); }}
@@ -605,7 +568,7 @@ export function TelegramVisualizer() {
                   <option value="1">Active High 'On' (1)</option>
                   <option value="0">Active Low 'Off' (0)</option>
                 </select>
-              ) : params.dptType === "5" ? (
+              ) : params.dptType === "5.001" ? (
                 <div className="flex gap-2">
                   <input
                     type="range"
@@ -624,7 +587,7 @@ export function TelegramVisualizer() {
                     {dptValue ? Math.round((parseInt(dptValue, 2) / 255) * 100) : 0}%
                   </span>
                 </div>
-              ) : params.dptType === "9" ? (
+              ) : params.dptType === "9.001" ? (
                 <div className="flex gap-2">
                   <input
                     type="number"
