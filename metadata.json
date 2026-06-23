@@ -1,0 +1,6 @@
+{
+  "name": "KNX Bus Tools",
+  "description": "An interactive educational dashboard for KNX TP1 telegram structures, physical wave signals, and hierarchical topology capacity exploration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
