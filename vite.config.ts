@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig(() => {
   return {
-    base: process.env.GITHUB_ACTIONS ? '/KNX/' : './',
+    base: './',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
