@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import { BookOpen, Zap, Clock, Layers, HardDrive, Binary, CheckSquare } from "lucide-react";
+import { BookOpen, Zap, Clock, Layers, HardDrive, Binary, CheckSquare, Shield, Server, Network, FileText } from "lucide-react";
 
 export function EducationalHandbook() {
   const [activeSegment, setActiveSegment] = useState<string>("physical");
 
   const segments = [
     { id: "physical", label: "TP1 Physical Signalling", icon: Zap },
+    { id: "choke", label: "Power Supply Choke Coil", icon: Shield },
+    { id: "addresses", label: "Individual vs Group Address", icon: Server },
+    { id: "casting", label: "Unicast, Multicast & Broadcast", icon: Network },
+    { id: "frames", label: "Short-Frame vs Long-Frame", icon: FileText },
     { id: "timing", label: "Transmission & Timing Specs", icon: Clock },
     { id: "arbitration", label: "CSMA/CA Lane Arbitration", icon: Binary },
     { id: "crosscheck", label: "Checksum & Cross Checks", icon: Layers },
@@ -79,6 +83,214 @@ export function EducationalHandbook() {
                 </p>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeSegment === "choke" && (
+          <div className="space-y-5 animate-fade-in text-xs leading-relaxed text-slate-600 font-medium">
+            <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <Shield className="h-5 w-5 text-knx-blue animate-pulse" />
+              The Choke (Inductor Coil) — Functions & Purpose
+            </h3>
+            
+            <p>
+              In a KNX TP1 installation, the <strong>Choke (Inductor Coil)</strong> is one of the most critical physical layer components. It is connected in series with the output of the 29V DC KNX Power Supply unit.
+            </p>
+
+            <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 space-y-3">
+              <span className="font-bold text-slate-800 block text-sm">Why is a Choke needed?</span>
+              <p>
+                A standard DC power supply has a very large filter capacitor on its output. From an AC signaling perspective, a capacitor acts as an <strong>AC short-circuit</strong> (zero impedance). 
+              </p>
+              <p>
+                If a KNX bus coupler tries to transmit data by drawing an active pulldown current to signal a logical '0', the massive capacitors in the power supply would instantly supply extra current to maintain the flat 29V. This would <strong>absorb/short-circuit the communication pulse entirely</strong>, making any communication physically impossible.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200/80 space-y-1.5">
+                <span className="font-extrabold text-slate-900 block text-knx-blue">1. Signal Protection</span>
+                <p className="text-[11px] leading-relaxed">
+                  By presenting high AC impedance, the choke decouples the static DC power supply filter capacitors from the high-frequency 10 kHz communication pulses, allowing the signal waveform to form on the bus.
+                </p>
+              </div>
+
+              <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200/80 space-y-1.5">
+                <span className="font-extrabold text-slate-900 block text-knx-blue">2. DC Energy Path</span>
+                <p className="text-[11px] leading-relaxed">
+                  While blocking high-frequency data signals, the choke allows the static 29V DC operating energy to flow unhindered down the bus line to power all connected microcontrollers and transceivers.
+                </p>
+              </div>
+
+              <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200/80 space-y-1.5">
+                <span className="font-extrabold text-slate-900 block text-knx-blue">3. Active Voltage Reset</span>
+                <p className="text-[11px] leading-relaxed">
+                  When the active '0' pulldown pulse ends, the choke collapses its magnetic field (inductor kickback), generating a transient reverse voltage peak of up to ~34V. This crucial overshoot acts as a natural line equalizer to speed up stabilization.
+                </p>
+              </div>
+            </div>
+
+            <p className="p-4 bg-knx-blue/10 text-knx-blue border border-knx-blue/20 rounded-xl leading-relaxed text-[11px] font-medium">
+              <strong>Advanced Certification Note:</strong> Power supplies usually come with an integrated choke, but separate external chokes are also available. Connecting a power supply without a choke to an active KNX line will cause an immediate bus collapse where devices power up but are completely unable to communicate.
+            </p>
+          </div>
+        )}
+
+        {activeSegment === "addresses" && (
+          <div className="space-y-5 animate-fade-in text-xs leading-relaxed text-slate-600 font-medium font-sans">
+            <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <Server className="h-5 w-5 text-knx-blue" />
+              Addressing in KNX: Individual Address vs. Group Address
+            </h3>
+
+            <p>
+              Every KNX packet contains both a <strong>Source Address</strong> and a <strong>Destination Address</strong>. Understanding the radical operational difference between these two address types is fundamental to designing and commissioning any KNX automation project.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 space-y-3">
+                <span className="font-bold text-slate-800 block text-sm border-b border-slate-200 pb-1 text-knx-blue">Individual Address (Physical Address)</span>
+                <div className="space-y-2 text-[11px]">
+                  <p>
+                    <strong className="text-slate-900">Format:</strong> <code>Area.Line.Device</code> (e.g., <code>1.1.25</code>)
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">Purpose:</strong> Uniquely identifies a single physical device in the entire installation. No two devices on the same KNX network can ever share the same Individual Address.
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">How it is set:</strong> Assigned by the system designer in ETS and downloaded onto the device while its physical programming button is active.
+                  </p>
+                  <p>
+                    <strong className="text-slate-900 font-bold">Primary Use Case:</strong> Point-to-point (unicast) system management: configuring devices, downloading application parameters, diagnostic line checks, and individual status readings.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 space-y-3">
+                <span className="font-bold text-slate-800 block text-sm border-b border-slate-200 pb-1 text-knx-blue">Group Address (Logical Address)</span>
+                <div className="space-y-2 text-[11px]">
+                  <p>
+                    <strong className="text-slate-900">Format:</strong> <code>Main/Middle/Sub</code> (e.g., <code>2/3/45</code>)
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">Purpose:</strong> Defines a logical control function or communication channel (e.g., "Kitchen ceiling light toggle" or "West facade heating setpoint").
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">How it is set:</strong> Created in ETS and linked to the virtual communication objects of sensors (senders) and actuators (receivers).
+                  </p>
+                  <p>
+                    <strong className="text-slate-900 font-bold">Primary Use Case:</strong> Runtime communication. Sensors send telegrams to a Group Address, and one or many listening actuators receive and execute the payload simultaneously.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-amber-50 text-amber-950 border border-amber-100 rounded-xl leading-relaxed text-[11px] font-sans">
+              <strong className="text-amber-900 text-xs font-bold">Crucial Rule for ETS Diagnostics:</strong>
+              <p className="mt-1 text-slate-700 font-medium font-sans">
+                During standard runtime communication (switching lights, adjusting blinds), <strong>Group Addresses are always used as the destination</strong>. A Group Address must never be used as a source address in a telegram. The source address must always be the specific Individual Address of the transmitting physical node!
+              </p>
+            </div>
+          </div>
+        )}
+
+        {activeSegment === "casting" && (
+          <div className="space-y-5 animate-fade-in text-xs leading-relaxed text-slate-600 font-medium font-sans">
+            <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <Network className="h-5 w-5 text-knx-blue" />
+              Addressing Modes: Unicast, Multicast & Broadcast
+            </h3>
+
+            <p>
+              KNX TP1 utilizes different delivery patterns depending on the task at hand. The <strong>Address Type (AT)</strong> bit inside the telegram routing octet flags whether the payload target represents a Group Address or an Individual Address.
+            </p>
+
+            <div className="space-y-4">
+              <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 flex gap-4">
+                <div className="w-24 shrink-0 bg-knx-blue/10 text-knx-blue font-bold px-3 py-2 rounded-lg text-center h-fit border border-knx-blue/20">
+                  Unicast
+                </div>
+                <div className="space-y-1.5 font-sans">
+                  <span className="font-extrabold text-slate-900 text-sm block">Unicast (Point-to-Point)</span>
+                  <p className="text-[11px] leading-relaxed">
+                    Used to direct commands to a single physical device. The telegram's destination address contains a physical <strong>Individual Address</strong>, and the AT bit is set to <code>0</code>. Unicast is mostly used for diagnostic queries, physical programming, and downloading parameters via ETS.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 flex gap-4">
+                <div className="w-24 shrink-0 bg-knx-blue/10 text-knx-blue font-bold px-3 py-2 rounded-lg text-center h-fit border border-knx-blue/20">
+                  Multicast
+                </div>
+                <div className="space-y-1.5 font-sans">
+                  <span className="font-extrabold text-slate-900 text-sm block">Multicast (Group Communication)</span>
+                  <p className="text-[11px] leading-relaxed">
+                    The absolute backbone of standard KNX runtime. A sensor (such as a keypad) sends a packet targeting a <strong>Group Address</strong> (with AT set to <code>1</code>). Every actuator on the line that is linked to this group address receives the packet and acts on it simultaneously. This allows efficient, multi-point control without sending multiple separate messages.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 flex gap-4">
+                <div className="w-24 shrink-0 bg-knx-blue/10 text-knx-blue font-bold px-3 py-2 rounded-lg text-center h-fit border border-knx-blue/20">
+                  Broadcast
+                </div>
+                <div className="space-y-1.5 font-sans">
+                  <span className="font-extrabold text-slate-900 text-sm block">Broadcast (One-to-All)</span>
+                  <p className="text-[11px] leading-relaxed">
+                    Directs a message to absolutely every active node on the bus segment. In KNX, this is triggered when the target is set to the system group address <code>0/0/0</code> (or group routing with a physical address equal to zero). Broadcasts are reserved for critical system events, emergency building resets, and discovery commands during configuration.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeSegment === "frames" && (
+          <div className="space-y-5 animate-fade-in text-xs leading-relaxed text-slate-600 font-medium font-sans">
+            <h3 className="text-lg font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <FileText className="h-5 w-5 text-knx-blue" />
+              Framing Specifications: Short-Frame vs. Long-Frame (Extended)
+            </h3>
+
+            <p>
+              KNX TP1 supports two distinct framing mechanisms to balance transmission efficiency and large-scale bulk parameters downloads.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 space-y-3">
+                <span className="font-bold text-slate-800 block text-sm border-b border-slate-200 pb-1 text-knx-blue">Short-Frame (Standard L_DATA)</span>
+                <div className="space-y-2 text-[11px] leading-relaxed">
+                  <p>
+                    <strong className="text-slate-900">Maximum Payload:</strong> Holds up to <strong>15 bytes</strong> of data. Most simple runtime commands (such as a 1-bit light toggle) pack the payload directly inside the 4-bit length parameter block to minimize overhead.
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">Efficiency:</strong> Extremely high. By keeping frames short, the transmission window on the wire is kept extremely small, minimizing bus load and reducing the chances of arbitration collisions.
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">Where it is used:</strong> Standard daily runtime commands (switching actuators, reading sensor values, raising or lowering blinds).
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 p-4.5 rounded-xl border border-slate-200 space-y-3">
+                <span className="font-bold text-slate-800 block text-sm border-b border-slate-200 pb-1 text-knx-blue">Long-Frame (Extended L_DATA_Extended)</span>
+                <div className="space-y-2 text-[11px] leading-relaxed">
+                  <p>
+                    <strong className="text-slate-900">Maximum Payload:</strong> Extends the frame bounds up to <strong>254 bytes</strong> of payload.
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">Mechanism:</strong> Relocates frame length bytes into secondary octets, freeing up constraints on the physical line transceiver boundaries.
+                  </p>
+                  <p>
+                    <strong className="text-slate-900">Where it is used:</strong> Bulk configurations, complex device application uploads via ETS, firmware flashing, and exchanging large cryptographic keys (KNX Secure certificates).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <p className="p-4 bg-knx-blue/10 text-knx-blue border border-knx-blue/20 rounded-xl leading-relaxed text-[11px] font-medium font-sans">
+              <strong>Tutor tip:</strong> Not all older KNX TP1 physical transceivers or line couplers support long-frame extended telegrams. If you try to download a huge application to an old actuator through a line coupler that lacks extended-frame buffer support, the download will fail. In those cases, ETS must fall back to standard short-frame segmented downloads.
+            </p>
           </div>
         )}
 
