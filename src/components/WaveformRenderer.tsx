@@ -38,11 +38,11 @@ export function WaveformRenderer({
     : t1Width + telegramWidth + t2Width + ackWidth + t3Width;
 
   const ackColors = {
-    CC: "#003DA5", // KNX Blue
+    CC: "#509E2F", // KNX Green
     "0C": "#ef4444", // Red Negative LL_NAK
     C0: "#ca8a04", // Amber LL_BUSY
   };
-  const ackColor = ackColors[ackType] || "#003DA5";
+  const ackColor = ackColors[ackType] || "#509E2F";
 
   // Auto-scroll the visualizer viewport to bring the ACK wave into position when updated
   useEffect(() => {
@@ -267,7 +267,7 @@ export function WaveformRenderer({
           <path 
             d={telegramPath} 
             fill="none" 
-            stroke="#003DA5" 
+            stroke="#509E2F" 
             strokeWidth="2.5" 
             strokeLinecap="round"
           />

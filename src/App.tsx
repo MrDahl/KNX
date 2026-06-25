@@ -1,16 +1,20 @@
 import React, { useState } from "react";
-import { Sliders, Network, BookOpen, Layers } from "lucide-react";
+import { Sliders, Network, BookOpen, Layers, GitMerge, Send } from "lucide-react";
 import { TelegramVisualizer } from "./components/TelegramVisualizer";
 import { TopologyExplorer } from "./components/TopologyExplorer";
 import { EducationalHandbook } from "./components/EducationalHandbook";
 import { DatapointTypesList } from "./components/DatapointTypesList";
+import { RoutingCounterExplorer } from "./components/RoutingCounterExplorer";
+import { SendingSimulator } from "./components/SendingSimulator";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"visualizer" | "topology" | "datapointtypes" | "handbook">("visualizer");
+  const [activeTab, setActiveTab] = useState<"visualizer" | "topology" | "routing" | "datapointtypes" | "sending" | "handbook">("visualizer");
 
   const navigationItems = [
     { id: "visualizer" as const, label: "Telegram Visualiser", icon: Sliders, color: "text-knx-blue" },
     { id: "topology" as const, label: "Topology Capacity Explorer", icon: Network, color: "text-knx-grey" },
+    { id: "routing" as const, label: "Routing Counter", icon: GitMerge, color: "text-knx-green" },
+    { id: "sending" as const, label: "Sending (S-Flag)", icon: Send, color: "text-knx-blue" },
     { id: "datapointtypes" as const, label: "Datapoint Types Matrix", icon: Layers, color: "text-knx-blue" },
     { id: "handbook" as const, label: "Training Handbook", icon: BookOpen, color: "text-knx-green" },
   ];
@@ -23,7 +27,7 @@ export default function App() {
         <div className="absolute top-[-10%] left-[-20%] w-[50vw] h-[50vw] rounded-full bg-knx-blue/5 blur-[130px]" />
         <div className="absolute bottom-[-15%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-knx-green/5 blur-[150px]" />
         {/* Subtle grid mesh pattern overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#003DA503_1px,transparent_1px),linear-gradient(to_bottom,#003DA503_1px,transparent_1px)] bg-[size:34px_34px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#509E2F03_1px,transparent_1px),linear-gradient(to_bottom,#509E2F03_1px,transparent_1px)] bg-[size:34px_34px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow space-y-8">
@@ -51,7 +55,7 @@ export default function App() {
         </header>
 
         {/* Global Navigation Tabs in a pristine modern container */}
-        <nav className="bg-white border border-slate-200 p-1.5 rounded-2xl max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-1 shadow-sm relative overflow-hidden">
+        <nav className="bg-white border border-slate-200 p-1.5 rounded-2xl max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1 shadow-sm relative overflow-hidden">
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -77,6 +81,8 @@ export default function App() {
         <main className="w-full">
           {activeTab === "visualizer" && <TelegramVisualizer />}
           {activeTab === "topology" && <TopologyExplorer />}
+          {activeTab === "routing" && <RoutingCounterExplorer />}
+          {activeTab === "sending" && <SendingSimulator />}
           {activeTab === "datapointtypes" && <DatapointTypesList />}
           {activeTab === "handbook" && <EducationalHandbook />}
         </main>

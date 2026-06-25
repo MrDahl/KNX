@@ -13,7 +13,7 @@ Designed in accordance with the official **KNX Association Advanced & Tutor cert
 
 ## 🌟 Interactive Modules & Features
 
-The application is structured into four main workspace modules, accessible instantly from the sidebar:
+The application is structured into six main workspace modules, accessible instantly from the navigation menu:
 
 ### 1. ⚡ Interactive Telegram Visualizer & Waveform Simulator
 Analyze and reconstruct standard **L_DATA** (Data Link Layer) KNX frames byte-by-byte and bit-by-bit.
@@ -48,13 +48,26 @@ Explore the physical and logical boundaries of classical hierarchical KNX system
   - **Power Draw & Current Capacity**: Displays current load estimations (~573.7 Amperes aggregated max current budget based on a standard 640mA power supply unit limit per line).
   - **Segment Extensions**: Explains segment line limits (64 physical load devices per segment) and the strategic use of segment couplers at addresses `64`, `128`, and `192` to extend segment lines up to 255 addressable nodes.
 
-### 3. 📊 Datapoint Types (DPT) Reference Library & Matrix
+### 3. 🔄 Routing Counter Simulator
+Deep-dive into the KNX packet lifetime and routing counter decrement behavior.
+- **Dynamic Coupling Modes**: Compare **Series Coupling** and **Parallel Coupling** line repeats.
+- **Line Repeater (LR) Bypassing**: Instantly bypass specific repeaters (e.g., `.64` or `.128`) in parallel setups to simulate physical connection failures.
+- **Visual Signal Path Tracing**: Live animation demonstrating how individual segment repeaters (LRs), line couplers (LCs), and backbone couplers (BCs) process and forward multicast frames, complete with real-time routing counter (RC) value decrement indicators.
+
+### 4. ✉️ Sending & S-Flag Simulator
+Learn and prove the strict Group Object transmission properties of the KNX protocol.
+- **Telegram Limit Proof**: Explains why a multicast KNX TP telegram structure only has room for exactly one Destination GA (2 Bytes), proving why a physical sensor cannot natively send to multiple GAs in parallel.
+- **ETS Group Address Matrix**: Interactive checkbox table linking Sensor 1 (PA 1.1.1), Actuator 1 (PA 1.1.2), and Actuator 2 (PA 1.1.3) to Group Addresses `1/1/1` and `1/1/2`.
+- **Strict S-Flag Logic**: Simulates standard ETS behavior. The very first Group Address checked on the sensor automatically gains the bold `[Sending] (S)` flag. Subsequent checked GAs associate but do not transmit. Unchecking the sending GA dynamically reassigns the S-Flag to the next active link.
+- **Live Output Visualizer & Bus Monitor**: Provides a "Press Push Button" physical trigger. Triggers a live multicast write, displaying the resulting binary command packet in a mock bus monitor log and lighting up the corresponding receiver lamps according to the active S-Flag GA.
+
+### 5. 📊 Datapoint Types (DPT) Reference Library & Matrix
 A complete interactive lookup matrix of standardized KNX Datapoint Types.
 - **Comprehensive Database**: Includes lookups spanning from basic 1-bit boolean controls (DPT 1.xxx) up to complex 16-bit or 32-bit floating-point coordinates and scaling values.
 - **Category Filter Rails**: Quickly filter by size classifications (1-bit, 2-bit, 8-bit, 16-bit, and multi-byte structures).
-- **Expandable Detail Cards**: Click any DPT row to view its exact binary layout, scientific formulas, typical ranges, default engineering units, and real-world application examples (e.g., HVAC temperature adjustments, solar wind speed gauges, scene controls, or dimming state transitions).
+- **Expandable Detail Cards**: Click any DPT row to view its exact binary layout, scientific formulas, typical ranges, default engineering units, and real-world application examples.
 
-### 4. 📖 Educational Handbook
+### 6. 📖 Educational Handbook
 A master textbook reference guide written specifically to prepare students for Advanced & Tutor certification exams.
 - **Physical Layer Specification**:
   - Explains the TP1 base transmission speed (**9,600 bits per second**).

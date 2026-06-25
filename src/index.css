@@ -5,7 +5,12 @@
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: "Roboto Mono", monospace;
   
-  --color-knx-blue: #003DA5;
+  --color-knx-blue: #509E2F;
   --color-knx-green: #509E2F;
   --color-knx-grey: #7C878E;
+
+  --color-slate-400: #949ea4;
+  --color-slate-500: #7C878E;
+  --color-slate-600: #636f75;
+  --color-slate-700: #4b555b;
 }
