@@ -1,0 +1,15 @@
+import React, { useState } from 'react';
+import { DPT_INPUTS, defaults, encodeDpt, decodedSummary, type Values } from '../knx/dptCodec';
+export function DptValueEditor({id,initial,onChange}:{key?:string;id:string;initial?:Values;onChange:(bits:string)=>void}) {
+ const [values,setValues]=useState<Values>(initial??defaults(id));
+ const spec=DPT_INPUTS[id]; let payload='',error='';
+ try{payload=encodeDpt(id,values);}catch(e){error=(e as Error).message;}
+ const change=(key:string,value:string)=>{const next={...values,[key]:value};setValues(next);try{onChange(encodeDpt(id,next));}catch{onChange('');}};
+ return <div className="space-y-3">
+  {spec.fields.map(f=><label key={f.key} className="block text-xs font-semibold text-slate-700">{f.label}
+   {f.options?<select aria-label={f.label} className="block w-full border rounded-lg p-2 mt-1 bg-white" value={values[f.key]} onChange={e=>change(f.key,e.target.value)}>{f.options.map((o,i)=><option key={i} value={i}>{o}</option>)}</select>:<input aria-label={f.label} type={f.type??'text'} step={f.step} min={f.min} max={f.max} className="block w-full border rounded-lg p-2 mt-1 bg-white" value={values[f.key]} onChange={e=>change(f.key,e.target.value)}/>}
+  </label>)}
+  {error?<p role="alert" className="text-xs text-red-700">{error}</p>:<div className="text-xs text-slate-600 break-all"><strong>Encoded value:</strong> {decodedSummary(id,payload)}<div className="font-mono mt-1">{payload.match(/.{1,8}/g)?.join(' ')}</div></div>}
+  {spec.note&&<p className="text-xs text-slate-600">{spec.note}</p>}
+ </div>;
+}
