@@ -3,7 +3,7 @@ import type { TelegramByte } from '../types';
 export function fieldRows(byte:TelegramByte,count:number):[string,string,string][] {
  const b=byte.logicalBinary,n=parseInt(b,2),i=byte.index;
  if(i===count-1)return [['Check byte',b,'NOT-XOR of preceding octets; XOR of the whole frame is FF.']];
- if(i===0)return [['Frame type · b7',b[0],'1 = standard frame'],['Fixed bits · b6, b4, b1..0',`${b[1]} ${b[3]} ${b.slice(6)}`,'0, 1, 00 for this standard frame'],['Repeat · b5',b[2],b[2]==='1'?'Original transmission':'Repeated transmission'],['Priority · b3..2',b.slice(4,6),({'00':'System','10':'Alarm','01':'High','11':'Low / normal'} as Record<string,string>)[b.slice(4,6)]]];
+ if(i===0)return [['Frame type · b7',b[0],'1 = standard frame'],['Fixed bits · b6, b4, b1..0',`${b[1]} ${b[3]} ${b.slice(6)}`,'0, 1, 00 for this standard frame'],['Repeat · b5',b[2],b[2]==='1'?'Original transmission':'Repeated transmission'],['Priority · b3..2',b.slice(4,6),({'00':'System','10':'Alarm / urgent','01':'High / normal','11':'Low'} as Record<string,string>)[b.slice(4,6)]]];
  if(i===1)return [['Area · b7..4',b.slice(0,4),`${n>>4}`],['Line · b3..0',b.slice(4),`${n&15}`]];
  if(i===2)return [['Device · b7..0',b,`${n}`]];
  if(i===3)return [['Main group · b7..3',b.slice(0,5),`${n>>3}`],['Middle group · b2..0',b.slice(5),`${n&7}`]];
