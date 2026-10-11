@@ -94,7 +94,7 @@ export function TopologyExplorer() {
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-knx-blue/5 blur-3xl pointer-events-none -mr-32 -mt-32" />
         <div className="space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col @2xl:flex-row @2xl:items-center justify-between gap-6">
             <div className="space-y-1">
               <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <Network className="h-5 w-5 text-knx-blue" />
@@ -105,8 +105,8 @@ export function TopologyExplorer() {
               </p>
             </div>
             
-            <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto">
-              <div className="relative flex-grow md:w-72">
+            <form onSubmit={handleSearch} className="flex gap-2 w-full @2xl:w-auto">
+              <div className="relative flex-grow @2xl:w-72">
                 <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
                 <input 
                   type="text" aria-label="Individual address search"
@@ -144,7 +144,7 @@ export function TopologyExplorer() {
       <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 text-left">
         <h3 className="font-bold text-lg text-slate-900">Address capacity is not an installation device limit</h3>
         <p className="text-sm text-slate-600">This template has a TP backbone, 15 TP main lines and 225 secondary lines. Each secondary line illustrates three segment couplers and four separately powered segments. Ordinary device positions are available slots, not installed devices. The former 59,687 total mixed incompatible quantities and has been removed.</p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid @lg:grid-cols-2 @4xl:grid-cols-4 gap-4">
           {[
             ['61,695', 'Individual-address positions', 'In this conventional topology template'],
             ['915', 'Allocated addressed devices', '15 BC + 225 LC + 675 SC; counted once each'],
@@ -152,7 +152,7 @@ export function TopologyExplorer() {
             ['916', 'Unaddressed supplies', 'One per illustrated electrical segment'],
           ].map(([value,title,detail]) => <div key={title} className="bg-slate-50 rounded-xl p-4 border border-slate-200"><strong className="block text-2xl text-knx-blue">{value}</strong><span className="block font-bold text-sm">{title}</span><span className="text-xs text-slate-600">{detail}</span></div>)}
         </div>
-        <div className="overflow-x-auto"><table className="w-full text-sm min-w-[600px]">
+        <details className="detail-box"><summary>Show details · address allocation and electrical loading</summary><div className="overflow-x-auto"><table className="w-full text-sm min-w-[600px]">
           <thead><tr className="text-left border-b"><th className="py-2">Address allocation</th><th>Positions</th><th>Allocated couplers</th><th>Unallocated</th></tr></thead>
           <tbody>{[
             ['Backbone: 0.0.1–0.0.255', '255', '0', '255'],
@@ -163,11 +163,11 @@ export function TopologyExplorer() {
         <p className="text-sm text-slate-600">Positions: 255 + 15 × 256 + 225 × 256 = 61,695. Supplies: 1 backbone + 15 main lines + 225 × 4 line segments = 916. Unaddressed supplies add no individual addresses. A supply with its own KNX diagnostic interface does need an address and must be budgeted as a bus device.</p>
         <p className="text-sm text-slate-600">A coupler has one individual address but a bus interface on each connected segment. For example, the 15 backbone-coupler interfaces also load the backbone, and the 15 line-coupler interfaces load each main line. Thus not every available address slot can be populated simultaneously on one TP segment. Electrical loading, PSU current, cable constraints and product specifications must all be checked separately.</p>
         <p className="text-xs text-slate-500">The 16-bit address field contains 65,536 bit patterns; that is neither a count of installable devices nor this template’s capacity. Reserved positions and topology placement still apply. Sources: KNX Basic, “TP Topology”, sections 3–5 and 8; KNX Advanced, “Couplers”.</p>
-      </section>
+      </details></section>
       <LinePowerBudget />
 
       {/* Read Me guide */}
-      <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
+      <details className="detail-box space-y-3"><summary>Show details · reading network addresses</summary>
         <label className="text-xs font-bold text-knx-blue uppercase tracking-widest flex items-center gap-2">
           <Info className="h-4 w-4" />
           Technical Handbook: How to read network topologies
@@ -182,7 +182,7 @@ export function TopologyExplorer() {
             Segment couplers occupy ordinary device addresses on their line. Here .64, .128 and .192 are example allocations, not mandatory boundaries: a device’s address does not identify its physical segment. These couplers are included within the 256 address positions, never added on top. Each electrical segment has its own KNX supply with choke; the PSU badges show infrastructure, not addresses. No paired or redundant supplies are assumed.
           </p>
         </div>
-      </div>
+      </details>
 
       {/* Interactive network directory explorer */}
       <div className="space-y-4">
@@ -209,7 +209,7 @@ export function TopologyExplorer() {
 
             {openFolders["backbone"] && (
               <div className="p-4 bg-slate-50 border-t border-slate-200">
-                <div className="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-8 gap-2 font-mono" id="backbone-grid">
+                <div className="grid grid-cols-3 @lg:grid-cols-6 @4xl:grid-cols-8 gap-2 font-mono" id="backbone-grid">
                   {/* PSUs */}
                   {renderPsu("backbone")}
                   {Array.from({ length: 255 }, (_, i) => i + 1).map((d) => {
@@ -257,7 +257,7 @@ export function TopologyExplorer() {
                 {isAreaOpen && (
                   <div className="p-4 bg-slate-50 border-t border-slate-200 space-y-4">
                     {/* Area Coupler Info Block */}
-                    <div className="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-8 gap-2 font-mono">
+                    <div className="grid grid-cols-3 @lg:grid-cols-6 @4xl:grid-cols-8 gap-2 font-mono">
                       <div 
                         id={`dev-${areaNum}-0-0`}
                         className={`vcard px-1.5 py-1.5 text-center text-[10px] rounded border font-bold ${
@@ -295,7 +295,7 @@ export function TopologyExplorer() {
 
                             {isLineOpen && (
                               <div className="p-3 bg-slate-50 border-t border-slate-100">
-                                <div className="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-8 gap-2 font-mono">
+                                <div className="grid grid-cols-3 @lg:grid-cols-6 @4xl:grid-cols-8 gap-2 font-mono">
                                   {/* Line Coupler .0 */}
                                   <div 
                                     id={`dev-${areaNum}-${lineNum}-0`}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {TELEGRAM_FIELDS} from '../knx/telegramFields';
 import {receiveSwitchWrite} from "../knx/teachingModels";
 import { 
   Send, 
@@ -24,7 +25,7 @@ interface BusLog {
   details: string;
 }
 
-export function SendingSimulator() {
+export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,value:boolean)=>void}) {
   // Initial matrix state
   const [matrix, setMatrix] = useState({
     sensor1: { ga1: false, ga2: false },
@@ -126,6 +127,7 @@ export function SendingSimulator() {
     };
 
     setBusLogs(prev => [successLog, ...prev]);
+    onTransmit?.(targetGA,sendValue);
 
 
   };
@@ -134,7 +136,7 @@ export function SendingSimulator() {
     <div className="space-y-6">
       
       {/* Educational Banner */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xs relative overflow-hidden text-left">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 @2xl:p-8 shadow-xs relative overflow-hidden text-left">
         <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
           <Database className="h-28 w-28 text-knx-blue" />
         </div>
@@ -152,32 +154,32 @@ export function SendingSimulator() {
             for <strong>exactly one Destination Address (2 bytes)</strong>. 
           </p>
           
-          <div className="bg-slate-50 border border-slate-200/60 rounded-xl p-4 font-mono text-xs text-slate-700 space-y-2">
+          <details className="detail-box"><summary>Show details · one destination per telegram</summary><div className="bg-slate-50 border border-slate-200/60 rounded-xl p-4 font-mono text-xs text-slate-700 space-y-2">
             <div className="font-bold text-knx-blue border-b border-slate-200/80 pb-1 flex items-center gap-1.5">
               <Info className="h-3.5 w-3.5" />
               <span>KNX TP Telegram Structure</span>
             </div>
             <div className="flex flex-wrap gap-2 items-center text-[11px] pt-1">
-              <span className="bg-slate-200 px-2 py-1 rounded text-slate-800 font-semibold">[Source PA]</span>
+              <span className="px-2 py-1 rounded font-semibold" style={{color:TELEGRAM_FIELDS.source.color,background:TELEGRAM_FIELDS.source.background}}>[Source PA]</span>
               <span className="text-slate-400 font-bold">→</span>
-              <span className="bg-knx-blue/15 border border-knx-blue/30 text-knx-blue px-2 py-1 rounded font-bold">[Destination GA (2 Bytes)]</span>
+              <span className="px-2 py-1 rounded font-bold" style={{color:TELEGRAM_FIELDS.destination.color,background:TELEGRAM_FIELDS.destination.background}}>[Destination GA (2 Bytes)]</span>
               <span className="text-slate-400 font-bold">→</span>
-              <span className="bg-slate-200 px-2 py-1 rounded text-slate-800 font-semibold">[Payload]</span>
+              <span className="px-2 py-1 rounded font-semibold" style={{color:TELEGRAM_FIELDS.data.color,background:TELEGRAM_FIELDS.data.background}}>[Payload]</span>
             </div>
             <p className="text-slate-500 text-[10px] leading-relaxed pt-1 font-sans">
               Because the destination field only holds one address, a sensor cannot natively transmit 
               a single telegram to multiple Group Addresses at the same time. It will always transmit 
               solely to its designated <strong>"Sending" (S) Group Address</strong>, which defaults to the first linked address in ETS and can be changed explicitly. Here, the first checked address is used until it is unlinked.
             </p>
-          </div>
+          </div></details>
         </div>
       </div>
 
       {/* Main interactive grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-left">
+      <div className="grid grid-cols-1 @4xl:grid-cols-12 gap-6 text-left">
         
         {/* Left column: Assignment Matrix */}
-        <div className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs flex flex-col space-y-6">
+        <div className="@4xl:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 shadow-xs flex flex-col space-y-6">
           <div className="flex justify-between items-center border-b border-slate-100 pb-4">
             <div>
               <h3 className="text-lg font-bold text-slate-900">ETS Group Address Matrix</h3>
@@ -362,7 +364,7 @@ export function SendingSimulator() {
         </div>
 
         {/* Right column: Simulation, Lamp States & Bus Monitor */}
-        <div className="lg:col-span-5 flex flex-col gap-6 text-left">
+        <div className="@4xl:col-span-5 flex flex-col gap-6 text-left">
           
           {/* Active Device Simulation Workspace */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-6">

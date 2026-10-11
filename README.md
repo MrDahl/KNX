@@ -1,118 +1,87 @@
-# 📘 KNX TP Explorer — Comprehensive Bus Analysis & Education Tool (v4.0 Pro)
+# KNX TP Explorer
 
-An interactive, responsive, and highly polished education-first web application designed for students, automation engineers, and trainers. This tool offers an immersive suite of interactive simulators and reference modules to master **KNX Twisted Pair 1 (TP1)** physical layer signaling, telegram framing logic, network topology capacity limits, and standard Datapoint Types (DPT).
+An interactive teaching companion for understanding KNX TP1 telegrams, group objects, topology and datapoint types. Built by **Marc Sonne Dahl · KNX++ Tutor**.
 
-Designed in accordance with the official **KNX Association Advanced & Tutor certification course syllabi**, this suite bridges the gap between abstract protocol specifications and real-world electrical behaviors.
+**[Open the app](https://mrdahl.github.io/KNX/)**
 
----
+Start with a prediction, run an example, then explain what the bytes or devices did. No installation or bus interface is required to use the published app.
 
-🚀 Try it for yourself at: **https://mrdahl.github.io/KNX/**
+## Learning path
 
----
+| Lesson | What students can do |
+| --- | --- |
+| **Basics** | Read the Training Handbook one topic at a time: physical signalling, addresses, objects, frame structure, timing, bus access, topology, power, DPTs and interface representations. |
+| **Telegram** | Generate standard plain TP1 GroupValueRead, GroupValueResponse and GroupValueWrite examples. Follow a field through coloured byte cards, physical bits, an explanation and an illustrative waveform. |
+| **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
+| **Topology** | Follow a defined path through a course-style backbone/area/line/segment hierarchy, inspect every forwarding decision, explore address allocations, and budget current and interface loading for one TP segment. |
+| **DPT workbench** | Search 453 edition-specific catalogue entries, inspect provenance, and encode/decode 24 implemented subtypes. Transfer supported values to the telegram builder. |
+| **Exercises** | Commit to a prediction before revealing the result of an object, routing or telegram exercise. |
 
+Short explanations stay visible. **Show details** sections provide layouts, assumptions, calculations and source notes without separate Basic/Advanced/Tutor modes.
 
-## 🌟 Interactive Modules & Features
+## Workspace and interaction
 
-The application is structured into six main workspace modules, accessible instantly from the navigation menu:
+- **Wide workspace:** learning-path sidebar, controls on the left and a persistent telegram monitor on the right. The two panes scroll independently.
+- **Narrow workspace:** bottom navigation and a monitor drawer/bottom sheet, with a sticky Generate action in the telegram lesson. Generate opens the monitor; close it with its button, Escape, the backdrop or a downward header gesture.
+- **Readable signals:** bit streams and waveforms scroll horizontally inside their own regions instead of shrinking to fit.
+- **Linked fields:** hover, tap or keyboard-focus a byte card to highlight the same field in the bit stream, explanation and waveform. Labels accompany colours.
+- **Shared state:** the generated telegram survives lesson navigation. Topology and standalone object/routing prediction exercises do not claim to modify that frame. The Objects sensor and the ON→OFF exercise explicitly generate their own frames.
 
-### 1. ⚡ Interactive Telegram Visualizer & Waveform Simulator
-Analyze and reconstruct standard **L_DATA** (Data Link Layer) KNX frames byte-by-byte and bit-by-bit.
-- **Dynamic Header & Payload Configuration**:
-  - **Priority Control**: Select between *System* (00), *Normal* (10), *Urgent* (01), and *Low* (11) frame priorities.
-  - **Repeat Flag (R)**: Toggle whether the telegram is an original transmission or a repeated frame triggered by a transmission error.
-  - **Logical Addresses**: Define exact source and destination addresses. Supports both 3-level Group Addresses (`Main/Middle/Sub`) and 2-level Individual Addresses (`Area.Line.Device`).
-  - **APCI Commands**: Select standard Application Protocol Control Information commands such as `GroupValue_Read`, `GroupValue_Write`, `GroupValue_Response`, `IndividualAddr_Write`, and `Adpu_DeviceDescriptor`.
-  - **DPT Payload Size & Value Builder**: Toggle between various Datapoint Sizes (e.g., DPT 1.001 1-bit binary boolean, DPT 5.001 8-bit scaling percent, and DPT 9.001 16-bit float) and input custom decimal values or float temperatures (e.g., °C) to see real-time bitstreams generated automatically.
-- **Physical Bus Voltage Waveform Visualizer**:
-  - Renders a real-time, interactive graph of the physical **TP1 Twisted Pair bus voltage modulation**.
-  - Renders **logical '0'** as an active pulse: a sudden voltage drop to ~24V followed by a high inductive kickback/overshoot peak up to ~34V.
-  - Renders **logical '1'** as a passive level: keeping the bus silent at a flat 29V DC level.
-  - **Real-Time Input Sandbox**: Type or edit raw bit sequences (`0`s and `1`s) directly in the sandbox input to immediately view how the physical waveform transitions. It includes quick-presets (e.g., Alternating `10101010`).
-- **Logical-to-Physical Octet Reconstruction Table**:
-  - Highlights the structured hex and binary representations of the raw L_DATA telegram bytes:
-    1. **Control Byte**: Prioritization, repeat status, and standard frame identifier.
-    2. **Source Address (2 Bytes)**: Individual address of the transmitter.
-    3. **Destination Address (2 Bytes)**: Group or individual target address.
-    4. **Routing & Length Byte**: Holds the logical routing counter (hop limit) and the payload size bounds.
-    5. **APCI & Data Payload (1 to 255 Bytes)**: The compiled application command and its variables.
-    6. **Frame Check (XOR Checksum Byte)**: Even parity validation checksum byte.
-    7. **Receiver Ack Byte (LL_ACK, LL_NAK, LL_BUSY)**: Interactive feedback simulation testing target state responses on the line.
+Layout uses Tailwind CSS v4 container queries. The monitor changes mode at a **1,000 px workspace width**, measured by `ResizeObserver` to match the CSS query; it is not selected by device name. Navigation becomes a sidebar at a **72 rem app-container width**. A narrow desktop window therefore behaves like a tablet workspace.
 
-### 2. 🖧 Topology Capacity & Bus Load Explorer
-Explore the physical and logical boundaries of classical hierarchical KNX systems.
-- **Visual Bus Node Map Directory**:
-  - Explore the full structural bus hierarchy: the high-speed **Backbone Line (0.0.x)**, the primary **Area Mainlines (x.0.0)**, down into individual **Logical Sub-Lines (x.y.z)**.
-  - Interact with nodes in the grid view. Locate nodes instantaneously via the search bar (e.g., searching `1.1.10`, `5.0.0`, or `3.4.64` highlights that physical device's slot with an active pulse animation).
-- **Network Stats & Live Calculations**:
-  - **Total Logical Nodes**: Simulates the bounds of a classic KNX network (up to 59,687 potential devices, incorporating 15 logical areas, 15 lines per area, and segment couplers).
-  - **Power Draw & Current Capacity**: Displays current load estimations (~573.7 Amperes aggregated max current budget based on a standard 640mA power supply unit limit per line).
-  - **Segment Extensions**: Explains segment line limits (64 physical load devices per segment) and the strategic use of segment couplers at addresses `64`, `128`, and `192` to extend segment lines up to 255 addressable nodes.
+Field colours come from `src/knx/telegramFields.ts`: control orange, source blue, destination purple, routing/length cyan, TPCI/APCI/data green, and check byte rose.
 
-### 3. 🔄 Routing Counter Simulator
-Deep-dive into the KNX packet lifetime and routing counter decrement behavior.
-- **Dynamic Coupling Modes**: Compare **Series Coupling** and **Parallel Coupling** line repeats.
-- **Line Repeater (LR) Bypassing**: Instantly bypass specific repeaters (e.g., `.64` or `.128`) in parallel setups to simulate physical connection failures.
-- **Visual Signal Path Tracing**: Live animation demonstrating how individual segment repeaters (LRs), line couplers (LCs), and backbone couplers (BCs) process and forward multicast frames, complete with real-time routing counter (RC) value decrement indicators.
+## Model scope and important distinctions
 
-### 4. ✉️ Sending & S-Flag Simulator
-Learn and prove the strict Group Object transmission properties of the KNX protocol.
-- **Telegram Limit Proof**: Explains why a multicast KNX TP telegram structure only has room for exactly one Destination GA (2 Bytes), proving why a physical sensor cannot natively send to multiple GAs in parallel.
-- **ETS Group Address Matrix**: Interactive checkbox table linking Sensor 1 (PA 1.1.1), Actuator 1 (PA 1.1.2), and Actuator 2 (PA 1.1.3) to Group Addresses `1/1/1` and `1/1/2`.
-- **Strict S-Flag Logic**: Simulates standard ETS behavior. The very first Group Address checked on the sensor automatically gains the bold `[Sending] (S)` flag. Subsequent checked GAs associate but do not transmit. Unchecking the sending GA dynamically reassigns the S-Flag to the next active link.
-- **Live Output Visualizer & Bus Monitor**: Provides a "Press Push Button" physical trigger. Triggers a live multicast write, displaying the resulting binary command packet in a mock bus monitor log and lighting up the corresponding receiver lamps according to the active S-Flag GA.
+This is an educational simulation and reference, **not ETS, a live bus monitor, a certification tool or a complete installation validator**.
 
-### 5. 📊 Datapoint Types (DPT) Reference Library & Matrix
-A complete interactive lookup matrix of standardized KNX Datapoint Types.
-- **Comprehensive Database**: Includes lookups spanning from basic 1-bit boolean controls (DPT 1.xxx) up to complex 16-bit or 32-bit floating-point coordinates and scaling values.
-- **Category Filter Rails**: Quickly filter by size classifications (1-bit, 2-bit, 8-bit, 16-bit, and multi-byte structures).
-- **Expandable Detail Cards**: Click any DPT row to view its exact binary layout, scientific formulas, typical ranges, default engineering units, and real-world application examples.
+- The frame builder supports standard plain group-value frames with at most **14 value octets**. Management services, extended frames, KNX Secure and arbitrary cEMI parsing are outside its scope. DPT identifiers are not transmitted in ordinary group-value telegrams.
+- Logical octets and serial framing are distinct. TP1 data bits are sent least-significant first; character parity is even over the eight data bits plus parity. The check byte is the inverted XOR of the preceding logical octets, not a CRC.
+- Waveform voltages and equalization decay are illustrative. Nominal timing uses 9,600 bit/s. Selecting ACK/NAK/BUSY/silence is a demonstration setting, not a measured receiver response.
+- The Advanced switching-course example counts **193 bit periods**, including the final two-bit character gap. The monitor's TP1 convention counts **191** for the comparable 50-bit next-access example. The app explains the difference and the documented priority/repetition rule; contention and retry-specific delays are not simulated.
+- Routing results belong to the displayed path. Ordinary RC 0 can be received on the reached segment, but cannot be forwarded again. The series-repeater cascade is a deliberately invalid teaching example. Legacy repeaters and modern filtering segment couplers are distinct profiles.
+- Available addresses, addressed couplers, unaddressed supplies, current and interface loading are separate quantities. The topology template's **61,695 address positions** are not a universal device ceiling. PSU ratings and actual device consumption must be checked per electrical segment, alongside cable and product constraints.
 
-### 6. 📖 Educational Handbook
-A master textbook reference guide written specifically to prepare students for Advanced & Tutor certification exams.
-- **Physical Layer Specification**:
-  - Explains the TP1 base transmission speed (**9,600 bits per second**).
-  - Explains superimposed AC communication over 29V DC power.
-  - Detail description of why logic `0` dominates the bus over logic `1` due to the physics of bus discharges (enabling elegant CSMA/CA collision prevention).
-- **Bus Access & Arbitration (CSMA/CA)**:
-  - Explains why collision-free access works natively over long distances without high central processing overhead.
-  - Outlines the priority system (how priority bits resolve simultaneous bus-grabbing actions on the wire).
-- **Error Detection & Framing Standards**:
-  - Details parity bits (both horizontal even parity via the Block Check Character XOR byte, and vertical odd parity appended to each transmitted octet).
+## Reference material and review status
 
----
+The teaching content was developed against the supplied **KNX Basic, Advanced and Tutor course documentation**, the TP1 document **v01.02.02** used for the timing model, and **KNX Interworking Datapoint Types v02.02.01 (2021)**. Relevant chapters and per-type printed page references appear in the app. These documents and current manufacturer instructions remain the authority for design and commissioning; the repository does not grant rights to redistribute course or standard PDFs.
 
-## 🧪 Simulated Physics & Physical Layer Mechanics
+The DPT catalogue is edition-specific, not a claim to cover every later KNX release. All 453 identities and overview formats were checked. The previously missing descriptions and size-corrected rows were researched, while **three entries still explicitly require source clarification**. Other inherited descriptions are marked as such. Identity verification, description review and implemented codec coverage are deliberately separate.
 
-The physical simulation is mathematically accurate in its layout:
-- **Twisted Pair Modulation**: Rather than simple digital square waves, the waveform generator simulates standard **KNX TP1 physical signaling**:
-  $$\text{Logic } '0' \longrightarrow \text{Active pulse (voltage drop to } \approx 24\text{V, followed by a } \approx 34\text{V inductive kickback overshoot)}$$
-  $$\text{Logic } '1' \longrightarrow \text{Passive state (flat } 29\text{V DC voltage)}$$
-- **Transmission Speeds**: Transmission is exactly 104 microseconds ($\mu s$) per bit, matching the standard **9,600 bps** baud rate.
-- **KNX Float Mathematics (DPT 9.xxx)**:
-  The 16-bit float uses the signed 2's complement mantissa algorithm defined in the KNX specification:
-  $$\text{Value} = 0.01 \times \text{Mantissa} \times 2^{\text{Exponent}}$$
-  - **Mantissa**: 11-bit signed integer ($-2048$ to $+2047$).
-  - **Exponent**: 4-bit unsigned integer ($0$ to $15$).
-  - **Sign Bit**: 1-bit indicator.
-  The simulator automatically encodes and decodes raw inputs on-the-fly to represent temperature inputs in standard °C precisely.
+Report a technical discrepancy through [GitHub Issues](https://github.com/MrDahl/KNX/issues), ideally with the example settings, expected/actual result, and document edition and page. Please distinguish a reference correction from a request for another simulated service or DPT codec.
 
----
+## Development
 
-## 🛠️ Modern Tech Stack
+Requires **Node.js 24 or later**.
 
-This educational applet is built entirely on client-side React with high architectural fidelity:
-- **Framework**: [React 19](https://react.dev/) inside a high-performance [Vite 6](https://vite.dev/) build environment.
-- **Language**: [TypeScript](https://www.typescriptlang.org/) for bulletproof type-safety on all logical address routers and byte converters.
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) for fluid, responsive layouts optimized for both ultrawide desktop monitors and portable tablet displays.
-- **Animations**: [Motion](https://motion.dev/) (from `motion/react`) for smooth, hardware-accelerated drawer transitions and real-time highlighted search states.
-- **Icons**: [Lucide React](https://lucide.dev/) for crisp, uniform vector imagery throughout the dashboard interface.
+```sh
+npm ci
+npm run dev
+```
 
----
+Vite serves the development app on port 3000. The app itself requires no API key or KNX connection.
 
-## Try it out
+```sh
+npm run lint   # TypeScript checking
+npm test       # KNX model and React interaction regressions
+npm run build  # Production assets in dist/
+npm run preview
+```
 
-🚀 Try it for yourself at: **https://mrdahl.github.io/KNX/**
+Core implementation:
 
----
+| Path | Responsibility |
+| --- | --- |
+| `src/App.tsx` | Learning-path navigation and persistent workspace |
+| `src/components/MonitorDock.tsx` | Desktop pane / accessible narrow-screen dialog |
+| `src/components/TelegramVisualizer.tsx` | Typed inputs, standard frame generation and scenario handoff |
+| `src/components/TelegramMonitor.tsx` | Linked byte/bit/detail views |
+| `src/components/WaveformRenderer.tsx` | Illustrative TP1 signal and timing display |
+| `src/components/EducationalHandbook.tsx` | Topic-based teaching guide |
+| `src/knx/tp1Timing.ts` | Nominal timing and next-access model |
+| `src/knx/teachingModels.ts` | Object reception, routing, address validation and segment budgets |
+| `src/knx/telegramFields.ts` | Shared semantic field palette |
 
-*Designed and maintained by **Marc Sonne Dahl - KNX++ Tutor © 2026. Made with ❤️ for KNX, automation & electrical students.*
+Tests cover known frame vectors, parity/check bytes, timing boundaries, DPT round trips and invalid inputs, state retention, routing/filter decisions, power budgets and workspace interactions. Passing tests validate these implemented cases; they do not establish general KNX conformity.
+
+The GitHub Pages workflow builds and deploys `dist/` after changes reach `main` (or `master`). Keep Vite's repository base path consistent with `/KNX/` when changing hosting.

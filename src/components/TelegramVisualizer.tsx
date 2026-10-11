@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Sliders, Play, Layers, AlertTriangle, Clock, CornerDownRight, Zap } from "lucide-react";
 import { APCICode, TelegramParams, TelegramByte, KNXAddressIndividual, KNXAddressGroup } from "../types";
 import { APCI_DEFS, DPT_DEFS, PRESET_TELEGRAMS } from "../data";
-import { WaveformRenderer } from "./WaveformRenderer";
+import { MonitorDock } from "./MonitorDock";
+import { TelegramMonitor } from "./TelegramMonitor";
 import { telegramTiming, DEFAULT_NEXT_ACCESS, type NextAccess } from "../knx/tp1Timing";
 import { DptValueEditor } from "./DptValueEditor";
 import { DPT_INPUTS, defaults, encodeDpt, type Values } from "../knx/dptCodec";
@@ -80,7 +81,7 @@ export function buildStandardGroupTelegram(params: TelegramParams, payload: stri
 
 export { telegramTiming } from "../knx/tp1Timing";
 
-export function TelegramVisualizer({scenario}:{scenario?:{id:string;values:Values}|null} = {}) {
+export function TelegramVisualizer({scenario,showControls=true,children,onConfigure}:{scenario?:{id:string;values:Values;generate?:boolean;destination?:string;origin?:string}|null;showControls?:boolean;children?:React.ReactNode;onConfigure?:()=>void} = {}) {
   const [params, setParams] = useState<TelegramParams>({repeatFlag: "1", targetType: "1", command: APCICode.GroupValueWrite,
     source: {area: 1, line: 1, device: 10}, destination: {main: 1, middle: 0, sub: 1}, routingCounter: 6, priority: "11", dptType: "1.001", ackType: "CC"});
   // The editor and encoder share one source of truth, including while Read hides the editor.
@@ -90,16 +91,24 @@ export function TelegramVisualizer({scenario}:{scenario?:{id:string;values:Value
   const [nextAccess, setNextAccess] = useState<NextAccess>(DEFAULT_NEXT_ACCESS);
   const [response, setResponse] = useState<'CC'|'0C'|'C0'|'NONE'>('CC');
   const [selectedByte, setSelectedByte] = useState(0);
-  const [selectionRevision, setSelectionRevision] = useState(0);
-  const waveformRef = useRef<HTMLDivElement>(null);
+  const [openRevision,setOpenRevision] = useState(0);
+  const [prediction,setPrediction] = useState('');
+  const [usedPrediction,setUsedPrediction] = useState('');
+  const [frameOrigin,setFrameOrigin] = useState<string|undefined>();
   const [currentPreset, setCurrentPreset] = useState(-1);
   const [constructedBytes, setLogicalBytes] = useState<TelegramByte[]>([]);
   const [compiled, setCompiled] = useState<{signature: string; stream: string; params: TelegramParams} | null>(null);
   const [error, setError] = useState("");
   useEffect(() => {
     if (!scenario || !DPT_INPUTS[scenario.id]) return;
-    setParams(p=>({...p,dptType:scenario.id,command:APCICode.GroupValueWrite}));
-    setDptValues({...scenario.values});setCurrentPreset(-1);setCompiled(null);setLogicalBytes([]);setError('');
+    const [main,middle,sub]=(scenario.destination||'1/0/1').split('/').map(Number);
+    const next:TelegramParams=scenario.generate?{repeatFlag:'1',targetType:'1',command:APCICode.GroupValueWrite,source:{area:1,line:1,device:scenario.destination?1:10},destination:{main,middle,sub},routingCounter:6,priority:'11',dptType:scenario.id,ackType:'CC'}:{...params,dptType:scenario.id,command:APCICode.GroupValueWrite};
+    setParams(next);
+    setDptValues({...scenario.values});setCurrentPreset(-1);setCompiled(null);setLogicalBytes([]);setError('');setUsedPrediction('');
+    setFrameOrigin(scenario.generate?scenario.origin:undefined);
+    if(scenario.generate){
+      try{const payload=encodeDpt(scenario.id,scenario.values),result=buildStandardGroupTelegram(next,payload);setLogicalBytes(result.cards);setSelectedByte(0);setCompiled({signature:JSON.stringify([next,payload]),stream:result.stream,params:next});setOpenRevision(v=>v+1);}catch(e){setError(e instanceof Error?e.message:'Cannot generate the exercise telegram.');}
+    }
   }, [scenario]);
   const updateParams: typeof setParams = next => { setParams(next); setCurrentPreset(-1); setError(''); };
   const signature = JSON.stringify([params, dptValue]);
@@ -118,10 +127,11 @@ export function TelegramVisualizer({scenario}:{scenario?:{id:string;values:Value
     setCurrentPreset(idx); setError("");
   };
   const handleGenerateClick = () => {
+    setFrameOrigin(undefined);
     try {
       if (!isRead && !dptValue) throw new Error('Correct the invalid DPT value before generating.');
       const result = buildStandardGroupTelegram(params, dptValue);
-      setLogicalBytes(result.cards); setSelectedByte(0);
+      setLogicalBytes(result.cards); setSelectedByte(0);setOpenRevision(v=>v+1);setUsedPrediction(prediction);
       setCompiled({signature, stream: result.stream, params: {...params}}); setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Cannot generate this telegram.");
@@ -149,345 +159,42 @@ export function TelegramVisualizer({scenario}:{scenario?:{id:string;values:Value
   const totalTransmitBitsCount = timing.frameBits, transmissionMs = timing.frameMs;
   const getAckPhysicalBitStream = () => compiled && response !== 'NONE' ? serial(bits(parseInt(response, 16))) : "";
   const showReadExample = (reply:boolean) => {
+    setFrameOrigin(undefined);
     const p:TelegramParams = {repeatFlag:'1',targetType:'1',command:reply?APCICode.GroupValueResponse:APCICode.GroupValueRead,
       source:{area:1,line:1,device:reply?20:10},destination:{main:1,middle:0,sub:1},routingCounter:6,priority:'11',dptType:'9.001',ackType:'CC'};
     const values={value:'23.5'}, payload=encodeDpt('9.001',values),result=buildStandardGroupTelegram(p,payload);
     setParams(p);setDptValues(values);setCurrentPreset(-1);setError('');setResponse('CC');setSelectedByte(0);
-    setLogicalBytes(result.cards);setCompiled({signature:JSON.stringify([p,payload]),stream:result.stream,params:p});
+    setOpenRevision(v=>v+1);setUsedPrediction(prediction);setLogicalBytes(result.cards);setCompiled({signature:JSON.stringify([p,payload]),stream:result.stream,params:p});
   };
 
-  return (
-    <div className="space-y-8 text-slate-700">
-
-      <p className="text-sm text-slate-600">Standard plain TP1 group-value telegrams: Read, Response and Write. Maximum 14 value octets. Management services, extended frames and KNX Secure are not implemented here.</p>
-      {error && <div role="alert" className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-800">{error}</div>}
-      {addressErrors.length>0&&<div role="alert" className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-800">{addressErrors.map(message=><p key={message}>{message}</p>)}</div>}
-      {/* Dirty warning notice */}
-      {isGenerated && isDirty && (
-        <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs leading-relaxed text-amber-800 shadow-xs">
-          <div className="flex items-start gap-2.5">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5 sm:mt-0" />
-            <span>
-              <strong className="text-amber-900">Modified input:</strong> Settings have changed. Byte cards and timing still describe the last generated telegram. Generate again to apply the current settings.
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={handleGenerateClick}
-            className="bg-amber-600 text-white font-bold px-3.5 py-2 rounded-xl text-[10px] hover:bg-amber-700 transition-colors shrink-0"
-          >
-            Regenerate telegram
-          </button>
-        </div>
-      )}
-
-      {/* Configuration Sliders & Presets Pane */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {/* Controls Block */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Sliders className="h-5 w-5 text-knx-blue" />
-              Telegram Configuration Parameters
-            </h3>
-            <span className="text-[10px] uppercase tracking-wider text-knx-blue font-bold bg-knx-blue/10 border border-knx-blue/20 px-2.5 py-1 rounded-full">
-              TP1 Link Layer Engine
-            </span>
-          </div>
-
-          {/* Quick Presets */}
-          <div>
-            <label className="text-slate-500 text-xs font-bold uppercase tracking-wider block mb-2">
-              Apply Standard Operational Preset
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {PRESET_TELEGRAMS.map((t, idx) => (
-                <button
-                  key={`preset-${idx}`}
-                  aria-pressed={currentPreset === idx}
-                  type="button"
-                  onClick={() => applyPreset(idx)}
-                  className={`text-left px-3 py-2.5 rounded-xl text-xs border font-bold transition-all ${
-                    currentPreset === idx
-                      ? "bg-knx-blue/10 text-knx-blue border-knx-blue/20 shadow-xs"
-                      : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-955"
-                  }`}
-                >
-                  <CornerDownRight className="h-3 w-3 inline mr-1.5 shrink-0 text-knx-blue" />
-                  {t.name.replace("(High Priority)", "(Alarm Priority)")}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Repeat Control */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
-              <label className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-1.5">
-                Repeat Flag (R)
-              </label>
-              <select
-                aria-label="Repeat flag"
-                value={params.repeatFlag}
-                onChange={(e) => updateParams(prev => ({ ...prev, repeatFlag: e.target.value as "0" | "1" }))}
-                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none focus:ring-1 focus:ring-knx-blue/20"
-              >
-                <option value="1">Original (Not repeated)</option>
-                <option value="0">Repeated Telegram (In case of prior error)</option>
-              </select>
-            </div>
-
-            {/* Target Address Mode */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
-              <label className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-1.5">
-                Target Address Type (AT)
-              </label>
-              <select
-                disabled
-                aria-label="Target address type"
-                value={params.targetType}
-                onChange={(e) => {
-                  const val = e.target.value as "0" | "1";
-                  updateParams(prev => ({
-                    ...prev,
-                    targetType: val,
-                    destination: val === "1" ? { main: 1, middle: 0, sub: 1 } : { area: 1, line: 1, device: 10 }
-                  }));
-                  setCurrentPreset(-1);
-                }}
-                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none focus:ring-1 focus:ring-knx-blue/20"
-              >
-                <option value="1">Group / Multicast (nonzero group address)</option>
-
-              </select>
-            </div>
-
-            {/* APCI Command Command */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150 sm:col-span-2">
-              <label className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-1.5">
-                APCI Group-Value Service
-              </label>
-              <select
-                aria-label="APCI group-value service"
-                value={params.command}
-                onChange={(e) => {
-                  updateParams(prev => ({ ...prev, command: e.target.value as APCICode }));
-                  setCurrentPreset(-1);
-                }}
-                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none"
-              >
-                {APCI_DEFS.filter(cmd => GROUP_SERVICES.includes(cmd.code)).map((cmd) => (
-                  <option key={cmd.code} value={cmd.code}>
-                    {cmd.name} - {cmd.description.slice(0, 55)}...
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Source Individual Addr */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150 sm:col-span-2">
-              <span className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-2">
-                Source Address (Area.Line.Device)
-              </span>
-              <div className="grid grid-cols-3 gap-2">
-                <div>
-                  <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Area (0-15)</span>
-                  <input
-                    type="number"
-                    min="0"
-                    max="15"
-                    aria-label="Source area"
-                    aria-invalid={!Number.isInteger(params.source.area) || params.source.area < 0 || params.source.area > 15}
-                    value={Number.isNaN(params.source.area) ? "" : params.source.area}
-                    onChange={(e) => {
-                      const val = e.target.value === '' ? NaN : Number(e.target.value);
-                      updateParams(p => ({ ...p, source: { ...p.source, area: val } }));
-                    }}
-                    className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Line (0-15)</span>
-                  <input
-                    type="number"
-                    min="0"
-                    max="15"
-                    aria-label="Source line"
-                    aria-invalid={!Number.isInteger(params.source.line) || params.source.line < 0 || params.source.line > 15}
-                    value={Number.isNaN(params.source.line) ? "" : params.source.line}
-                    onChange={(e) => {
-                      const val = e.target.value === '' ? NaN : Number(e.target.value);
-                      updateParams(p => ({ ...p, source: { ...p.source, line: val } }));
-                    }}
-                    className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Device (0-255)</span>
-                  <input
-                    type="number"
-                    min="0"
-                    max="255"
-                    aria-label="Source device"
-                    aria-invalid={!Number.isInteger(params.source.device) || params.source.device < 0 || params.source.device > 255}
-                    value={Number.isNaN(params.source.device) ? "" : params.source.device}
-                    onChange={(e) => {
-                      const val = e.target.value === '' ? NaN : Number(e.target.value);
-                      updateParams(p => ({ ...p, source: { ...p.source, device: val } }));
-                    }}
-                    className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Destination Target Addr */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150 sm:col-span-2">
-              <span className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-2">
-                Destination Address ({params.targetType === "1" ? "Main/Middle/Sub Group format" : "Area.Line.Device Individual format"})
-              </span>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Main (0-31)</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="31"
-                      aria-label="Main group"
-                    aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup).main) || (params.destination as KNXAddressGroup).main < 0 || (params.destination as KNXAddressGroup).main > 31}
-                    value={Number.isNaN((params.destination as KNXAddressGroup).main) ? "" : (params.destination as KNXAddressGroup).main}
-                      onChange={(e) => {
-                        const val = e.target.value === '' ? NaN : Number(e.target.value);
-                        updateParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), main: val } }));
-                      }}
-                      className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Middle (0-7)</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="7"
-                      aria-label="Middle group"
-                    aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup).middle) || (params.destination as KNXAddressGroup).middle < 0 || (params.destination as KNXAddressGroup).middle > 7}
-                    value={Number.isNaN((params.destination as KNXAddressGroup).middle) ? "" : (params.destination as KNXAddressGroup).middle}
-                      onChange={(e) => {
-                        const val = e.target.value === '' ? NaN : Number(e.target.value);
-                        updateParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), middle: val } }));
-                      }}
-                      className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-slate-550 uppercase font-bold block mb-1">Sub-Group (0-255)</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="255"
-                      aria-label="Subgroup"
-                    aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup).sub) || (params.destination as KNXAddressGroup).sub < 0 || (params.destination as KNXAddressGroup).sub > 255}
-                    value={Number.isNaN((params.destination as KNXAddressGroup).sub) ? "" : (params.destination as KNXAddressGroup).sub}
-                      onChange={(e) => {
-                        const val = e.target.value === '' ? NaN : Number(e.target.value);
-                        updateParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), sub: val } }));
-                      }}
-                      className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-            </div>
-
-            {/* DPT Type Select */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
-              <label className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-1">
-                Data Point Type (DPT) Size
-              </label>
-              <select
-                disabled={isRead}
-                aria-label="Datapoint type"
-                value={params.dptType}
-                onChange={handleDptSelectChange}
-                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none"
-              >
-                {STANDARD_DPTS.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    DPT {d.id} — {DPT_INPUTS[d.id].name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* DPT Data Value Field Inputs */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
-              <label className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-1">
-                DPT Payload Data Value
-              </label>
-              {isRead ? <p className="text-xs text-slate-600">Read requests carry no value. The selected DPT does not change the request bytes.</p> :
-                <DptValueEditor id={params.dptType} values={dptValues} onChange={values=>{setDptValues(values);setCurrentPreset(-1);setError('');}} />}
-            </div>
-
-            {/* Routing / Hop count slider */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
-              <label className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-1">
-                Routing Hop Count (HC: {params.routingCounter})
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="7"
-                aria-label="Routing hop count"
-                value={params.routingCounter}
-                onChange={(e) => {
-                  updateParams(prev => ({ ...prev, routingCounter: parseInt(e.target.value) }));
-                  setCurrentPreset(-1);
-                }}
-                className="w-full h-1.5 mt-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-knx-blue"
-              />
-              <span className="text-[9px] text-slate-500 block mt-1">
-                HC 0 permits local reception but no further forwarding. HC 7 is a special value, not a seven-hop budget.
-              </span>
-            </div>
-
-            {/* Priorty selector */}
-            <div className="bg-slate-50 p-3 rounded-xl border border-slate-150">
-              <label className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-1">
-                Arbitration Priority
-              </label>
-              <select
-                aria-label="Telegram priority"
-                value={params.priority}
-                onChange={(e) => {
-                  updateParams(prev => ({ ...prev, priority: e.target.value as any }));
-                  setCurrentPreset(-1);
-                }}
-                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none"
-              >
-                <option value="00">System (00) - Reserved for link-layer use</option>
-                <option value="10">Alarm / urgent (10) - Security alerts</option>
-                <option value="01">High / normal (01) - Higher bus access priority</option>
-                <option value="11">Low (11) - Generic runtime</option>
-              </select>
-            </div>
-
-            {/* Generate Telegram Trigger Button */}
-            <div className="pt-4 border-t border-slate-150 sm:col-span-2">
-              <button
-                type="button"
-                onClick={handleGenerateClick}
-                className="w-full bg-knx-blue hover:bg-knx-blue/90 text-white font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 shadow-sm transition-all duration-150 hover:scale-[1.01] active:scale-[0.99]"
-              >
-                <Play className="h-4 w-4 fill-white" />
-                <span>Generate Telegram</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <aside className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5 self-start" aria-label="Timing and acknowledgement">
+  const inputClass="lesson-input";
+  const controls = <div className="space-y-4">
+    <div hidden={!showControls} className="space-y-4">
+      <section className="lesson-card space-y-4">
+        <div><p className="eyebrow">02 · Telegram</p><h2 className="text-2xl font-extrabold text-slate-900">Build it. Predict it. See it.</h2><p className="text-sm text-slate-600 mt-2">Choose the sender, the group and a value. Generate the telegram, then follow each coloured field through its bytes and signal.</p></div>
+        <details className="detail-box"><summary>Show details · scope of this simulator</summary><p className="text-sm">Standard plain TP1 group-value telegrams: Read, Response and Write. Maximum 14 value octets. Management services, extended frames and KNX Secure are not implemented here.</p></details>
+        <div><h3 className="text-sm font-bold mb-2">Start with an example</h3><div className="grid @md:grid-cols-2 gap-2">{PRESET_TELEGRAMS.map((t,idx)=><button key={idx} aria-pressed={currentPreset===idx} className={`lesson-button text-left ${currentPreset===idx?'bg-green-50 border-green-700':''}`} onClick={()=>applyPreset(idx)}>{t.name.replace('(High Priority)','(Alarm Priority)')}</button>)}</div></div>
+        <label className="block text-sm font-semibold">Service<select className={inputClass} aria-label="APCI group-value service" value={params.command} onChange={e=>updateParams(p=>({...p,command:e.target.value as APCICode}))}>{APCI_DEFS.filter(c=>GROUP_SERVICES.includes(c.code)).map(c=><option key={c.code} value={c.code}>{c.name}</option>)}</select></label>
+        <fieldset className="field-config field-source"><legend>Source · individual address</legend><div className="grid grid-cols-3 gap-2">{(['area','line','device'] as const).map((part,i)=><label key={part} className="text-xs capitalize">{part}<input className={inputClass} type="number" min="0" max={i===2?255:15} aria-label={`Source ${part}`} aria-invalid={!Number.isInteger(params.source[part])||params.source[part]<0||params.source[part]>(i===2?255:15)} value={Number.isNaN(params.source[part])?'':params.source[part]} onChange={e=>updateParams(p=>({...p,source:{...p.source,[part]:e.target.value===''?NaN:Number(e.target.value)}}))}/></label>)}</div></fieldset>
+        <fieldset className="field-config field-destination"><legend>Destination · group address</legend><div className="grid grid-cols-3 gap-2">{(['main','middle','sub'] as const).map((part,i)=><label key={part} className="text-xs capitalize">{part}<input className={inputClass} type="number" min="0" max={[31,7,255][i]} aria-label={['Main group','Middle group','Subgroup'][i]} aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup)[part])||(params.destination as KNXAddressGroup)[part]<0||(params.destination as KNXAddressGroup)[part]>[31,7,255][i]} value={Number.isNaN((params.destination as KNXAddressGroup)[part])?'':(params.destination as KNXAddressGroup)[part]} onChange={e=>updateParams(p=>({...p,destination:{...(p.destination as KNXAddressGroup),[part]:e.target.value===''?NaN:Number(e.target.value)}}))}/></label>)}</div></fieldset>
+        <div className="field-config field-data space-y-3"><label className="text-sm font-semibold block">Datapoint type<select disabled={isRead} aria-label="Datapoint type" className={inputClass} value={params.dptType} onChange={handleDptSelectChange}>{STANDARD_DPTS.map(d=><option key={d.id} value={d.id}>{d.id} · {DPT_INPUTS[d.id].name}</option>)}</select></label>{isRead?<p className="text-sm">Read requests carry no value. The chosen DPT does not change their bytes.</p>:<DptValueEditor id={params.dptType} values={dptValues} onChange={v=>{setDptValues(v);setCurrentPreset(-1);setError('');}}/>}</div>
+        <details className="detail-box"><summary>Show details · priority, repetition and hop count</summary><div className="grid @md:grid-cols-2 gap-4 pt-3">
+          <label className="text-sm">Repeat flag<select className={inputClass} aria-label="Repeat flag" value={params.repeatFlag} onChange={e=>updateParams(p=>({...p,repeatFlag:e.target.value as '0'|'1'}))}><option value="1">Original</option><option value="0">Repeated</option></select></label>
+          <label className="text-sm">Priority<select className={inputClass} aria-label="Telegram priority" value={params.priority} onChange={e=>updateParams(p=>({...p,priority:e.target.value as TelegramParams['priority']}))}><option value="00">System (00)</option><option value="10">Alarm / urgent (10)</option><option value="01">High / normal (01)</option><option value="11">Low (11)</option></select></label>
+          <label className="text-sm">Hop count<select aria-label="Routing hop count" className={inputClass} value={params.routingCounter} onChange={e=>updateParams(p=>({...p,routingCounter:Number(e.target.value)}))}>{Array.from({length:8},(_,i)=><option key={i} value={i}>{i}{i===7?' · special value':''}</option>)}</select></label>
+          <p className="text-xs text-slate-600">HC 0 permits local reception but no forwarding. HC 7 is special, not a seven-hop budget. This tool uses group destinations only.</p>
+        </div></details>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-2"><h3 className="font-bold text-sm text-amber-950">1 · What do you think happens?</h3><label className="block text-xs text-amber-950">Predict which fields will change, or what the receiver will do.<textarea aria-label="Telegram prediction" value={prediction} onChange={e=>setPrediction(e.target.value)} className={inputClass} rows={2} placeholder="My prediction… (optional for free exploration)"/></label></div>
+        {error&&<p role="alert" className="text-sm text-red-800 bg-red-50 p-3 rounded-lg">{error}</p>}
+        {addressErrors.length>0&&<div role="alert" className="text-sm text-red-800">{addressErrors.map(m=><p key={m}>{m}</p>)}</div>}
+        {isDirty&&<p className="text-sm text-amber-900">Modified input: the monitor still shows the previous telegram.</p>}
+        <button className="primary-button generate-inline" onClick={handleGenerateClick}><Play size={17}/><span>Generate Telegram</span></button>
+      </section>
+      <details className="detail-box lesson-card" aria-label="Read and response example"><summary>Show details · read → response example</summary><div className="space-y-3 pt-3 text-sm"><p>1.1.10 asks group 1/0/1 for its value. Sensor 1.1.20 answers with 23.5 °C (DPT 9.001). These are separate telegrams; an application response is not a link-layer ACK.</p><div className="flex flex-wrap gap-2"><button className="lesson-button" onClick={()=>showReadExample(false)}>1 · Load read request (no value)</button><button className="lesson-button" onClick={()=>showReadExample(true)}>2 · Load temperature response (23.5 °C)</button></div><p className="text-xs text-slate-500">These examples generate immediately. Whether a response occurs depends on object configuration; no fixed response delay is implied.</p></div></details>
+    </div>
+    {!showControls&&children}
+  </div>;
+  const timingDetails =         <aside className="space-y-4 pt-3" aria-label="Timing and acknowledgement">
           <h3 className="text-base font-bold text-slate-900 flex items-center gap-2"><Clock className="h-5 w-5 text-green-700"/>Timing and acknowledgement</h3>
           <p role="status" className={`rounded-lg p-3 text-sm font-semibold ${isDirty?'bg-amber-100 text-amber-900':'bg-green-50 text-green-900'}`}>{!isGenerated?'Generate a telegram to calculate timing.':isDirty?'Previous telegram — regenerate to apply edited settings.':'Generated telegram matches the current settings.'}</p>
           {isGenerated&&<dl className="text-sm space-y-3 text-slate-800">
@@ -525,94 +232,8 @@ export function TelegramVisualizer({scenario}:{scenario?:{id:string;values:Value
           <p className="text-xs text-slate-600">Changes apply immediately to the response illustration. They do not change the generated telegram bytes. This is a selected teaching scenario, not a simulated receiver.</p>
           <p className="text-sm text-slate-800">{response==='CC'?'ACK confirms link-layer reception. It does not prove that an actuator performed an action or that an application response will follow.':response==='0C'?'NAK reports a reception error. A sender can repeat the telegram according to its retry behaviour.':response==='C0'?'BUSY reports that the receiving link layer cannot process the telegram because its buffers are full. Retry handling is device-dependent.':'No acknowledgement means no response was observed. The waveform shows a silent nominal response slot, not a specified timeout or complete failed transaction. Retry timing is not calculated.'}</p>
           <p className="text-xs text-slate-600">For simultaneous group acknowledgements, the Tutor course gives BUSY → NAK → ACK priority. A group ACK cannot identify which individual receivers acknowledged. Negative or absent responses can cause repetitions; these are not included in the displayed frame and acknowledgement. Reference: Tutor §3.6.4.</p>
-        </aside>
-      </div>
-
-      <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3" aria-label="Read and response example">
-        <h3 className="font-bold text-slate-900">Teaching example: read → response</h3>
-        <p className="text-sm text-slate-600">1.1.10 asks group 1/0/1 for its value. In this example, sensor 1.1.20 answers with 23.5 °C (DPT 9.001). These are two separate telegrams to the same group address. Each may receive its own link-layer acknowledgement.</p>
-        <div className="flex flex-wrap gap-3"><button className="border border-green-700 rounded-lg px-4 py-2 text-sm font-semibold text-green-900" onClick={()=>showReadExample(false)}>1 · Load read request (no value)</button><button className="border border-green-700 rounded-lg px-4 py-2 text-sm font-semibold text-green-900" onClick={()=>showReadExample(true)}>2 · Load temperature response (23.5 °C)</button></div>
-        <p className="text-xs text-slate-600">These buttons replace the current configuration and generate that step. A GroupValueResponse is application data, not LL_ACK. It depends on the group-object configuration; no fixed delay between the two telegrams is implied.</p>
-      </section>
-      <div ref={waveformRef} className="space-y-3">
-      {isDirty&&<p className="bg-amber-100 text-amber-900 rounded-lg p-3 text-sm font-semibold">Waveform and byte cards show the previous generated telegram.</p>}
-      <WaveformRenderer
-        bitStream={compiled?.stream ?? ""}
-        ackBits={getAckPhysicalBitStream()}
-        ackType={response}
-        nextAccess={nextAccess}
-        bytes={constructedBytes}
-        selectionRevision={selectionRevision}
-        selectedByte={selectedByte}
-        onSelectByte={setSelectedByte}
-      />
-      </div>
-
-      {/* Structured Octet breakdown displayed only after generating a telegram */}
-      {isGenerated && (
-        <div className="space-y-6">
-          {/* Bytes breakdown cards */}
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Layers className="h-5 w-5 text-knx-blue" />
-                <h4 className="text-base font-bold text-slate-900">TP1 Telegram Logical-Physical Byte Reconstruction</h4>
-              </div>
-              <span className="text-[11px] px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-mono self-start sm:self-auto font-bold shadow-xs font-sans">
-                Hex Dump: {constructedBytes.map(b => b.hex).join(" ")}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {constructedBytes.map((byte, idx) => (
-                <div
-                  key={`byte-card-${idx}`}
-                  className="bg-white p-4 border border-slate-200 shadow-sm rounded-xl flex flex-col justify-between hover:border-knx-blue/50 hover:shadow-md transition-all font-sans relative group"
-                >
-                  <div className="absolute top-3 right-3 text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 group-hover:text-knx-blue group-hover:border-knx-blue/30 transition-all">
-                    OCTET {idx + 1}
-                  </div>
-                  <button type="button" className="text-left space-y-2 rounded-lg focus-visible:ring-2 focus-visible:ring-green-700" aria-label={`Inspect byte ${idx+1}: ${byte.name}`} aria-pressed={selectedByte===idx} onClick={()=>{setSelectedByte(idx);setSelectionRevision(v=>v+1);waveformRef.current?.scrollIntoView({behavior:'smooth',block:'start'});}}>
-                    <span className="text-[10.5px] font-extrabold text-slate-400 uppercase tracking-wider block truncate pr-16">
-                      {byte.name}
-                    </span>
-
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-lg font-mono font-bold text-slate-900">{byte.logicalBinary}</span>
-                      <span className="text-xs font-mono font-extrabold text-knx-blue bg-knx-blue/5 px-1.5 py-0.5 rounded">0x{byte.hex}</span>
-                    </div>
-
-                    <p className="text-[10px] text-slate-500 leading-relaxed min-h-[30px] font-medium">
-                      {byte.details}
-                    </p>
-                    <span className="block text-xs font-semibold text-green-800">Inspect fields & waveform →</span>
-                  </button>
-
-                  {/* Physical Serial Stream Bit representation in card base */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 font-mono text-[9px] space-y-1.5 bg-slate-50 p-2.5 rounded-lg">
-                    <div className="flex justify-between items-center text-slate-500">
-                      <span>Start Bit</span>
-                      <span className="text-rose-600 font-bold">{byte.physicalBits.start}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-slate-600">
-                      <span>Data bits (LSB-first)</span>
-                      <span className="text-slate-900 font-bold">{byte.physicalBits.dataReversed}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-slate-500">
-                      <span>Even Parity Bit</span>
-                      <span className="text-knx-blue font-bold">{byte.physicalBits.parity}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-slate-500">
-                      <span>Stop Bit</span>
-                      <span className="text-amber-600 font-bold">{byte.physicalBits.stop}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+        </aside>;
+  return <MonitorDock controls={controls} openRevision={openRevision} actions={showControls?<button className="primary-button generate-mobile" onClick={handleGenerateClick}><Play size={17}/>Generate Telegram</button>:<button className="lesson-button configure-mobile" onClick={onConfigure}>Build telegram</button>}>
+    <TelegramMonitor bytes={constructedBytes} stream={compiled?.stream??''} selected={selectedByte} onSelect={setSelectedByte} dirty={isDirty} response={response} ackBits={getAckPhysicalBitStream()} nextAccess={nextAccess} timingDetails={timingDetails} prediction={usedPrediction} origin={frameOrigin}/>
+  </MonitorDock>;
 }
