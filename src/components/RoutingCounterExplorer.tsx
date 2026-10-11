@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Play, RotateCcw, Network, Info} from 'lucide-react';
 import {traceRoute} from '../knx/teachingModels';
 import {routingExample} from '../knx/routingExample';
+import {HopCountTopology} from './HopCountTopology';
 
 export function RoutingCounterExplorer() {
   const [mode,setMode] = useState<'series'|'parallel'>('parallel');
@@ -27,8 +28,6 @@ export function RoutingCounterExplorer() {
     if (finished || step < 0) setStep(0);
     setPlaying(true);
   };
-  const position = (i:number) => {const row=Math.floor(i/4);return {x:30+(row%2 ? 3-i%4 : i%4)*240,y:25+row*115};};
-  const color = (i:number) => i <= step ? trace[i]?.blocked ? '#be123c' : '#509E2F' : '#cbd5e1';
   return <div className="space-y-6 max-w-6xl mx-auto text-left">
     <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-3 shadow-sm">
       <h2 className="text-xl font-extrabold text-slate-900 flex gap-2 items-center"><Network className="text-knx-green"/>Routing Counter — Trace a Defined TP Path</h2>
@@ -52,23 +51,7 @@ export function RoutingCounterExplorer() {
         <button onClick={reset} className="border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-2"><RotateCcw size={16}/>Reset</button>
       </div>
       <p className="text-xs text-slate-500">Selected route only, not the complete physical wiring. Grey = not yet reached; green = reached; red = rejection. Off-path branches are omitted: a repeater has no filter and may also send telegrams into those branches. Ordinary devices do not relay telegrams.</p>
-      <div className="overflow-x-auto rounded-xl bg-slate-50 border border-slate-200">
-        <svg viewBox={`0 0 980 ${Math.ceil(nodes.length/4)*115+15}`} className="w-full min-w-[680px]" role="img" aria-label="Selected telegram path and forwarding events">
-          <title>Selected TP path; arrows represent segment crossings, not physical cable routing.</title>
-          {nodes.slice(1).map((n,index)=>{
-            const prev=position(index),next=position(index+1),same=prev.y===next.y,right=next.x>prev.x;
-            const x1=same?prev.x+(right?205:0):prev.x+102.5,y1=prev.y+(same?35:70),x2=same?next.x+(right?0:205):next.x+102.5,y2=next.y+(same?35:0);
-            const active=index+1<=step;
-            return <g key={n.id}><path d={`M ${x1} ${y1} L ${x2} ${y2}`} stroke={active?'#509E2F':'#cbd5e1'} strokeWidth="3"/><text x={(x1+x2)/2} y={(y1+y2)/2+4} textAnchor="middle" fill={active?'#509E2F':'#94a3b8'} fontSize="14">{same?(right?'▶':'◀'):'▼'}</text></g>;
-          })}
-          {nodes.map((node,i)=>{const p=position(i),event=trace[i],seen=i<=step;return <g key={node.id} transform={`translate(${p.x},${p.y})`}>
-            <rect width="205" height="70" rx="10" fill={seen?event?.blocked?'#fff1f2':'#f0fdf4':'white'} stroke={color(i)} strokeWidth={i===step?3:1.5}/>
-            <text x="102.5" y="20" textAnchor="middle" fontSize="12" fontWeight="700" fill="#334155">{node.label}</text>
-            <text x="102.5" y="39" textAnchor="middle" fontSize="13" fontFamily="monospace" fill="#334155">{node.address}</text>
-            <text x="102.5" y="57" textAnchor="middle" fontSize="11" fill={color(i)}>{seen?event?.blocked?`STOP · incoming RC ${event.before}`:event?.forwarded?`RC ${event.before} → ${event.after}`:`RC ${event?.after}`:'Not yet reached'}</text>
-          </g>;})}
-        </svg>
-      </div>
+      <HopCountTopology nodes={nodes} trace={trace} step={step} mode={mode}/>
       <div aria-live="polite" className="bg-slate-50 rounded-xl p-4 text-sm space-y-2">
         <p><strong>{nodes.length-2} forwarding devices on this selected path.</strong> {step<0?'Ready to trace.':finished?delivered?'Receiver reached.':'Trace stopped.':'Trace in progress.'}</p>
         <p>{current ? `${nodes[step].label} (${nodes[step].address}): ${current.reason}` : 'Transmit or advance one event to see the forwarding decision.'}</p>
