@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Sliders, Play, Layers, AlertTriangle, Clock, CornerDownRight, Zap } from "lucide-react";
 import { APCICode, TelegramParams, TelegramByte, KNXAddressIndividual, KNXAddressGroup } from "../types";
 import { APCI_DEFS, DPT_DEFS, PRESET_TELEGRAMS } from "../data";
@@ -80,7 +80,7 @@ export function buildStandardGroupTelegram(params: TelegramParams, payload: stri
 
 export { telegramTiming } from "../knx/tp1Timing";
 
-export function TelegramVisualizer() {
+export function TelegramVisualizer({scenario}:{scenario?:{id:string;values:Values}|null} = {}) {
   const [params, setParams] = useState<TelegramParams>({repeatFlag: "1", targetType: "1", command: APCICode.GroupValueWrite,
     source: {area: 1, line: 1, device: 10}, destination: {main: 1, middle: 0, sub: 1}, routingCounter: 6, priority: "11", dptType: "1.001", ackType: "CC"});
   // The editor and encoder share one source of truth, including while Read hides the editor.
@@ -96,6 +96,11 @@ export function TelegramVisualizer() {
   const [constructedBytes, setLogicalBytes] = useState<TelegramByte[]>([]);
   const [compiled, setCompiled] = useState<{signature: string; stream: string; params: TelegramParams} | null>(null);
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (!scenario || !DPT_INPUTS[scenario.id]) return;
+    setParams(p=>({...p,dptType:scenario.id,command:APCICode.GroupValueWrite}));
+    setDptValues({...scenario.values});setCurrentPreset(-1);setCompiled(null);setLogicalBytes([]);setError('');
+  }, [scenario]);
   const updateParams: typeof setParams = next => { setParams(next); setCurrentPreset(-1); setError(''); };
   const signature = JSON.stringify([params, dptValue]);
   const isGenerated = compiled !== null;
