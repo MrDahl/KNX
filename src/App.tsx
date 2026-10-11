@@ -3,19 +3,22 @@ import { Sliders, Network, BookOpen, Layers, GitMerge, Send } from "lucide-react
 import { TelegramVisualizer } from "./components/TelegramVisualizer";
 import { TopologyExplorer } from "./components/TopologyExplorer";
 import { EducationalHandbook } from "./components/EducationalHandbook";
-import { DatapointTypesList } from "./components/DatapointTypesList";
+import { type DptScenario, DatapointTypesList } from "./components/DatapointTypesList";
 import { RoutingCounterExplorer } from "./components/RoutingCounterExplorer";
 import { SendingSimulator } from "./components/SendingSimulator";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<"visualizer" | "topology" | "routing" | "datapointtypes" | "sending" | "handbook">("visualizer");
 
+  const [dptScenario,setDptScenario] = useState<DptScenario | null>(null);
+  const useDptValue = (scenario:DptScenario) => { setDptScenario(scenario); setActiveTab("visualizer"); };
+
   const navigationItems = [
     { id: "visualizer" as const, label: "Telegram Visualiser", icon: Sliders, color: "text-knx-blue" },
     { id: "topology" as const, label: "Topology Capacity Explorer", icon: Network, color: "text-knx-grey" },
     { id: "routing" as const, label: "Routing Counter", icon: GitMerge, color: "text-knx-green" },
     { id: "sending" as const, label: "Sending (S-Flag)", icon: Send, color: "text-knx-blue" },
-    { id: "datapointtypes" as const, label: "Datapoint Types Matrix", icon: Layers, color: "text-knx-blue" },
+    { id: "datapointtypes" as const, label: "Datapoint Types", icon: Layers, color: "text-knx-blue" },
     { id: "handbook" as const, label: "Training Handbook", icon: BookOpen, color: "text-knx-green" },
   ];
 
@@ -79,11 +82,11 @@ export default function App() {
 
         {/* Primary Workspace Sections Component Router switch */}
         <main className="w-full">
-          {activeTab === "visualizer" && <TelegramVisualizer />}
+          {activeTab === "visualizer" && <TelegramVisualizer scenario={dptScenario} />}
           {activeTab === "topology" && <TopologyExplorer />}
           {activeTab === "routing" && <RoutingCounterExplorer />}
           {activeTab === "sending" && <SendingSimulator />}
-          {activeTab === "datapointtypes" && <DatapointTypesList />}
+          {activeTab === "datapointtypes" && <DatapointTypesList onUseTelegram={useDptValue} />}
           {activeTab === "handbook" && <EducationalHandbook />}
         </main>
 
