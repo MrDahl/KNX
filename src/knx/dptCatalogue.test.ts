@@ -8,7 +8,7 @@ test('453 unique versioned DPT identities, corrected additions/removals and pend
  assert.equal(DPT_DATABASE.length,453);assert.equal(new Set(DPT_DATABASE.map(r=>r.id)).size,453);
  for(const id of ['20.010','201.101','203.016','207.103'])assert.equal(DPT_BY_ID[id],undefined);
  for(const id of ['200.101','209.101','222.101','269.1200'])assert.ok(DPT_BY_ID[id]);
- assert.equal(DPT_DATABASE.filter(r=>r.layoutPending).length,69);
+ assert.equal(DPT_DATABASE.filter(r=>r.layoutPending).length,3);
  assert.equal(DPT_BY_ID['14.052'].name,'DPT_Value_MassFlux');assert.equal(DPT_BY_ID['14.052'].unit,'kg s-1');
  for(const [id,size] of [['256.001','16 bytes'],['271.1200','7 bytes'],['277.1200','36 bytes'],['284.1200','86 bytes'],['206.102','3 bytes']])assert.equal(DPT_BY_ID[id].size,size);
  assert.ok(DPT_BY_ID['240.800'].sourceNotes.length);assert.ok(DPT_BY_ID['14.053'].sourceNotes.length);
@@ -30,7 +30,31 @@ test('Decoding known values and invalid/reserved payloads',()=>{
 });
 test('Search combines words and supports exact IDs, family, type and pending filters',()=>{
  assert.equal(filterDpts('DPT 269.1200')[0].id,'269.1200');assert.equal(filterDpts('massflux')[0].id,'14.052');
- assert.equal(filterDpts('','all','all','interactive').length,24);assert.equal(filterDpts('','all','all','pending').length,69);
+ assert.equal(filterDpts('','all','all','interactive').length,24);assert.equal(filterDpts('','all','all','pending').length,3);
  assert.ok(filterDpts('','9','Float').every(r=>r.family==='9'&&r.dataType==='Float'));
  assert.equal(filterDpts('not-a-datapoint').length,0);
+});
+test('Prioritised pending layouts and all size-corrected descriptions are reviewed',()=>{
+ const priorities=DPT_DATABASE.filter(r=>['20','21','200','201','202','203','204','205','206'].includes(r.family));
+ assert.equal(priorities.filter(r=>r.layoutPending).length,0);
+ for(const row of DPT_DATABASE.filter(r=>r.changes.some(c=>c.action.includes('Size corrected')))) {
+  assert.equal(row.descriptionReviewed,true,row.id);
+  assert.doesNotMatch(row.range,/to be filled in/,row.id);
+ }
+ for(const row of DPT_DATABASE.filter(r=>r.fields.length)) {
+  let width=0; for(const field of row.fields) width+=field.bits;
+  assert.equal(width,parseInt(row.size)*8,row.id);
+ }
+ assert.match(DPT_BY_ID['256.001'].range,/start date\/time followed by eight-byte stop/);
+ assert.match(DPT_BY_ID['206.102'].range,/delay in minutes/);
+ assert.equal(DPT_BY_ID['206.102'].dataType,'Composite');
+ assert.match(DPT_BY_ID['20.007'].range,/0 and 4–255 are reserved/);
+ assert.match(DPT_BY_ID['21.1000'].fields.find(f=>f.name.includes('Asynchronous'))!.meaning,/Must be 1/);
+});
+test('Former placeholder notes are replaced and unresolved source contradictions stay explicit',()=>{
+ assert.equal(DPT_DATABASE.filter(r=>r.descriptionReviewed).length,93);
+ assert.ok(DPT_DATABASE.every(r=>!r.range.includes('to be filled in')));
+ assert.deepEqual(DPT_DATABASE.filter(r=>r.layoutPending).map(r=>r.id),['243.600','247.600','248.600']);
+ assert.match(DPT_BY_ID['269.1200'].fields.find(f=>f.name==='Energy invalid')!.meaning,/1 = energy invalid; 0 = valid/);
+ assert.match(DPT_BY_ID['245.600'].layoutNotes.join(' '),/reserved nibble/);
 });
