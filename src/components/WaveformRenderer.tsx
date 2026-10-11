@@ -1,20 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TelegramFieldDetails } from "./TelegramFieldDetails";
 import { Zap } from "lucide-react";
-import type { TelegramByte, TelegramParams } from "../types";
+import type { TelegramByte } from "../types";
+import { BIT_US, telegramTiming, DEFAULT_NEXT_ACCESS, type NextAccess } from "../knx/tp1Timing";
+export { BIT_US, telegramTiming } from "../knx/tp1Timing";
 
 // Tutor: Serial Data Transmission §§3.7.1–3.7.4 (PDF pp.113–119).
 // Example amplitudes only; not a transmitter/receiver compliance envelope.
-export const BIT_US = 1e6 / 9600;
 export const ACTIVE_US = 35;
-export function telegramTiming(octets: number, priority: TelegramParams["priority"]) {
-  const bitMs = BIT_US / 1000;
-  const frameBits = octets * 11 + Math.max(0, octets - 1) * 2;
-  const idleBits = priority === "00" ? 50 : 53;
-  return { frameBits, frameMs: frameBits * bitMs, ackGapMs: 15 * bitMs,
-    ackMs: 11 * bitMs, postAckBits: 2 + idleBits, postAckMs: (2 + idleBits) * bitMs,
-    cycleMs: (frameBits + 15 + 11 + 2 + idleBits) * bitMs };
-}
 const y = (volts: number) => 235 - volts * 4.5;
 // Same pulse geometry in the detail view and every serial bit. The decay is
 // normalized to reach the illustrative resting level at the end of the bit.
@@ -44,23 +37,23 @@ interface WaveformRendererProps {
   selectedByte?: number;
   selectionRevision?: number;
   onSelectByte?: (index:number)=>void;
-  priority?: TelegramParams["priority"];
+  nextAccess?: NextAccess;
   bytes?: TelegramByte[];
 }
-export function WaveformRenderer({bitStream, ackBits = "", ackType = "CC", priority = "11", bytes = [], selectedByte = 0, selectionRevision = 0, onSelectByte}: WaveformRendererProps) {
+export function WaveformRenderer({bitStream, ackBits = "", ackType = "CC", nextAccess = DEFAULT_NEXT_ACCESS, bytes = [], selectedByte = 0, selectionRevision = 0, onSelectByte}: WaveformRendererProps) {
   const [mode, setMode] = useState<"telegram" | "raw">("telegram");
   const [raw, setRaw] = useState("0101");
   const [zoom, setZoom] = useState(12);
   const [focusByte, setFocusByte] = useState(0);
   const scroller = useRef<HTMLDivElement>(null);
-  const timing = telegramTiming(bytes.length, priority);
+  const timing = telegramTiming(bytes.length, nextAccess);
   const generated = mode === "telegram" && !!bitStream && bytes.length > 0;
   const stream = mode === "raw" ? raw : bitStream;
   const ackStart = stream.length + 15;
   const hasResponse = ackType !== "NONE";
-  const totalBits = generated ? ackStart + 11 + (hasResponse ? timing.postAckBits : 0) : stream.length;
+  const totalBits = generated ? ackStart + 11 + (hasResponse ? timing.idleBits : 0) : stream.length;
   const left = 80, end = left + totalBits * zoom, width = Math.max(600, end + 35);
-  useEffect(() => { setMode("telegram"); setFocusByte(selectedByte); }, [bitStream, ackBits, priority]);
+  useEffect(() => { setMode("telegram"); setFocusByte(selectedByte); }, [bitStream, ackBits]);
   useEffect(() => { if (scroller.current) scroller.current.scrollLeft = focusByte * 13 * zoom; }, [focusByte, zoom]);
   useEffect(() => { setMode("telegram"); setFocusByte(selectedByte); setZoom(40); if (scroller.current) scroller.current.scrollLeft=selectedByte*13*40; }, [selectedByte,selectionRevision]);
   const jump = (index: number) => { onSelectByte?.(index); setZoom(40); setFocusByte(index); if (scroller.current) scroller.current.scrollLeft = index * 13 * 40; };
@@ -99,7 +92,7 @@ export function WaveformRenderer({bitStream, ackBits = "", ackType = "CC", prior
     {generated && <div className="flex flex-wrap gap-2" aria-label="Jump to telegram byte">{bytes.map((b,i) => <button key={i} className={buttonStyle} title={b.name} aria-pressed={selectedByte===i} onClick={() => jump(i)}>{i+1}: {b.hex}</button>)}</div>}
     {!stream ? <p className="rounded-xl bg-slate-50 p-5 text-sm text-slate-600">{mode === "raw" ? "Enter bits to draw a waveform." : "Generate a telegram above to inspect its complete transmission."}</p> : <>
       <div ref={scroller} tabIndex={0} role="region" aria-label="Scrollable TP1 timeline" className="overflow-x-auto border border-slate-200 rounded-xl bg-slate-50">
-        <svg width={width} height="330" role="img" aria-label={`${mode === "raw" ? "Raw bits" : "Generated telegram"}: ${stream.length} bit periods${generated ? `, then 15-bit pause, ${responseNames[ackType]}, ${hasResponse ? `and ${timing.postAckBits}-bit guard and idle` : "in a silent observation slot"}` : ""}`}>
+        <svg width={width} height="330" role="img" aria-label={`${mode === "raw" ? "Raw bits" : "Generated telegram"}: ${stream.length} bit periods${generated ? `, then 15-bit pause, ${responseNames[ackType]}, ${hasResponse ? `and ${timing.idleBits}-bit idle interval` : "in a silent observation slot"}` : ""}`}>
           {[22,29,36].map(v => <g key={v}><line x1={left} x2={end} y1={y(v)} y2={y(v)} stroke="#cbd5e1" strokeDasharray="3 4"/><text x="65" y={y(v)+4} textAnchor="end" fill="#475569" fontSize="11">{v} V</text></g>)}
           <path d={signalPath(stream,left,zoom) + (generated ? ` L ${left+ackStart*zoom} ${y(29)}` : "")} fill="none" stroke="#448c29" strokeWidth="2"/>
           {generated && <path d={(hasResponse ? signalPath(ackBits,left+ackStart*zoom,zoom) : `M ${left+ackStart*zoom} ${y(29)}`)+` L ${end} ${y(29)}`} fill="none" stroke={ackType === "CC" ? "#166534" : "#b45309"} strokeWidth="2"/>}
@@ -115,19 +108,19 @@ export function WaveformRenderer({bitStream, ackBits = "", ackType = "CC", prior
           {generated && <>
             <text x={left+(stream.length+7.5)*zoom} y="38" textAnchor="middle" fontSize="11" fill="#475569">Pause · 15 bits</text>
             <text x={left+(ackStart+5.5)*zoom} y="38" textAnchor="middle" fontSize="11" fill="#92400e">{hasResponse ? `${responseNames[ackType]} · ${ackType}` : "Silent slot"}</text>
-            {hasResponse && <text x={left+(ackStart+11+timing.postAckBits/2)*zoom} y="38" textAnchor="middle" fontSize="11" fill="#475569">Guard 2 + idle {timing.postAckBits-2} bits</text>}
+            {hasResponse && <text x={left+(ackStart+11+timing.idleBits/2)*zoom} y="38" textAnchor="middle" fontSize="11" fill="#475569">Next-access idle · {timing.idleBits} bits</text>}
             {ackBits.split("").map((b,i) => <g key={i}><text x={left+(ackStart+i+.5)*zoom} y="225" textAnchor="middle" fontSize="10" fill="#92400e">{b}</text>{zoom>=24 && <text x={left+(ackStart+i+.5)*zoom} y="246" textAnchor="middle" fontSize="9" fill="#475569">{bitNames[i]}</text>}</g>)}
           </>}
           {(generated ? [0,stream.length,ackStart,...(hasResponse?[ackStart+11]:[]),totalBits] : [0,totalBits]).map((n,i) => <g key={i}><line x1={left+n*zoom} x2={left+n*zoom} y1="50" y2="275" stroke="#64748b" strokeDasharray="3 4"/><text x={left+n*zoom} y={i%2 ? 310 : 290} textAnchor="middle" fontSize="11" fill="#475569">{(n*BIT_US/1000).toFixed(3)} ms</text></g>)}
         </svg>
       </div>
-      {generated && <p className="text-xs text-slate-600">Frame: {timing.frameMs.toFixed(3)} ms · Response delay: {timing.ackGapMs.toFixed(3)} ms · {hasResponse ? `Response: ${timing.ackMs.toFixed(3)} ms · Guard + idle: ${timing.postAckMs.toFixed(3)} ms · Ideal exchange: ${timing.cycleMs.toFixed(3)} ms. No contention or retries included.` : `Silent nominal observation slot: ${timing.ackMs.toFixed(3)} ms. No timeout, retry delay or complete transaction duration is inferred.`}</p>}
+      {generated && <p className="text-xs text-slate-600">Frame: {timing.frameMs.toFixed(3)} ms · Response delay: {timing.ackGapMs.toFixed(3)} ms · {hasResponse ? `Response: ${timing.ackMs.toFixed(3)} ms · Frame + acknowledgement: ${timing.exchangeMs.toFixed(3)} ms · Next-access idle: ${timing.idleMs.toFixed(3)} ms · Earliest next transmission: ${timing.earliestNextMs.toFixed(3)} ms from frame start. Independent next-access scenario; no contention, fairness or retry-specific delays included.` : `Silent nominal observation slot: ${timing.ackMs.toFixed(3)} ms. No timeout, retry delay or complete transaction duration is inferred.`}</p>}
     </>}
     <div className="grid md:grid-cols-3 gap-4 text-xs text-slate-600 leading-relaxed">
       <p><strong className="block text-slate-900 mb-1">Supply and signal</strong>Communication is superimposed on the DC bus supply. A zero actively lowers the bus voltage; a one has no active pulse. Neither conductor is a protective-earth reference.</p>
       <p><strong className="block text-slate-900 mb-1">Equalization phase</strong>The active pulse is followed by positive equalization and a return toward the resting voltage. The bus choke, integrated or separate, is essential. Actual shapes depend on the transmitter, cable and loading.</p>
       <p><strong className="block text-slate-900 mb-1">Reading this illustration</strong>The Tutor overview gives 21–32 V DC, a 3–10 V drop and up to +13 V overshoot. These are separate from this example’s 29 / 22 / 36 V levels. The curve is not a tolerance envelope.</p>
     </div>
-    <p className="text-xs text-slate-500">References: KNX Tutor course, Serial Data Transmission §§3.7.1–3.7.4, Figures 9–11; KNX Basic course, System overview §§10–13.2. Nominal bit timing is exact in this model; analogue amplitudes and decay are illustrative.</p>
+    <p className="text-xs text-slate-500">References: KNX Tutor course, Serial Data Transmission §§3.7.1–3.7.4, Figures 9–11; KNX Basic course, System overview §§10–13.2. Timing: KNX TP1 §2.3 and Annex B; nominal character and access intervals, without physical tolerances. Analogue amplitudes and decay are illustrative.</p>
   </section>;
 }
