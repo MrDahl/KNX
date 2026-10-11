@@ -13,11 +13,22 @@ test('Search, decoding and handoff preserve the selected DPT and value',async()=
  assert.equal(r.root.findByProps({'aria-label':'Temperature (°C)'}).props.value,'-30');
  await act(()=>r.root.findAllByType('button').find((n:any)=>text(n).includes('Use value in Telegram Visualiser')).props.onClick());
  assert.deepEqual(scenario,{id:'9.001',values:{value:'-30'}});
- await act(()=>r.root.findByProps({'aria-label':'Search DPT catalogue'}).props.onChange({target:{value:'269.1200'}}));
- await act(()=>r.root.findByProps({'aria-label':'Inspect DPT 269.1200'}).props.onClick());
- assert.match(text(r.toJSON()),/Detailed layout pending/);assert.match(text(r.toJSON()),/14 bytes/);
+ await act(()=>r.root.findByProps({'aria-label':'Search DPT catalogue'}).props.onChange({target:{value:'243.600'}}));
+ await act(()=>r.root.findByProps({'aria-label':'Inspect DPT 243.600'}).props.onClick());
+ assert.match(text(r.toJSON()),/Source clarification pending/);assert.match(text(r.toJSON()),/8 bytes/);
  assert.equal(r.root.findAllByProps({'aria-label':'DPT hexadecimal value'}).length,0);
  await act(()=>r.unmount());await act(()=>{r=create(<TelegramVisualizer scenario={scenario}/>);});
  assert.equal(r.root.findByProps({'aria-label':'Datapoint type'}).props.value,'9.001');assert.equal(r.root.findByProps({'aria-label':'Temperature (°C)'}).props.value,'-30');
+ await act(()=>r.unmount());
+});
+test('Student explanation and reviewed layouts are visible without level tabs',async()=>{
+ let r:any;await act(()=>{r=create(<DatapointTypesList/>);});
+ assert.equal(r.root.findAllByProps({'aria-label':'Explanation level'}).length,0);
+ assert.match(text(r.toJSON()),/least-significant bit first/);
+ await act(()=>r.root.findByProps({'aria-label':'Search DPT catalogue'}).props.onChange({target:{value:'200.101'}}));
+ await act(()=>r.root.findByProps({'aria-label':'Inspect DPT 200.101'}).props.onClick());
+ assert.match(text(r.root.findByProps({'aria-label':'Reviewed DPT description'})),/0 = low; 1 = high/);
+ assert.match(text(r.root.findByProps({'aria-label':'Z8 status and command'})),/not applicable to ordinary/);
+ assert.equal(r.root.findAllByProps({'aria-label':'DPT hexadecimal value'}).length,0);
  await act(()=>r.unmount());
 });
