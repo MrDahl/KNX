@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Sliders, Play, Layers, AlertTriangle, Clock, CornerDownRight, Zap } from "lucide-react";
 import { APCICode, TelegramParams, TelegramByte, KNXAddressIndividual, KNXAddressGroup } from "../types";
-import { APCI_DEFS, DPT_DEFS, decodeKnxFloat, PRESET_TELEGRAMS } from "../data";
+import { APCI_DEFS, DPT_DEFS, PRESET_TELEGRAMS } from "../data";
 import { WaveformRenderer, telegramTiming } from "./WaveformRenderer";
+import { DptValueEditor } from "./DptValueEditor";
+import { DPT_INPUTS, defaults, encodeDpt, type Values } from "../knx/dptCodec";
 
 // Scope: standard, plain TP1 group-value telegrams. DPT IDs are not sent on the bus.
 // Sources: supplied Tutor PDF pp. 111, 114, 121–123; DPT v02.02.01 p. 39.
 const GROUP_SERVICES = [APCICode.GroupValueRead, APCICode.GroupValueResponse, APCICode.GroupValueWrite];
-const STANDARD_DPTS = DPT_DEFS.filter(d => d.sizeBits <= 112);
+const STANDARD_DPTS = DPT_DEFS.filter(d => d.sizeBits <= 112 && DPT_INPUTS[d.id]);
 const bits = (value: number, width = 8) => value.toString(2).padStart(width, "0");
 const physicalBits = (binary: string) => ({
   start: "0", dataReversed: binary.split("").reverse().join(""),
@@ -81,6 +83,12 @@ export function TelegramVisualizer() {
   const [params, setParams] = useState<TelegramParams>({repeatFlag: "1", targetType: "1", command: APCICode.GroupValueWrite,
     source: {area: 1, line: 1, device: 10}, destination: {main: 1, middle: 0, sub: 1}, routingCounter: 6, priority: "11", dptType: "1.001", ackType: "CC"});
   const [dptValue, setDptValue] = useState("1");
+  const [editorInitial, setEditorInitial] = useState<Values>(defaults('1.001'));
+  const [editorVersion, setEditorVersion] = useState(0);
+  const [response, setResponse] = useState<'CC'|'0C'|'C0'|'NONE'>('CC');
+  const [selectedByte, setSelectedByte] = useState(0);
+  const [selectionRevision, setSelectionRevision] = useState(0);
+  const waveformRef = useRef<HTMLDivElement>(null);
   const [currentPreset, setCurrentPreset] = useState(-1);
   const [constructedBytes, setLogicalBytes] = useState<TelegramByte[]>([]);
   const [compiled, setCompiled] = useState<{signature: string; stream: string; params: TelegramParams} | null>(null);
@@ -89,18 +97,22 @@ export function TelegramVisualizer() {
   const isGenerated = compiled !== null;
   const isDirty = !!compiled && (compiled.signature !== signature);
   const isRead = params.command === APCICode.GroupValueRead;
-  const padBinary = bits;
   const applyPreset = (idx: number) => {
     const p = PRESET_TELEGRAMS[idx];
     setParams({...p.params, source: {...p.params.source}, destination: {...p.params.destination}} as TelegramParams);
     // Correct this tool's presets without modifying the shared catalogue in this step.
     setDptValue(p.params.dptType === "9.001" ? encodeTemperature(23.5) : p.params.dptType === "5.001" ? bits(Math.round(75 * 255 / 100)) : p.payloadValue);
+    const values=defaults(p.params.dptType);
+    if(p.params.dptType==='9.001')values.value='23.5';
+    if(p.params.dptType==='5.001')values.value='75';
+    if(p.params.dptType==='1.001')values.value=p.payloadValue;
+    setEditorInitial(values); setEditorVersion(v=>v+1);
     setCurrentPreset(idx); setError("");
   };
   const handleGenerateClick = () => {
     try {
       const result = buildStandardGroupTelegram(params, dptValue);
-      setLogicalBytes(result.cards);
+      setLogicalBytes(result.cards); setSelectedByte(0);
       setCompiled({signature, stream: result.stream, params: {...params}}); setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Cannot generate this telegram.");
@@ -111,13 +123,21 @@ export function TelegramVisualizer() {
     const id = e.target.value, d = STANDARD_DPTS.find(d => d.id === id)!;
     setParams(p => ({...p, dptType: id}));
     // Raw zero defaults avoid inheriting unverified handwritten examples.
-    setDptValue(id === "9.001" ? encodeTemperature(21) : "0".repeat(d.sizeBits));
+    const values=defaults(id);
+    setDptValue(encodeDpt(id,values)); setEditorInitial(values); setEditorVersion(v=>v+1);
     setCurrentPreset(-1); setError("");
   };
   const totalCharactersCount = constructedBytes.length;
   const timing = telegramTiming(totalCharactersCount, compiled?.params.priority ?? params.priority);
   const totalTransmitBitsCount = timing.frameBits, transmissionMs = timing.frameMs, totalCycleMs = timing.cycleMs;
-  const getAckPhysicalBitStream = () => compiled ? serial(bits(parseInt(compiled.params.ackType, 16))) : "";
+  const getAckPhysicalBitStream = () => compiled && response !== 'NONE' ? serial(bits(parseInt(response, 16))) : "";
+  const showReadExample = (reply:boolean) => {
+    const p:TelegramParams = {repeatFlag:'1',targetType:'1',command:reply?APCICode.GroupValueResponse:APCICode.GroupValueRead,
+      source:{area:1,line:1,device:reply?20:10},destination:{main:1,middle:0,sub:1},routingCounter:6,priority:'11',dptType:'9.001',ackType:'CC'};
+    const values={value:'23.5'}, payload=encodeDpt('9.001',values),result=buildStandardGroupTelegram(p,payload);
+    setParams(p);setDptValue(payload);setEditorInitial(values);setEditorVersion(v=>v+1);setCurrentPreset(-1);setError('');setResponse('CC');setSelectedByte(0);
+    setLogicalBytes(result.cards);setCompiled({signature:JSON.stringify([p,payload]),stream:result.stream,params:p});
+  };
 
   return (
     <div className="space-y-8 text-slate-700">
@@ -138,7 +158,7 @@ export function TelegramVisualizer() {
             onClick={handleGenerateClick}
             className="bg-amber-600 text-white font-bold px-3.5 py-2 rounded-xl text-[10px] hover:bg-amber-700 transition-colors shrink-0"
           >
-            Update Waveform
+            Regenerate telegram
           </button>
         </div>
       )}
@@ -405,7 +425,7 @@ export function TelegramVisualizer() {
               >
                 {STANDARD_DPTS.map((d) => (
                   <option key={d.id} value={d.id}>
-                    {d.name}
+                    DPT {d.id} — {DPT_INPUTS[d.id].name}
                   </option>
                 ))}
               </select>
@@ -416,75 +436,8 @@ export function TelegramVisualizer() {
               <label className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-1">
                 DPT Payload Data Value
               </label>
-              {isRead ? <p className="text-xs text-slate-600">Read requests carry no value. The selected DPT does not change the request bytes.</p> : params.dptType === "1.001" ? (
-                <select
-                  value={dptValue}
-                  onChange={(e) => { setDptValue(e.target.value); setCurrentPreset(-1); }}
-                  className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none"
-                >
-                  <option value="1">On (1)</option>
-                  <option value="0">Off (0)</option>
-                </select>
-              ) : params.dptType === "5.001" ? (
-                <div className="flex gap-2">
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={dptValue ? Math.round((parseInt(dptValue, 2) / 255) * 100) : 0}
-                    onChange={(e) => {
-                      const perc = parseInt(e.target.value);
-                      const bin = padBinary(Math.round((perc / 100) * 255), 8);
-                      setDptValue(bin);
-                      setCurrentPreset(-1);
-                    }}
-                    className="w-full h-1.5 mt-3.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-knx-blue"
-                  />
-                  <span className="font-mono text-xs text-knx-blue mt-1 pb-1 px-1.5 shrink-0 bg-knx-blue/5 border border-knx-blue/10 rounded">
-                    {dptValue ? Math.round((parseInt(dptValue, 2) / 255) * 100) : 0}%
-                  </span>
-                </div>
-              ) : params.dptType === "9.001" ? (
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    min="-273"
-                    max="670433.28"
-                    step="0.01"
-                    value={dptValue.length === 16 ? decodeKnxFloat(dptValue) : ""}
-                    onChange={(e) => {
-                      const tc = Number(e.target.value);
-                      if (!e.target.value.trim() || !Number.isFinite(tc) || tc < -273 || tc > 670433.28) {
-                        setDptValue(""); setError("Temperature must be between -273 and 670433.28 °C."); return;
-                      }
-                      setError(""); setDptValue(encodeTemperature(tc));
-                      setCurrentPreset(-1);
-                    }}
-                    className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none"
-                  />
-                  <span className="font-mono text-xs text-knx-blue mt-1.5 shrink-0 font-bold">°C</span>
-                </div>
-              ) : (
-                <input
-                  type="text"
-                  value={dptValue}
-                  onChange={(e) => { setDptValue(e.target.value); setCurrentPreset(-1); }}
-                  placeholder="Bits sequence (00101011...)"
-                  className="w-full bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                />
-              )}
-              {(() => {
-                const d = DPT_DEFS.find((x) => x.id === params.dptType);
-                if (d) {
-                  return (
-                    <div className="mt-2 text-[10px] text-slate-500 leading-normal border-t border-slate-200/50 pt-1.5">
-                      <span className="font-semibold text-slate-700 block mb-0.5">{d.name} ({d.sizeBits} {d.sizeBits === 1 ? "bit" : "bits"}):</span>
-                      <span className="text-slate-500 font-sans block leading-normal">{isRead ? "No value is encoded for a read request." : "Value bits are shown most significant bit first; each octet is transmitted least significant bit first. Raw bit input checks length, not every subtype-specific reserved value."}</span>
-                    </div>
-                  );
-                }
-                return null;
-              })()}
+              {isRead ? <p className="text-xs text-slate-600">Read requests carry no value. The selected DPT does not change the request bytes.</p> :
+                <DptValueEditor key={`${params.dptType}-${editorVersion}`} id={params.dptType} initial={editorInitial} onChange={value=>{setDptValue(value);setCurrentPreset(-1);setError('');}} />}
             </div>
 
             {/* Routing / Hop count slider */}
@@ -542,91 +495,49 @@ export function TelegramVisualizer() {
           </div>
         </div>
 
-        {/* Dynamic Timing Stats Block */}
-        {!isGenerated ? (
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-center items-center text-center space-y-5 lg:col-span-1">
-            <div className="w-12 h-12 bg-knx-blue/10 rounded-full flex items-center justify-center text-knx-blue">
-              <Clock className="h-6 w-6" />
-            </div>
-            <div className="space-y-1">
-              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Live Frame analysis</h4>
-              <p className="text-[11px] text-slate-500 leading-normal font-medium max-w-[200px]">
-                Once compiled, real-time bit counts, cycle times, air duration, and ACK values will be simulated here.
-              </p>
-            </div>
-            <div className="w-full bg-slate-50 border border-slate-150 rounded-xl p-3 text-[10.5px] text-slate-500 font-medium leading-relaxed italic text-left">
-              💡 <strong>Pro-Tip:</strong> Try changing the data payload to a larger type (like 9.001 2-octet Float) to see how character length scales timing requirements!
-            </div>
-          </div>
-        ) : (
-          <div className="bg-knx-blue rounded-2xl p-6 shadow-md text-white flex flex-col justify-between relative overflow-hidden lg:col-span-1">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
-            <div className="space-y-5">
-              <div className="border-b border-white/20 pb-3 flex items-center justify-between">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-white/80" />
-                  Transmission Timing Metrics
-                </h3>
-              </div>
-
-              <div className="space-y-3.5">
-                <div className="flex justify-between items-center text-xs py-1 border-b border-white/10">
-                  <span className="text-white/70">Total Characters</span>
-                  <span className="font-mono text-white font-bold">{totalCharactersCount} octets (includes check byte)</span>
-                </div>
-                <div className="flex justify-between items-center text-xs py-1 border-b border-white/10">
-                  <span className="text-white/70">Total Serial Bits</span>
-                  <span className="font-mono text-white font-bold">{totalTransmitBitsCount} bits</span>
-                </div>
-                <div className="flex justify-between items-center text-xs py-1 border-b border-white/10">
-                  <span className="text-white/70">Frame duration (through final stop bit)</span>
-                  <span className="font-mono text-emerald-300 font-bold">{transmissionMs.toFixed(3)} ms</span>
-                </div>
-                <div className="flex justify-between items-center text-xs py-1 border-b border-white/10">
-                  <span className="text-white/70">Final stop bit → ACK</span>
-                  <span className="font-mono text-white/80 font-bold">{timing.ackGapMs.toFixed(3)} ms (15 bits)</span>
-                </div>
-                <div className="flex justify-between items-center text-xs py-1 border-b border-white/10">
-                  <span className="text-white/70">Link-Layer ACK Time</span>
-                  <span className="font-mono text-white/80 font-bold">{timing.ackMs.toFixed(3)} ms (11 bits)</span>
-                </div>
-                <div className="flex justify-between items-center text-xs py-1 border-b border-white/10">
-                  <span className="text-white/70">After ACK: guard + idle</span>
-                  <span className="font-mono text-white/80 font-bold">{timing.postAckMs.toFixed(3)} ms ({timing.postAckBits} bits)</span>
-                </div>
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <span className="text-[10px] text-white/75 uppercase font-bold block mb-1">Ideal cycle (no retries or contention)</span>
-                  <span className="font-mono text-lg text-emerald-300 font-bold">{totalCycleMs.toFixed(3)} ms</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-4 border-t border-white/10">
-              <span className="text-[10px] text-white/80 uppercase font-bold block mb-2">Simulated Link Layer Acknowledgment</span>
-              <select
-                value={params.ackType}
-                onChange={(e) => setParams(prev => ({ ...prev, ackType: e.target.value as any }))}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 font-bold focus:outline-none cursor-pointer shadow-sm"
-              >
-                <option value="CC" className="text-slate-900 bg-white font-medium">0xCC - Positive (LL_ACK)</option>
-                <option value="0C" className="text-slate-900 bg-white font-medium">0x0C - Negative Error (LL_NAK)</option>
-                <option value="C0" className="text-slate-900 bg-white font-medium">0xC0 - Target Overload (LL_BUSY)</option>
-              </select>
-              <p className="text-[9.5px] text-white/60 mt-2 italic leading-relaxed opacity-75">
-                * Collision Avoidance determines that BUSY takes channel priority over NAK, which beats ACK.
-              </p>
-            </div>
-          </div>
-        )}
+        <aside className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5 self-start" aria-label="Timing and acknowledgement">
+          <h3 className="text-base font-bold text-slate-900 flex items-center gap-2"><Clock className="h-5 w-5 text-green-700"/>Timing and acknowledgement</h3>
+          <p role="status" className={`rounded-lg p-3 text-sm font-semibold ${isDirty?'bg-amber-100 text-amber-900':'bg-green-50 text-green-900'}`}>{!isGenerated?'Generate a telegram to calculate timing.':isDirty?'Previous telegram — regenerate to apply edited settings.':'Generated telegram matches the current settings.'}</p>
+          {isGenerated&&<dl className="text-sm space-y-3 text-slate-800">
+            {[
+              ['Characters',`${totalCharactersCount} octets, including check byte`],
+              ['Frame serial length',`${totalTransmitBitsCount} bit periods`],
+              ['Frame duration',`${transmissionMs.toFixed(3)} ms`],
+              ['Delay to response slot',`${timing.ackGapMs.toFixed(3)} ms (15 bits)`],
+              [response==='NONE'?'Silent observation slot':'Response character',`${timing.ackMs.toFixed(3)} ms (11 bits)`],
+              ...(response==='NONE'?[]:[['Guard + idle',`${timing.postAckMs.toFixed(3)} ms (${timing.postAckBits} bits)`],['Ideal exchange',`${totalCycleMs.toFixed(3)} ms`]])
+            ].map(([name,value])=><div key={name} className="border-b border-slate-200 pb-2"><dt className="text-slate-600">{name}</dt><dd className="font-mono font-semibold mt-1">{value}</dd></div>)}
+          </dl>}
+          <label className="block text-sm font-semibold text-slate-800">Demonstration response
+            <select aria-label="Demonstration response" value={response} onChange={e=>setResponse(e.target.value as typeof response)} className="block w-full mt-2 border rounded-lg p-2 bg-white text-slate-900">
+              <option value="CC">ACK · CC · received correctly</option><option value="0C">NAK · 0C · reception error</option><option value="C0">BUSY · C0 · receive buffer full</option><option value="NONE">No acknowledgement · silence</option>
+            </select>
+          </label>
+          <p className="text-xs text-slate-600">Changes apply immediately to the response illustration. They do not change the generated telegram bytes. This is a selected teaching scenario, not a simulated receiver.</p>
+          <p className="text-sm text-slate-800">{response==='CC'?'ACK confirms link-layer reception. It does not prove that an actuator performed an action or that an application response will follow.':response==='0C'?'NAK reports a reception error. A sender can repeat the telegram according to its retry behaviour.':response==='C0'?'BUSY reports that the receiving link layer cannot process the telegram because its buffers are full. Retry handling is device-dependent.':'No acknowledgement means no response was observed. The waveform shows a silent nominal response slot, not a specified timeout or complete failed transaction. Retry timing is not calculated.'}</p>
+          <p className="text-xs text-slate-600">For simultaneous group acknowledgements, the Tutor course gives BUSY → NAK → ACK priority. A group ACK cannot identify which individual receivers acknowledged. Negative or absent responses can cause repetitions; these are not included in the displayed ideal exchange. Reference: Tutor §3.6.4.</p>
+        </aside>
       </div>
 
+      <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3" aria-label="Read and response example">
+        <h3 className="font-bold text-slate-900">Teaching example: read → response</h3>
+        <p className="text-sm text-slate-600">1.1.10 asks group 1/0/1 for its value. In this example, sensor 1.1.20 answers with 23.5 °C (DPT 9.001). These are two separate telegrams to the same group address. Each may receive its own link-layer acknowledgement.</p>
+        <div className="flex flex-wrap gap-3"><button className="border border-green-700 rounded-lg px-4 py-2 text-sm font-semibold text-green-900" onClick={()=>showReadExample(false)}>1 · Load read request (no value)</button><button className="border border-green-700 rounded-lg px-4 py-2 text-sm font-semibold text-green-900" onClick={()=>showReadExample(true)}>2 · Load temperature response (23.5 °C)</button></div>
+        <p className="text-xs text-slate-600">These buttons replace the current configuration and generate that step. A GroupValueResponse is application data, not LL_ACK. It depends on the group-object configuration; no fixed delay between the two telegrams is implied.</p>
+      </section>
+      <div ref={waveformRef} className="space-y-3">
+      {isDirty&&<p className="bg-amber-100 text-amber-900 rounded-lg p-3 text-sm font-semibold">Waveform and byte cards show the previous generated telegram.</p>}
       <WaveformRenderer
         bitStream={compiled?.stream ?? ""}
         ackBits={getAckPhysicalBitStream()}
-        ackType={compiled?.params.ackType ?? params.ackType}
+        ackType={response}
         priority={compiled?.params.priority ?? params.priority}
         bytes={constructedBytes}
+        selectionRevision={selectionRevision}
+        selectedByte={selectedByte}
+        onSelectByte={setSelectedByte}
       />
+      </div>
 
       {/* Structured Octet breakdown displayed only after generating a telegram */}
       {isGenerated && (
@@ -652,7 +563,7 @@ export function TelegramVisualizer() {
                   <div className="absolute top-3 right-3 text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200 group-hover:text-knx-blue group-hover:border-knx-blue/30 transition-all">
                     OCTET {idx + 1}
                   </div>
-                  <div className="space-y-2">
+                  <button type="button" className="text-left space-y-2 rounded-lg focus-visible:ring-2 focus-visible:ring-green-700" aria-label={`Inspect byte ${idx+1}: ${byte.name}`} aria-pressed={selectedByte===idx} onClick={()=>{setSelectedByte(idx);setSelectionRevision(v=>v+1);waveformRef.current?.scrollIntoView({behavior:'smooth',block:'start'});}}>
                     <span className="text-[10.5px] font-extrabold text-slate-400 uppercase tracking-wider block truncate pr-16">
                       {byte.name}
                     </span>
@@ -665,7 +576,8 @@ export function TelegramVisualizer() {
                     <p className="text-[10px] text-slate-500 leading-relaxed min-h-[30px] font-medium">
                       {byte.details}
                     </p>
-                  </div>
+                    <span className="block text-xs font-semibold text-green-800">Inspect fields & waveform →</span>
+                  </button>
 
                   {/* Physical Serial Stream Bit representation in card base */}
                   <div className="mt-4 pt-3 border-t border-slate-100 font-mono text-[9px] space-y-1.5 bg-slate-50 p-2.5 rounded-lg">
