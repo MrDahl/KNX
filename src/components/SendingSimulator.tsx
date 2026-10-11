@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {receiveSwitchWrite} from "../knx/teachingModels";
 import { 
   Send, 
   RotateCcw, 
@@ -38,6 +39,9 @@ export function SendingSimulator() {
   const [lampA, setLampA] = useState<boolean>(false);
   const [lampB, setLampB] = useState<boolean>(false);
 
+  const [sendValue, setSendValue] = useState(true);
+  const [receiverFlags, setReceiverFlags] = useState([{communication:true, write:true}, {communication:true, write:true}]);
+
   // Bus Monitor Log
   const [busLogs, setBusLogs] = useState<BusLog[]>([]);
 
@@ -49,35 +53,12 @@ export function SendingSimulator() {
     const gaKey = ga === "1/1/1" ? "ga1" : "ga2";
 
     if (row === "sensor1") {
-      setMatrix(prev => {
-        const nextVal = !prev.sensor1[gaKey];
-        const otherGa: "1/1/1" | "1/1/2" = ga === "1/1/1" ? "1/1/2" : "1/1/1";
-        const otherGaKey = otherGa === "1/1/1" ? "ga1" : "ga2";
-        const otherVal = prev.sensor1[otherGaKey];
-
-        // S-Flag logic:
-        let nextSFlag = sFlagGa;
-        if (nextVal) {
-          // If checking, and there was no S-Flag set, set this one
-          if (!sFlagGa) {
-            nextSFlag = ga;
-          }
-        } else {
-          // If unchecking, and this was the S-Flag, transfer to other if checked, else null
-          if (sFlagGa === ga) {
-            nextSFlag = otherVal ? otherGa : null;
-          }
-        }
-        setSFlagGa(nextSFlag);
-
-        return {
-          ...prev,
-          sensor1: {
-            ...prev.sensor1,
-            [gaKey]: nextVal
-          }
-        };
-      });
+      const nextVal = !matrix.sensor1[gaKey];
+      const otherGa = ga === "1/1/1" ? "1/1/2" : "1/1/1";
+      const otherKey = otherGa === "1/1/1" ? "ga1" : "ga2";
+      if (nextVal && !sFlagGa) setSFlagGa(ga);
+      if (!nextVal && sFlagGa === ga) setSFlagGa(matrix.sensor1[otherKey] ? otherGa : null);
+      setMatrix(prev => ({...prev, sensor1:{...prev.sensor1,[gaKey]:nextVal}}));
     } else {
       // Actuators can be checked freely
       setMatrix(prev => ({
@@ -101,6 +82,8 @@ export function SendingSimulator() {
     setLampA(false);
     setLampB(false);
     setBusLogs([]);
+    setSendValue(true);
+    setReceiverFlags([{communication:true, write:true}, {communication:true, write:true}]);
   };
 
   // Triggering physical button press on Sensor 1
@@ -126,27 +109,25 @@ export function SendingSimulator() {
     const targetGA = sFlagGa;
     const gaKey = targetGA === "1/1/1" ? "ga1" : "ga2";
 
+    const a = receiveSwitchWrite(lampA, sendValue, matrix.actuator1[gaKey], receiverFlags[0].communication, receiverFlags[0].write);
+    const b = receiveSwitchWrite(lampB, sendValue, matrix.actuator2[gaKey], receiverFlags[1].communication, receiverFlags[1].write);
+    setLampA(a.state);
+    setLampB(b.state);
+
     // Create log row
     const successLog: BusLog = {
       time: timeStr,
       source: "1.1.1",
       destination: targetGA,
       type: "GroupValueWrite",
-      value: "$01 (ON)",
+      value: sendValue ? "$01 (ON)" : "$00 (OFF)",
       status: "success",
-      details: `Telegram successfully transmitted onto Twisted Pair medium via GA ${targetGA}.`
+      details: `Sent to GA ${targetGA}. Lamp A: ${a.reason} Lamp B: ${b.reason}`
     };
 
     setBusLogs(prev => [successLog, ...prev]);
 
-    // 3. Evaluate Actuators:
-    // Any Actuator linked to the specific destination GA goes ON.
-    // Any Actuator NOT linked to that specific destination GA goes OFF (as per requested rules).
-    const act1Linked = matrix.actuator1[gaKey];
-    const act2Linked = matrix.actuator2[gaKey];
 
-    setLampA(act1Linked);
-    setLampB(act2Linked);
   };
 
   return (
@@ -186,8 +167,7 @@ export function SendingSimulator() {
             <p className="text-slate-500 text-[10px] leading-relaxed pt-1 font-sans">
               Because the destination field only holds one address, a sensor cannot natively transmit 
               a single telegram to multiple Group Addresses at the same time. It will always transmit 
-              solely to its designated <strong>"Sending" (S) Group Address</strong>, which is the very 
-              first Group Address linked to the Group Object in ETS.
+              solely to its designated <strong>"Sending" (S) Group Address</strong>, which defaults to the first linked address in ETS and can be changed explicitly. Here, the first checked address is used until it is unlinked.
             </p>
           </div>
         </div>
@@ -244,6 +224,7 @@ export function SendingSimulator() {
                       <label className="relative flex items-center justify-center cursor-pointer p-2">
                         <input
                           type="checkbox"
+                          aria-label="sensor1 1/1/1"
                           checked={matrix.sensor1.ga1}
                           onChange={() => handleCheckboxChange("sensor1", "1/1/1")}
                           className="h-4.5 w-4.5 rounded border-slate-300 text-knx-blue focus:ring-knx-blue/30 cursor-pointer"
@@ -263,6 +244,7 @@ export function SendingSimulator() {
                       <label className="relative flex items-center justify-center cursor-pointer p-2">
                         <input
                           type="checkbox"
+                          aria-label="sensor1 1/1/2"
                           checked={matrix.sensor1.ga2}
                           onChange={() => handleCheckboxChange("sensor1", "1/1/2")}
                           className="h-4.5 w-4.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/30 cursor-pointer"
@@ -291,7 +273,8 @@ export function SendingSimulator() {
                     <label className="relative flex items-center justify-center cursor-pointer p-2">
                       <input
                         type="checkbox"
-                        checked={matrix.actuator1.ga1}
+                        aria-label="actuator1 1/1/1"
+                          checked={matrix.actuator1.ga1}
                         onChange={() => handleCheckboxChange("actuator1", "1/1/1")}
                         className="h-4.5 w-4.5 rounded border-slate-300 text-knx-blue focus:ring-knx-blue/30 cursor-pointer"
                       />
@@ -303,7 +286,8 @@ export function SendingSimulator() {
                     <label className="relative flex items-center justify-center cursor-pointer p-2">
                       <input
                         type="checkbox"
-                        checked={matrix.actuator1.ga2}
+                        aria-label="actuator1 1/1/2"
+                          checked={matrix.actuator1.ga2}
                         onChange={() => handleCheckboxChange("actuator1", "1/1/2")}
                         className="h-4.5 w-4.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/30 cursor-pointer"
                       />
@@ -325,7 +309,8 @@ export function SendingSimulator() {
                     <label className="relative flex items-center justify-center cursor-pointer p-2">
                       <input
                         type="checkbox"
-                        checked={matrix.actuator2.ga1}
+                        aria-label="actuator2 1/1/1"
+                          checked={matrix.actuator2.ga1}
                         onChange={() => handleCheckboxChange("actuator2", "1/1/1")}
                         className="h-4.5 w-4.5 rounded border-slate-300 text-knx-blue focus:ring-knx-blue/30 cursor-pointer"
                       />
@@ -337,7 +322,8 @@ export function SendingSimulator() {
                     <label className="relative flex items-center justify-center cursor-pointer p-2">
                       <input
                         type="checkbox"
-                        checked={matrix.actuator2.ga2}
+                        aria-label="actuator2 1/1/2"
+                          checked={matrix.actuator2.ga2}
                         onChange={() => handleCheckboxChange("actuator2", "1/1/2")}
                         className="h-4.5 w-4.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/30 cursor-pointer"
                       />
@@ -349,6 +335,16 @@ export function SendingSimulator() {
             </table>
           </div>
 
+          <div className="space-y-3 text-xs text-slate-600">
+            <p>Simple DPT 1.001 switch objects: the sensor’s Communication (C) and Transmit (T) flags are assumed enabled. Each receiver updates only when the destination GA is linked and its C and W flags allow the write. Other telegrams and link edits leave the lamp state unchanged.</p>
+            {receiverFlags.map((flags, index) => <div className="flex gap-4 items-center" key={index}>
+              <strong>Lamp {index === 0 ? 'A' : 'B'}</strong>
+              {(['communication', 'write'] as const).map(flag => <label key={flag} className="flex gap-2 items-center">
+                <input type="checkbox" aria-label={`Lamp ${index === 0 ? 'A' : 'B'} ${flag}`} checked={flags[flag]} onChange={e => setReceiverFlags(prev => prev.map((f,i) => i === index ? {...f,[flag]:e.target.checked} : f))}/>
+                {flag === 'communication' ? 'Communication (C)' : 'Write (W)'}
+              </label>)}
+            </div>)}
+          </div>
           {/* Real-time configuration summary info */}
           <div className="bg-slate-50 border border-slate-200/60 rounded-2xl p-4 flex gap-3 text-xs leading-relaxed text-slate-600">
             <HelpCircle className="h-5 w-5 text-knx-blue shrink-0 mt-0.5" />
@@ -394,7 +390,7 @@ export function SendingSimulator() {
                 <span className={`mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
                   lampA ? "bg-amber-100 text-amber-800" : "bg-slate-200 text-slate-600"
                 }`}>
-                  {lampA ? "ON" : "OFF"}
+                  <span aria-label="Lamp A state">{lampA ? "ON" : "OFF"}</span>
                 </span>
               </div>
 
@@ -416,13 +412,18 @@ export function SendingSimulator() {
                 <span className={`mt-2 inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
                   lampB ? "bg-amber-100 text-amber-800" : "bg-slate-200 text-slate-600"
                 }`}>
-                  {lampB ? "ON" : "OFF"}
+                  <span aria-label="Lamp B state">{lampB ? "ON" : "OFF"}</span>
                 </span>
               </div>
             </div>
 
             {/* Interactive button trigger */}
-            <div className="pt-2">
+            <div className="pt-2 space-y-3">
+              <label className="flex items-center gap-3 text-sm font-bold text-slate-700">Switch value
+                <select aria-label="Switch value" value={sendValue ? '1' : '0'} onChange={e => setSendValue(e.target.value === '1')} className="border border-slate-200 rounded-lg p-2">
+                  <option value="1">ON (1)</option><option value="0">OFF (0)</option>
+                </select>
+              </label>
               <button
                 onClick={handlePressButton}
                 className="w-full flex items-center justify-center gap-2 px-5 py-4 bg-knx-blue text-white rounded-2xl text-sm font-extrabold shadow-md hover:bg-knx-blue/95 hover:scale-[1.01] active:scale-[0.99] transition-all"
