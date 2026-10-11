@@ -34,10 +34,10 @@ export function RoutingCounterExplorer() {
       <p className="text-sm text-slate-600">Follow a normal group telegram from 1.1.255 to 15.15.255 through the devices shown below. Normal starting RC is 6. A forwarding coupler or legacy line repeater receives RC &gt; 0 and sends it onward with RC reduced by one. An incoming RC of 0 prevents another crossing; receivers on the reached segment can still accept the telegram.</p>
       <p className="text-xs text-slate-500">Scope: ordinary group-addressed traffic, matching receiver with C/W enabled, healthy TP links and no repetitions or ACK simulation. Each relevant group-address filter permits forwarding unless you select a rejection below. RC 7 has special non-decrementing behavior; it is outside this ordinary-traffic exercise, not an extra hop to use in planning.</p>
     </section>
-    <section className="grid md:grid-cols-2 gap-4 text-sm">
+    <details className="detail-box"><summary>Show details · compare the two arrangements</summary><section className="grid @2xl:grid-cols-2 gap-4 text-sm">
       <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-2"><h3 className="font-bold text-knx-green">Parallel repeater branches</h3><p className="text-slate-600">Each extension connects to its line’s main segment. This selected cross-area path has one repeater at each end and four line/backbone couplers: six crossings. That count belongs to this path; shorter paths use fewer. With RC 6, the final segment receives RC 0, with no forwarding budget left.</p></div>
       <div className="bg-rose-50 rounded-2xl border border-rose-100 p-5 space-y-2"><h3 className="font-bold text-rose-800">Series cascade — deliberately invalid example</h3><p className="text-slate-700">Three legacy repeaters in series at each end create ten crossings. This demonstrates the failure of this arrangement; it is not a permitted legacy repeater topology or a general ten-hop KNX rule. The trace stops at the first coupler that cannot forward.</p></div>
-    </section>
+    </section></details>
     <section className="bg-white rounded-2xl border border-slate-200 p-5 space-y-5 shadow-sm">
       <div className="flex flex-wrap gap-5 items-end text-sm">
         <label className="space-y-1">Arrangement<select aria-label="Coupling arrangement" value={mode} onChange={e=>{setMode(e.target.value as typeof mode);reset();}} className="block border border-slate-200 rounded-lg p-2"><option value="parallel">Parallel Star</option><option value="series">Series Cascade (invalid example)</option></select></label>
@@ -62,12 +62,12 @@ export function RoutingCounterExplorer() {
       <ol className="space-y-2 text-sm" aria-label="Routing event log">{trace.slice(0,step+1).map((event,i)=><li key={event.id} className={`p-3 rounded-lg ${event.blocked?'bg-rose-50 text-rose-800':'bg-slate-50 text-slate-700'}`}><strong>{i+1}. {nodes[i].label} {nodes[i].address}</strong> — {event.reason}</li>)}</ol>
       {step<0&&<p className="text-sm text-slate-500">No telegram sent yet.</p>}
     </section>
-    <section className="bg-white rounded-2xl border border-slate-200 p-5 text-sm space-y-3">
+    <details className="detail-box text-sm space-y-3"><summary>Show details · device profiles and sources</summary>
       <h3 className="font-bold flex gap-2 items-center"><Info size={18}/>Repeater and segment coupler are different profiles</h3>
       <p className="text-slate-600">The LR devices in this demonstration are legacy TP1 repeaters: they extend a line without group-address filtering. A modern segment coupler connects subsegments within a logical line and supports filter tables, including ETS-managed individual-address filtering. Do not treat its behavior or permitted arrangement as identical to the legacy repeater example. Neither .64, .128 nor .192 is a required segment boundary.</p>
       <p className="text-slate-600">The normal-traffic RC budget and filtering are separate decisions. Reaching RC 0 on the destination segment is allowed; forwarding it through another coupler is not. A healthy cable and an adequate RC do not override a filter rejection.</p>
       <p className="text-xs text-slate-500">Sources: KNX Basic, “TP Topology”, sections 8 and 14; KNX Advanced, “Couplers”, sections 2.3–2.4. This is a teaching trace, not a complete KNX network validator.</p>
       <a className="text-xs underline text-knx-blue" href="https://support.knx.org/hc/en-us/articles/27352680887442-TP-TP-Couplers-in-Repeater-Mode" target="_blank" rel="noreferrer">KNX Association: repeater versus segment-coupler profiles</a>
-    </section>
+    </details>
   </div>;
 }
