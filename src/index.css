@@ -88,3 +88,5 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 @container (min-width: 40rem) { .monitor-content { padding:20px; } }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
+
+.monitor-dock[data-compact="true"] .monitor-header,.monitor-launch { touch-action:none; }
