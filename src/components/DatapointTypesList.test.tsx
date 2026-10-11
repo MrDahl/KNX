@@ -1,0 +1,23 @@
+import React from 'react';
+import {strict as assert} from 'node:assert';
+import {test} from 'node:test';
+import {create,act} from 'react-test-renderer';
+import {DatapointTypesList} from './DatapointTypesList';
+import {TelegramVisualizer} from './TelegramVisualizer';
+(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
+const text=(n:any):string=>typeof n==='string'?n:Array.isArray(n)?n.map(text).join(''):n?.children?text(n.children):'';
+test('Search, decoding and handoff preserve the selected DPT and value',async()=>{
+ let r:any,scenario:any;await act(()=>{r=create(<DatapointTypesList onUseTelegram={s=>scenario=s}/>);});
+ await act(()=>r.root.findByProps({'aria-label':'DPT hexadecimal value'}).props.onChange({target:{value:'8A 24'}}));
+ await act(()=>r.root.findAllByType('button').find((n:any)=>text(n)==='Decode value').props.onClick());
+ assert.equal(r.root.findByProps({'aria-label':'Temperature (°C)'}).props.value,'-30');
+ await act(()=>r.root.findAllByType('button').find((n:any)=>text(n).includes('Use value in Telegram Visualiser')).props.onClick());
+ assert.deepEqual(scenario,{id:'9.001',values:{value:'-30'}});
+ await act(()=>r.root.findByProps({'aria-label':'Search DPT catalogue'}).props.onChange({target:{value:'269.1200'}}));
+ await act(()=>r.root.findByProps({'aria-label':'Inspect DPT 269.1200'}).props.onClick());
+ assert.match(text(r.toJSON()),/Detailed layout pending/);assert.match(text(r.toJSON()),/14 bytes/);
+ assert.equal(r.root.findAllByProps({'aria-label':'DPT hexadecimal value'}).length,0);
+ await act(()=>r.unmount());await act(()=>{r=create(<TelegramVisualizer scenario={scenario}/>);});
+ assert.equal(r.root.findByProps({'aria-label':'Datapoint type'}).props.value,'9.001');assert.equal(r.root.findByProps({'aria-label':'Temperature (°C)'}).props.value,'-30');
+ await act(()=>r.unmount());
+});
