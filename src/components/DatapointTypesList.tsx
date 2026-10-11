@@ -1,174 +1,59 @@
-import React, { useState, useMemo } from "react";
-import { Search, Info } from "lucide-react";
-import { DPT_DATABASE } from "./dptDatabase";
-
-export function DatapointTypesList() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-
-  // Categories config
-  const categories = [
-    { id: "all", label: "All Datapoint Types" },
-    { id: "1-bit", label: "1-bit (Boolean)" },
-    { id: "2-bit", label: "2-bit (Priority)" },
-    { id: "8-bit", label: "8-bit / Scaling" },
-    { id: "composite", label: "Composite / Bytes (Status/Alarm)" },
-  ];
-
-  const handleRowClick = (id: string) => {
-    if (expandedId === id) {
-      setExpandedId(null);
-    } else {
-      setExpandedId(id);
-    }
-  };
-
-  // Filter items
-  const filteredDpts = useMemo(() => {
-    return DPT_DATABASE.filter((item) => {
-      const matchesCategory =
-        selectedCategory === "all" || item.category === selectedCategory;
-      const matchesQuery =
-        item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.range.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.detailedDesc.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesQuery;
-    });
-  }, [selectedCategory, searchQuery]);
-
-  return (
-    <div className="space-y-6">
-      
-      {/* Search and info banner */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-base font-bold text-slate-900 flex items-center gap-1.5">
-              <Info className="h-5 w-5 text-knx-blue animate-pulse" />
-              KNX Datapoint Types (DPT) Matrix & Reference Library
-            </h2>
-            <p className="text-slate-500 text-xs mt-1 font-medium leading-relaxed">
-              Standardized formatting blueprints as defined in the official <strong>KNX Technical Specification (Volume 3/7/2)</strong>. Used for decoding raw data on Twisted Pair line group communication telegrams.
-            </p>
-          </div>
-          <div className="relative max-w-sm w-full shrink-0">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search DPT identifier, name, or format..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs font-semibold focus:border-knx-blue focus:outline-none focus:ring-1 focus:ring-knx-blue text-slate-800 selection:bg-knx-blue/10 placeholder:text-slate-400"
-            />
-          </div>
-        </div>
-
-        {/* Category filtering tags */}
-        <div className="flex flex-wrap gap-1.5 border-t border-slate-100 pt-3">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
-                selectedCategory === cat.id
-                  ? "bg-knx-blue/10 text-knx-blue border-knx-blue/20 shadow-sm"
-                  : "bg-slate-50 text-slate-600 hover:bg-slate-100 border-slate-200"
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Official Handbook Spreadsheet Grid View */}
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        
-        {/* Table representation mimicking official screenshots */}
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left text-xs font-medium font-sans">
-            <thead>
-              <tr className="bg-knx-blue/5 text-knx-blue font-extrabold border-b border-knx-blue/25 select-none">
-                <th className="py-3 px-4 font-bold w-28 uppercase tracking-wide border-r border-knx-blue/15">Identifier</th>
-                <th className="py-3 px-4 font-bold w-56 uppercase tracking-wide border-r border-knx-blue/15">Name</th>
-                <th className="py-3 px-3 font-bold w-24 text-center uppercase tracking-wide border-r border-knx-blue/15">Size</th>
-                <th className="py-3 px-4 font-bold w-24 uppercase tracking-wide border-r border-knx-blue/15">Data Type</th>
-                <th className="py-3 px-4 font-bold uppercase tracking-wide">Interpretation Range / Layout</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredDpts.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-400 font-bold italic">
-                    No Datapoint Types found matching query...
-                  </td>
-                </tr>
-              ) : (
-                filteredDpts.map((dpt) => {
-                  const isExpanded = expandedId === dpt.id;
-                  return (
-                    <React.Fragment key={dpt.id}>
-                      <tr 
-                        onClick={() => handleRowClick(dpt.id)}
-                        className={`hover:bg-slate-50/70 transition-all cursor-pointer select-none ${
-                          isExpanded ? "bg-knx-blue/5" : ""
-                        }`}
-                      >
-                        <td className="py-2.5 px-4 font-mono font-bold text-knx-blue bg-knx-blue/5 border-r border-slate-100">
-                          {dpt.id}
-                        </td>
-                        <td className="py-2.5 px-4 font-mono font-extrabold text-slate-800 border-r border-slate-100">
-                          {dpt.name}
-                        </td>
-                        <td className="py-2.5 px-3 text-center text-slate-600 font-semibold border-r border-slate-100">
-                          {dpt.size}
-                        </td>
-                        <td className="py-2.5 px-4 border-r border-slate-100">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            dpt.category === "1-bit" 
-                              ? "bg-knx-green/10 text-knx-green border border-knx-green/20" 
-                              : dpt.category === "2-bit" 
-                              ? "bg-knx-blue/10 text-knx-blue border border-knx-blue/20"
-                              : dpt.category === "8-bit"
-                              ? "bg-knx-grey/10 text-knx-grey border border-knx-grey/25"
-                              : "bg-slate-150 text-slate-700 border border-slate-200"
-                          }`}>
-                            {dpt.dataType}
-                          </span>
-                        </td>
-                        <td className="py-2.5 px-4 text-slate-700 font-medium font-mono text-[11px] leading-relaxed">
-                          {dpt.range}
-                        </td>
-                      </tr>
-
-                      {/* Interactive Drawer for each DPT item */}
-                      {isExpanded && (
-                        <tr className="bg-slate-50/40">
-                          <td colSpan={5} className="p-4 border-t border-b border-knx-blue/10 text-slate-600 text-xs font-sans">
-                            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm max-w-4xl">
-                              
-                              {/* Header detailing purpose */}
-                              <div className="flex items-start gap-2.5">
-                                <div className="h-5 w-5 rounded-full bg-knx-blue/10 text-knx-blue flex items-center justify-center font-bold font-mono text-[10px] shrink-0">i</div>
-                                <div>
-                                  <span className="font-extrabold text-slate-900 block text-xs">Description for {dpt.name} ({dpt.id})</span>
-                                  <p className="text-slate-600 leading-relaxed font-semibold mt-0.5">{dpt.detailedDesc}</p>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+import React, { useMemo, useState } from 'react';
+import { Search, BookOpen, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { DPT_DATABASE, DPT_BY_ID, DPT_EDITION, filterDpts } from './dptDatabase';
+import { DPT_INPUTS, defaults, encodeDpt, type Values } from '../knx/dptCodec';
+import { decodeDptHex, payloadHex } from '../knx/dptDecode';
+import { dptLayout, DPT_NOTES } from '../knx/dptLayout';
+import { DptValueEditor } from './DptValueEditor';
+export type DptScenario={id:string;values:Values};
+const input='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900';
+const button='rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-green-700';
+const families=[...new Set(DPT_DATABASE.map(r=>r.family))];
+const kinds=[...new Set(DPT_DATABASE.map(r=>r.dataType))].sort();
+const supported=DPT_DATABASE.filter(r=>r.supported).length;
+export function DatapointTypesList({onUseTelegram}:{onUseTelegram?:(scenario:DptScenario)=>void}) {
+ const [query,setQuery]=useState(''),[family,setFamily]=useState('all'),[kind,setKind]=useState('all'),[status,setStatus]=useState('all');
+ const [page,setPage]=useState(0),[selected,setSelected]=useState('9.001'),[level,setLevel]=useState('Basic');
+ const [values,setValues]=useState<Values>(defaults('9.001')),[hex,setHex]=useState(''),[decodeError,setDecodeError]=useState(''),[received,setReceived]=useState('');
+ const results=useMemo(()=>filterDpts(query,family,kind,status),[query,family,kind,status]);
+ const row=DPT_BY_ID[selected],spec=DPT_INPUTS[selected],pageSize=25,pages=Math.max(1,Math.ceil(results.length/pageSize));
+ const currentPage=Math.min(page,pages-1);
+ let bits='';if(spec){try{bits=encodeDpt(selected,values);}catch{/* The controlled editor displays the validation error. */}}
+ const choose=(id:string)=>{setSelected(id);setValues(DPT_INPUTS[id]?defaults(id):{});setHex('');setDecodeError('');setReceived('');};
+ const clear=()=>{setQuery('');setFamily('all');setKind('all');setStatus('all');setPage(0);};
+ const decode=()=>{try{const d=decodeDptHex(selected,hex);setValues(d.values);setReceived(d.bits);setDecodeError('');}catch(e){setDecodeError((e as Error).message);setReceived('');}};
+ let offset=0;
+ return <div className="space-y-6 text-slate-800">
+  <section className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+   <div className="flex flex-wrap justify-between gap-4"><div><p className="text-xs font-bold tracking-widest text-green-700 uppercase">Datapoint workbench</p><h2 className="text-2xl font-bold text-slate-900 mt-1">Explore a value, its bytes and its meaning.</h2><p className="text-sm text-slate-600 mt-2">453 catalogue entries · {supported} interactive subtypes · KNX DPT edition {DPT_EDITION}</p></div><BookOpen className="text-green-700 h-8 w-8"/></div>
+   <p className="text-sm text-slate-600">Identifiers, names and format codes were checked against the supplied standard overview. This is an edition-specific reference, not a claim to include every DPT in later editions. The 69 unfinished layouts and inherited descriptions remain clearly identified.</p>
+   <div className="flex flex-wrap gap-2" aria-label="Common DPT examples">{['1.001','3.007','5.001','9.001','18.001','232.600'].map(id=><button key={id} className={button} onClick={()=>choose(id)} aria-pressed={selected===id}>{id} · {DPT_INPUTS[id].name}</button>)}</div>
+  </section>
+  <div className="grid xl:grid-cols-[minmax(320px,2fr)_minmax(0,3fr)] gap-6 items-start">
+   <section className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" aria-label="DPT catalogue">
+    <div className="p-4 space-y-3 border-b border-slate-200">
+     <label className="text-sm font-semibold block">Search catalogue<div className="relative mt-1"><Search className="absolute left-3 top-3 h-4 w-4 text-slate-400"/><input aria-label="Search DPT catalogue" className={input+' pl-9'} placeholder="9.001, MassFlux, kg, N8…" value={query} onChange={e=>{setQuery(e.target.value);setPage(0);}}/></div></label>
+     <div className="grid sm:grid-cols-2 gap-3"><label className="text-xs font-semibold">DPT family<select aria-label="DPT family" className={input+' mt-1'} value={family} onChange={e=>{setFamily(e.target.value);setPage(0);}}><option value="all">All families</option>{families.map(f=><option key={f} value={f}>{f}.xxx</option>)}</select></label><label className="text-xs font-semibold">Data type<select aria-label="DPT data type" className={input+' mt-1'} value={kind} onChange={e=>{setKind(e.target.value);setPage(0);}}><option value="all">All types</option>{kinds.map(k=><option key={k}>{k}</option>)}</select></label></div>
+     <label className="block text-xs font-semibold">Implementation / review<select aria-label="DPT review filter" className={input+' mt-1'} value={status} onChange={e=>{setStatus(e.target.value);setPage(0);}}><option value="all">All entries</option><option value="interactive">Interactive encoder / decoder ({supported})</option><option value="pending">Detailed layout pending (69)</option><option value="reference">Reference only, with imported notes</option></select></label>
+     <div className="flex justify-between items-center"><p role="status" className="text-sm text-slate-600">{results.length} matching entries</p><button className="text-sm text-green-800 underline" onClick={clear}>Reset filters</button></div>
     </div>
-  );
+    <div className="max-h-[650px] overflow-y-auto"><table className="w-full text-sm text-left"><thead className="bg-slate-50 text-slate-600"><tr><th scope="col" className="px-4 py-3">DPT / standard name</th><th scope="col" className="px-3 py-3 whitespace-nowrap">Size</th></tr></thead><tbody>{results.slice(currentPage*pageSize,(currentPage+1)*pageSize).map(d=><tr key={d.id} className={'border-t border-slate-100 '+(selected===d.id?'bg-green-50':'hover:bg-slate-50')}><td className="px-4 py-3"><button aria-label={`Inspect DPT ${d.id}`} aria-pressed={selected===d.id} className="text-left w-full rounded focus-visible:ring-2 focus-visible:ring-green-700" onClick={()=>choose(d.id)}><span className="font-mono font-bold text-green-800">{d.id}</span><span className="block break-all text-xs mt-1 text-slate-700">{d.name}</span><span className="block text-xs mt-1 text-slate-500">{d.supported?'Interactive':d.layoutPending?'Layout pending':'Reference'}</span></button></td><td className="px-3 py-3 text-xs whitespace-nowrap">{d.size}</td></tr>)}</tbody></table>{!results.length&&<p className="p-6 text-sm text-slate-600">No matching DPTs. Try an identifier or reset the filters.</p>}</div>
+    <div className="p-3 border-t border-slate-200 flex items-center justify-between gap-2"><button aria-label="Previous DPT page" className={button} disabled={currentPage===0} onClick={()=>setPage(currentPage-1)}><ChevronLeft className="w-4 h-4"/></button><span className="text-xs">Page {currentPage+1} of {pages}</span><button aria-label="Next DPT page" className={button} disabled={currentPage+1>=pages} onClick={()=>setPage(currentPage+1)}><ChevronRight className="w-4 h-4"/></button></div>
+   </section>
+   <section aria-label="Selected DPT" className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm space-y-5 min-w-0">
+    <div><div className="flex flex-wrap gap-2 items-center"><span className="font-mono text-xl font-bold text-green-800">DPT {row.id}</span><span className={'rounded-full px-3 py-1 text-xs font-semibold '+(spec?'bg-green-100 text-green-900':'bg-amber-100 text-amber-900')}>{spec?'Interactive subset':row.layoutPending?'Detailed layout pending':'Reference only'}</span></div><h3 className="text-xl font-bold mt-2 break-words">{row.name}</h3><p className="text-xs text-slate-500 mt-2">Selection stays open while you filter the catalogue.</p></div>
+    <dl className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm"><div className="rounded-lg bg-slate-50 p-3"><dt className="text-slate-500 text-xs">Value size</dt><dd className="font-semibold">{row.size}</dd></div><div className="rounded-lg bg-slate-50 p-3"><dt className="text-slate-500 text-xs">Data type</dt><dd className="font-semibold">{row.dataType}</dd></div><div className="rounded-lg bg-slate-50 p-3"><dt className="text-slate-500 text-xs">Unit</dt><dd className="font-semibold">{row.unit||'See subtype details'}</dd></div></dl>
+    {row.sourceNotes.map(note=><p key={note} className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950">{note}</p>)}
+    <div role="group" aria-label="Explanation level" className="flex gap-2">{['Basic','Advanced','Tutor'].map(l=><button className={button+(level===l?' bg-green-50 border-green-700':'')} aria-pressed={level===l} onClick={()=>setLevel(l)} key={l}>{l}</button>)}</div>
+    <p className="text-sm leading-relaxed text-slate-700">{level==='Basic'?'A DPT tells sender and receiver how to interpret a value. The identifier is configured in ETS; group-value telegrams do not carry it. Matching size alone does not make two DPTs interchangeable.':level==='Advanced'?'The main number identifies the format and encoding; the subtype identifies its dimension, range and unit. Value bytes below are shown most-significant octet first. TP1 transmits the bits inside each octet least-significant bit first.':'Use the cited edition and subtype detail pages to check range, reserved values and application restrictions. Counter DPTs are not generic containers for arbitrary data. The overview format is not always a complete physical bit layout: alignment and reserved fields must be checked in the detailed specification.'}</p>
+    <div className="rounded-xl bg-slate-50 border border-slate-200 p-4"><p className="text-xs font-semibold text-slate-600">Standard overview format · MSB first</p><p className="font-mono text-sm break-all mt-1">{row.format}</p><p className="text-xs text-slate-600 mt-2">A: character · B: Boolean/bit set · F: float · N: enumeration · U: unsigned · V: signed two’s complement · r: reserved · Z8: standard status/command. Numeric suffixes are field widths in bits; A[n] is a character string.</p></div>
+    {spec?<>
+     <div className="grid sm:grid-cols-2 gap-4"><div className="border border-slate-200 rounded-xl p-4"><h4 className="font-bold mb-3">Value → encoding</h4><DptValueEditor id={selected} values={values} onChange={v=>{setValues(v);setReceived('');setDecodeError('');}}/></div><div className="border border-slate-200 rounded-xl p-4 space-y-3"><h4 className="font-bold">Hex → value</h4><label className="block text-xs font-semibold">Value octets only<input aria-label="DPT hexadecimal value" className={input+' font-mono mt-1'} placeholder={bits?payloadHex(bits):'Hex octets'} value={hex} onChange={e=>setHex(e.target.value)}/></label><button className={button} onClick={decode}>Decode value</button><p className="text-xs text-slate-600">Do not include control, addresses, APCI or checksum. For values shorter than one octet, enter one octet with unused high bits zero.</p>{decodeError&&<p role="alert" className="text-sm text-red-700">{decodeError}</p>}{received&&<p className="text-xs text-green-800">Decoded {payloadHex(received)}. The encoder below uses its canonical representation; rounding and equivalent float encodings can change the bytes.</p>}</div></div>
+     <p className="text-sm text-slate-700">{DPT_NOTES[selected]||spec.note||'The editor validates the range of this exact subtype. It does not imply support for every subtype in the same family.'}</p>
+     {bits&&<><div><h4 className="font-bold mb-2">Encoded value · {bits.length} bits</h4><div className="flex flex-wrap gap-2">{payloadHex(bits).split(' ').map((h,i)=><div key={i} className="border border-green-200 bg-green-50 rounded-lg p-3 text-center"><div className="text-xs text-slate-500">Octet {i+1}</div><div className="font-mono text-lg font-bold text-green-900">{h}</div></div>)}</div><p className="text-xs text-slate-600 mt-2">{bits.length<=6?'This is a padded view of the value. In a group-value telegram the value occupies the low bits of the APCI/data octet; it is not an extra data octet.':'These are the DPT value octets, without telegram framing.'}</p></div><div className="overflow-x-auto"><table className="w-full text-xs text-left"><caption className="text-left font-semibold pb-2">Field layout · logical MSB → LSB</caption><thead><tr className="border-b"><th className="p-2">Field</th><th className="p-2">Width</th><th className="p-2">Bits</th></tr></thead><tbody>{dptLayout(selected,bits.length).map((f,i)=>{const part=bits.slice(offset,offset+f.bits);offset+=f.bits;return <tr key={i} className="border-b border-slate-100"><td className="p-2">{f.name}</td><td className="p-2">{f.bits}</td><td className="p-2 font-mono break-all">{part}</td></tr>;})}</tbody></table></div>{onUseTelegram&&<button className="w-full bg-green-700 text-white rounded-xl p-3 font-semibold flex justify-center items-center gap-2" onClick={()=>onUseTelegram({id:selected,values:{...values}})}>Use value in Telegram Visualiser <ArrowRight className="h-4 w-4"/></button>}</>}
+    </>:<div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950"><h4 className="font-semibold">{row.layoutPending?'Semantic layout has not been completed':'No interactive codec for this subtype yet'}</h4><p className="mt-2">Identity and overview format are checked. Named fields, reserved/invalid values, ranges and application-specific restrictions still require detailed review before an encoder or decoder can be enabled.</p></div>}
+    <details className="border-t border-slate-200 pt-4"><summary className="cursor-pointer font-semibold text-sm">Source, review history and imported notes</summary><div className="space-y-3 mt-3 text-xs leading-relaxed text-slate-600"><p>KNX Interworking Datapoint Types v{DPT_EDITION}. Overview: printed page {row.overviewPage}.{row.detailPages.length>0?` Subtype table reference: printed page${row.detailPages.length>1?'s':''} ${row.detailPages.join(', ')}.`:' Detailed subtype page has not been indexed.'}</p><p>All 453 names and overview formats were cross-checked. Sizes were reconciled with the overview format; 24 further corrections were checked against subtype detail pages. Data-type labels remain imported; interactive widths are covered by tests. A verified identity is not a verified semantic layout.</p>{row.family==='14'&&row.unit&&<p>Unit transcribed from the standard’s F32 subtype table. Spelling follows the supplied edition; apparent editorial anomalies should be checked against KNX errata.</p>}<p className="font-semibold">Imported range/layout note {row.layoutPending?'(unfinished)':'(not a blanket verification)'}</p><p className="font-mono break-words">{row.range}</p>{row.changes.length>0?<ul className="list-disc pl-4">{row.changes.map((c,i)=><li key={i}>{c.action}{c.oldName?` · previous name: ${c.oldName}`:''}</li>)}</ul>:<p>No change recorded in the supplied change log. The inherited range/layout text is not assumed to have been checked.</p>}</div></details>
+   </section>
+  </div>
+ </div>;
 }
