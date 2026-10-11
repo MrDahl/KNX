@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import { Sliders, Play, Layers, AlertTriangle, Clock, CornerDownRight, Zap } from "lucide-react";
 import { APCICode, TelegramParams, TelegramByte, KNXAddressIndividual, KNXAddressGroup } from "../types";
 import { APCI_DEFS, DPT_DEFS, PRESET_TELEGRAMS } from "../data";
-import { WaveformRenderer, telegramTiming } from "./WaveformRenderer";
+import { WaveformRenderer } from "./WaveformRenderer";
+import { telegramTiming, DEFAULT_NEXT_ACCESS, type NextAccess } from "../knx/tp1Timing";
 import { DptValueEditor } from "./DptValueEditor";
 import { DPT_INPUTS, defaults, encodeDpt, type Values } from "../knx/dptCodec";
 
@@ -77,14 +78,16 @@ export function buildStandardGroupTelegram(params: TelegramParams, payload: stri
   return { cards, stream: bytes.map(byte => serial(bits(byte))).join("11") };
 }
 
-export { telegramTiming } from "./WaveformRenderer";
+export { telegramTiming } from "../knx/tp1Timing";
 
 export function TelegramVisualizer() {
   const [params, setParams] = useState<TelegramParams>({repeatFlag: "1", targetType: "1", command: APCICode.GroupValueWrite,
     source: {area: 1, line: 1, device: 10}, destination: {main: 1, middle: 0, sub: 1}, routingCounter: 6, priority: "11", dptType: "1.001", ackType: "CC"});
-  const [dptValue, setDptValue] = useState("1");
-  const [editorInitial, setEditorInitial] = useState<Values>(defaults('1.001'));
-  const [editorVersion, setEditorVersion] = useState(0);
+  // The editor and encoder share one source of truth, including while Read hides the editor.
+  const [dptValues, setDptValues] = useState<Values>(defaults('1.001'));
+  let dptValue = '';
+  try { dptValue = encodeDpt(params.dptType, dptValues); } catch { /* Editor explains invalid input. */ }
+  const [nextAccess, setNextAccess] = useState<NextAccess>(DEFAULT_NEXT_ACCESS);
   const [response, setResponse] = useState<'CC'|'0C'|'C0'|'NONE'>('CC');
   const [selectedByte, setSelectedByte] = useState(0);
   const [selectionRevision, setSelectionRevision] = useState(0);
@@ -93,6 +96,7 @@ export function TelegramVisualizer() {
   const [constructedBytes, setLogicalBytes] = useState<TelegramByte[]>([]);
   const [compiled, setCompiled] = useState<{signature: string; stream: string; params: TelegramParams} | null>(null);
   const [error, setError] = useState("");
+  const updateParams: typeof setParams = next => { setParams(next); setCurrentPreset(-1); setError(''); };
   const signature = JSON.stringify([params, dptValue]);
   const isGenerated = compiled !== null;
   const isDirty = !!compiled && (compiled.signature !== signature);
@@ -101,16 +105,16 @@ export function TelegramVisualizer() {
     const p = PRESET_TELEGRAMS[idx];
     setParams({...p.params, source: {...p.params.source}, destination: {...p.params.destination}} as TelegramParams);
     // Correct this tool's presets without modifying the shared catalogue in this step.
-    setDptValue(p.params.dptType === "9.001" ? encodeTemperature(23.5) : p.params.dptType === "5.001" ? bits(Math.round(75 * 255 / 100)) : p.payloadValue);
     const values=defaults(p.params.dptType);
     if(p.params.dptType==='9.001')values.value='23.5';
     if(p.params.dptType==='5.001')values.value='75';
     if(p.params.dptType==='1.001')values.value=p.payloadValue;
-    setEditorInitial(values); setEditorVersion(v=>v+1);
+    setDptValues(values);
     setCurrentPreset(idx); setError("");
   };
   const handleGenerateClick = () => {
     try {
+      if (!isRead && !dptValue) throw new Error('Correct the invalid DPT value before generating.');
       const result = buildStandardGroupTelegram(params, dptValue);
       setLogicalBytes(result.cards); setSelectedByte(0);
       setCompiled({signature, stream: result.stream, params: {...params}}); setError("");
@@ -120,22 +124,30 @@ export function TelegramVisualizer() {
     }
   };
   const handleDptSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = e.target.value, d = STANDARD_DPTS.find(d => d.id === id)!;
-    setParams(p => ({...p, dptType: id}));
-    // Raw zero defaults avoid inheriting unverified handwritten examples.
+    const id = e.target.value;
+    updateParams(p => ({...p, dptType: id}));
+    // Use the semantic defaults for this exact subtype.
     const values=defaults(id);
-    setDptValue(encodeDpt(id,values)); setEditorInitial(values); setEditorVersion(v=>v+1);
+    setDptValues(values);
     setCurrentPreset(-1); setError("");
   };
+  const addressErrors = ([
+    ['Source area', params.source.area, 15],
+    ['Source line', params.source.line, 15],
+    ['Source device', params.source.device, 255],
+    ['Main group', (params.destination as KNXAddressGroup).main, 31],
+    ['Middle group', (params.destination as KNXAddressGroup).middle, 7],
+    ['Subgroup', (params.destination as KNXAddressGroup).sub, 255]
+  ] as [string,number,number][]).filter(([,n,max])=>!Number.isInteger(n)||n<0||n>max).map(([label,,max])=>`${label}: enter a whole number from 0 to ${max}.`);
   const totalCharactersCount = constructedBytes.length;
-  const timing = telegramTiming(totalCharactersCount, compiled?.params.priority ?? params.priority);
-  const totalTransmitBitsCount = timing.frameBits, transmissionMs = timing.frameMs, totalCycleMs = timing.cycleMs;
+  const timing = telegramTiming(totalCharactersCount, nextAccess);
+  const totalTransmitBitsCount = timing.frameBits, transmissionMs = timing.frameMs;
   const getAckPhysicalBitStream = () => compiled && response !== 'NONE' ? serial(bits(parseInt(response, 16))) : "";
   const showReadExample = (reply:boolean) => {
     const p:TelegramParams = {repeatFlag:'1',targetType:'1',command:reply?APCICode.GroupValueResponse:APCICode.GroupValueRead,
       source:{area:1,line:1,device:reply?20:10},destination:{main:1,middle:0,sub:1},routingCounter:6,priority:'11',dptType:'9.001',ackType:'CC'};
     const values={value:'23.5'}, payload=encodeDpt('9.001',values),result=buildStandardGroupTelegram(p,payload);
-    setParams(p);setDptValue(payload);setEditorInitial(values);setEditorVersion(v=>v+1);setCurrentPreset(-1);setError('');setResponse('CC');setSelectedByte(0);
+    setParams(p);setDptValues(values);setCurrentPreset(-1);setError('');setResponse('CC');setSelectedByte(0);
     setLogicalBytes(result.cards);setCompiled({signature:JSON.stringify([p,payload]),stream:result.stream,params:p});
   };
 
@@ -144,6 +156,7 @@ export function TelegramVisualizer() {
 
       <p className="text-sm text-slate-600">Standard plain TP1 group-value telegrams: Read, Response and Write. Maximum 14 value octets. Management services, extended frames and KNX Secure are not implemented here.</p>
       {error && <div role="alert" className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-800">{error}</div>}
+      {addressErrors.length>0&&<div role="alert" className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-800">{addressErrors.map(message=><p key={message}>{message}</p>)}</div>}
       {/* Dirty warning notice */}
       {isGenerated && isDirty && (
         <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs leading-relaxed text-amber-800 shadow-xs">
@@ -187,6 +200,7 @@ export function TelegramVisualizer() {
               {PRESET_TELEGRAMS.map((t, idx) => (
                 <button
                   key={`preset-${idx}`}
+                  aria-pressed={currentPreset === idx}
                   type="button"
                   onClick={() => applyPreset(idx)}
                   className={`text-left px-3 py-2.5 rounded-xl text-xs border font-bold transition-all ${
@@ -209,8 +223,9 @@ export function TelegramVisualizer() {
                 Repeat Flag (R)
               </label>
               <select
+                aria-label="Repeat flag"
                 value={params.repeatFlag}
-                onChange={(e) => setParams(prev => ({ ...prev, repeatFlag: e.target.value as "0" | "1" }))}
+                onChange={(e) => updateParams(prev => ({ ...prev, repeatFlag: e.target.value as "0" | "1" }))}
                 className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none focus:ring-1 focus:ring-knx-blue/20"
               >
                 <option value="1">Original (Not repeated)</option>
@@ -225,10 +240,11 @@ export function TelegramVisualizer() {
               </label>
               <select
                 disabled
+                aria-label="Target address type"
                 value={params.targetType}
                 onChange={(e) => {
                   const val = e.target.value as "0" | "1";
-                  setParams(prev => ({
+                  updateParams(prev => ({
                     ...prev,
                     targetType: val,
                     destination: val === "1" ? { main: 1, middle: 0, sub: 1 } : { area: 1, line: 1, device: 10 }
@@ -248,9 +264,10 @@ export function TelegramVisualizer() {
                 APCI Group-Value Service
               </label>
               <select
+                aria-label="APCI group-value service"
                 value={params.command}
                 onChange={(e) => {
-                  setParams(prev => ({ ...prev, command: e.target.value as APCICode }));
+                  updateParams(prev => ({ ...prev, command: e.target.value as APCICode }));
                   setCurrentPreset(-1);
                 }}
                 className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none"
@@ -275,10 +292,12 @@ export function TelegramVisualizer() {
                     type="number"
                     min="0"
                     max="15"
-                    value={params.source.area}
+                    aria-label="Source area"
+                    aria-invalid={!Number.isInteger(params.source.area) || params.source.area < 0 || params.source.area > 15}
+                    value={Number.isNaN(params.source.area) ? "" : params.source.area}
                     onChange={(e) => {
-                      const val = Math.min(15, Math.max(0, parseInt(e.target.value) || 0));
-                      setParams(p => ({ ...p, source: { ...p.source, area: val } }));
+                      const val = e.target.value === '' ? NaN : Number(e.target.value);
+                      updateParams(p => ({ ...p, source: { ...p.source, area: val } }));
                     }}
                     className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
                   />
@@ -289,10 +308,12 @@ export function TelegramVisualizer() {
                     type="number"
                     min="0"
                     max="15"
-                    value={params.source.line}
+                    aria-label="Source line"
+                    aria-invalid={!Number.isInteger(params.source.line) || params.source.line < 0 || params.source.line > 15}
+                    value={Number.isNaN(params.source.line) ? "" : params.source.line}
                     onChange={(e) => {
-                      const val = Math.min(15, Math.max(0, parseInt(e.target.value) || 0));
-                      setParams(p => ({ ...p, source: { ...p.source, line: val } }));
+                      const val = e.target.value === '' ? NaN : Number(e.target.value);
+                      updateParams(p => ({ ...p, source: { ...p.source, line: val } }));
                     }}
                     className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
                   />
@@ -303,10 +324,12 @@ export function TelegramVisualizer() {
                     type="number"
                     min="0"
                     max="255"
-                    value={params.source.device}
+                    aria-label="Source device"
+                    aria-invalid={!Number.isInteger(params.source.device) || params.source.device < 0 || params.source.device > 255}
+                    value={Number.isNaN(params.source.device) ? "" : params.source.device}
                     onChange={(e) => {
-                      const val = Math.min(255, Math.max(0, parseInt(e.target.value) || 0));
-                      setParams(p => ({ ...p, source: { ...p.source, device: val } }));
+                      const val = e.target.value === '' ? NaN : Number(e.target.value);
+                      updateParams(p => ({ ...p, source: { ...p.source, device: val } }));
                     }}
                     className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
                   />
@@ -319,7 +342,7 @@ export function TelegramVisualizer() {
               <span className="text-[10px] font-bold text-knx-blue uppercase tracking-wider block mb-2">
                 Destination Address ({params.targetType === "1" ? "Main/Middle/Sub Group format" : "Area.Line.Device Individual format"})
               </span>
-              {params.targetType === "1" ? (
+
                 <div className="grid grid-cols-3 gap-2">
                   <div>
                     <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Main (0-31)</span>
@@ -327,10 +350,12 @@ export function TelegramVisualizer() {
                       type="number"
                       min="0"
                       max="31"
-                      value={(params.destination as KNXAddressGroup).main}
+                      aria-label="Main group"
+                    aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup).main) || (params.destination as KNXAddressGroup).main < 0 || (params.destination as KNXAddressGroup).main > 31}
+                    value={Number.isNaN((params.destination as KNXAddressGroup).main) ? "" : (params.destination as KNXAddressGroup).main}
                       onChange={(e) => {
-                        const val = Math.min(31, Math.max(0, parseInt(e.target.value) || 0));
-                        setParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), main: val } }));
+                        const val = e.target.value === '' ? NaN : Number(e.target.value);
+                        updateParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), main: val } }));
                       }}
                       className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
                     />
@@ -341,10 +366,12 @@ export function TelegramVisualizer() {
                       type="number"
                       min="0"
                       max="7"
-                      value={(params.destination as KNXAddressGroup).middle}
+                      aria-label="Middle group"
+                    aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup).middle) || (params.destination as KNXAddressGroup).middle < 0 || (params.destination as KNXAddressGroup).middle > 7}
+                    value={Number.isNaN((params.destination as KNXAddressGroup).middle) ? "" : (params.destination as KNXAddressGroup).middle}
                       onChange={(e) => {
-                        const val = Math.min(7, Math.max(0, parseInt(e.target.value) || 0));
-                        setParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), middle: val } }));
+                        const val = e.target.value === '' ? NaN : Number(e.target.value);
+                        updateParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), middle: val } }));
                       }}
                       className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
                     />
@@ -355,61 +382,18 @@ export function TelegramVisualizer() {
                       type="number"
                       min="0"
                       max="255"
-                      value={(params.destination as KNXAddressGroup).sub}
+                      aria-label="Subgroup"
+                    aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup).sub) || (params.destination as KNXAddressGroup).sub < 0 || (params.destination as KNXAddressGroup).sub > 255}
+                    value={Number.isNaN((params.destination as KNXAddressGroup).sub) ? "" : (params.destination as KNXAddressGroup).sub}
                       onChange={(e) => {
-                        const val = Math.min(255, Math.max(0, parseInt(e.target.value) || 0));
-                        setParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), sub: val } }));
+                        const val = e.target.value === '' ? NaN : Number(e.target.value);
+                        updateParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressGroup), sub: val } }));
                       }}
                       className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
                     />
                   </div>
                 </div>
-              ) : (
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Area (0-15)</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="15"
-                      value={(params.destination as KNXAddressIndividual).area}
-                      onChange={(e) => {
-                        const val = Math.min(15, Math.max(0, parseInt(e.target.value) || 0));
-                        setParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressIndividual), area: val } }));
-                      }}
-                      className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Line (0-15)</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="15"
-                      value={(params.destination as KNXAddressIndividual).line}
-                      onChange={(e) => {
-                        const val = Math.min(15, Math.max(0, parseInt(e.target.value) || 0));
-                        setParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressIndividual), line: val } }));
-                      }}
-                      className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-slate-505 uppercase font-bold block mb-1">Device (0-255)</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="255"
-                      value={(params.destination as KNXAddressIndividual).device}
-                      onChange={(e) => {
-                        const val = Math.min(255, Math.max(0, parseInt(e.target.value) || 0));
-                        setParams(p => ({ ...p, destination: { ...(p.destination as KNXAddressIndividual), device: val } }));
-                      }}
-                      className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none"
-                    />
-                  </div>
-                </div>
-              )}
+
             </div>
 
             {/* DPT Type Select */}
@@ -419,6 +403,7 @@ export function TelegramVisualizer() {
               </label>
               <select
                 disabled={isRead}
+                aria-label="Datapoint type"
                 value={params.dptType}
                 onChange={handleDptSelectChange}
                 className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none"
@@ -437,7 +422,7 @@ export function TelegramVisualizer() {
                 DPT Payload Data Value
               </label>
               {isRead ? <p className="text-xs text-slate-600">Read requests carry no value. The selected DPT does not change the request bytes.</p> :
-                <DptValueEditor key={`${params.dptType}-${editorVersion}`} id={params.dptType} initial={editorInitial} onChange={value=>{setDptValue(value);setCurrentPreset(-1);setError('');}} />}
+                <DptValueEditor id={params.dptType} values={dptValues} onChange={values=>{setDptValues(values);setCurrentPreset(-1);setError('');}} />}
             </div>
 
             {/* Routing / Hop count slider */}
@@ -449,9 +434,10 @@ export function TelegramVisualizer() {
                 type="range"
                 min="0"
                 max="7"
+                aria-label="Routing hop count"
                 value={params.routingCounter}
                 onChange={(e) => {
-                  setParams(prev => ({ ...prev, routingCounter: parseInt(e.target.value) }));
+                  updateParams(prev => ({ ...prev, routingCounter: parseInt(e.target.value) }));
                   setCurrentPreset(-1);
                 }}
                 className="w-full h-1.5 mt-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-knx-blue"
@@ -467,17 +453,18 @@ export function TelegramVisualizer() {
                 Arbitration Priority
               </label>
               <select
+                aria-label="Telegram priority"
                 value={params.priority}
                 onChange={(e) => {
-                  setParams(prev => ({ ...prev, priority: e.target.value as any }));
+                  updateParams(prev => ({ ...prev, priority: e.target.value as any }));
                   setCurrentPreset(-1);
                 }}
                 className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-sans focus:border-knx-blue focus:outline-none"
               >
-                <option value="00">System (00) - Network critical</option>
-                <option value="10">Alarm (10) - Security alerts</option>
-                <option value="01">High (01) - Higher bus access priority</option>
-                <option value="11">Low/Normal (11) - Generic runtime</option>
+                <option value="00">System (00) - Reserved for link-layer use</option>
+                <option value="10">Alarm / urgent (10) - Security alerts</option>
+                <option value="01">High / normal (01) - Higher bus access priority</option>
+                <option value="11">Low (11) - Generic runtime</option>
               </select>
             </div>
 
@@ -505,9 +492,24 @@ export function TelegramVisualizer() {
               ['Frame duration',`${transmissionMs.toFixed(3)} ms`],
               ['Delay to response slot',`${timing.ackGapMs.toFixed(3)} ms (15 bits)`],
               [response==='NONE'?'Silent observation slot':'Response character',`${timing.ackMs.toFixed(3)} ms (11 bits)`],
-              ...(response==='NONE'?[]:[['Guard + idle',`${timing.postAckMs.toFixed(3)} ms (${timing.postAckBits} bits)`],['Ideal exchange',`${totalCycleMs.toFixed(3)} ms`]])
+              ...(response==='NONE'?[]:[['Frame + acknowledgement',`${timing.exchangeMs.toFixed(3)} ms`],['Idle before next access',`${timing.idleMs.toFixed(3)} ms (${timing.idleBits} bits)`],['Earliest next transmission',`${timing.earliestNextMs.toFixed(3)} ms from frame start`]])
             ].map(([name,value])=><div key={name} className="border-b border-slate-200 pb-2"><dt className="text-slate-600">{name}</dt><dd className="font-mono font-semibold mt-1">{value}</dd></div>)}
           </dl>}
+          <fieldset className="border border-slate-200 rounded-lg p-3 space-y-3" disabled={response==='NONE'}>
+            <legend className="text-sm font-semibold">Next telegram seeking bus access</legend>
+            <label className="block text-xs">Next telegram priority
+              <select aria-label="Next telegram priority" value={nextAccess.priority} onChange={e=>setNextAccess(p=>({...p,priority:e.target.value as NextAccess['priority']}))} className="block w-full mt-1 border rounded p-2 bg-white">
+                <option value="00">System (00)</option><option value="10">Alarm / urgent (10)</option><option value="01">High / normal (01)</option><option value="11">Low (11)</option>
+              </select>
+            </label>
+            <label className="block text-xs">Next telegram transmission
+              <select aria-label="Next telegram transmission" value={nextAccess.repeatFlag} onChange={e=>setNextAccess(p=>({...p,repeatFlag:e.target.value as '0'|'1'}))} className="block w-full mt-1 border rounded p-2 bg-white">
+                <option value="1">Original</option><option value="0">Repeated</option>
+              </select>
+            </label>
+            <p className="text-xs text-slate-600">This independent access scenario does not change the generated bytes. After the response stop bit: 50 bit periods for System, Alarm/urgent or a repeated telegram; 53 for an original High/normal or Low telegram. No additional 2-bit guard is added.</p>
+          </fieldset>
+          <p className="text-xs text-slate-600">Earliest access is a nominal eligibility boundary assuming a continuously idle bus, not a scheduled next telegram or retry. Contention, fairness delays and retry-specific waits are not simulated. Reference: KNX TP1 §2.3, Figures 38–41.</p>
           <label className="block text-sm font-semibold text-slate-800">Demonstration response
             <select aria-label="Demonstration response" value={response} onChange={e=>setResponse(e.target.value as typeof response)} className="block w-full mt-2 border rounded-lg p-2 bg-white text-slate-900">
               <option value="CC">ACK · CC · received correctly</option><option value="0C">NAK · 0C · reception error</option><option value="C0">BUSY · C0 · receive buffer full</option><option value="NONE">No acknowledgement · silence</option>
@@ -515,7 +517,7 @@ export function TelegramVisualizer() {
           </label>
           <p className="text-xs text-slate-600">Changes apply immediately to the response illustration. They do not change the generated telegram bytes. This is a selected teaching scenario, not a simulated receiver.</p>
           <p className="text-sm text-slate-800">{response==='CC'?'ACK confirms link-layer reception. It does not prove that an actuator performed an action or that an application response will follow.':response==='0C'?'NAK reports a reception error. A sender can repeat the telegram according to its retry behaviour.':response==='C0'?'BUSY reports that the receiving link layer cannot process the telegram because its buffers are full. Retry handling is device-dependent.':'No acknowledgement means no response was observed. The waveform shows a silent nominal response slot, not a specified timeout or complete failed transaction. Retry timing is not calculated.'}</p>
-          <p className="text-xs text-slate-600">For simultaneous group acknowledgements, the Tutor course gives BUSY → NAK → ACK priority. A group ACK cannot identify which individual receivers acknowledged. Negative or absent responses can cause repetitions; these are not included in the displayed ideal exchange. Reference: Tutor §3.6.4.</p>
+          <p className="text-xs text-slate-600">For simultaneous group acknowledgements, the Tutor course gives BUSY → NAK → ACK priority. A group ACK cannot identify which individual receivers acknowledged. Negative or absent responses can cause repetitions; these are not included in the displayed frame and acknowledgement. Reference: Tutor §3.6.4.</p>
         </aside>
       </div>
 
@@ -531,7 +533,7 @@ export function TelegramVisualizer() {
         bitStream={compiled?.stream ?? ""}
         ackBits={getAckPhysicalBitStream()}
         ackType={response}
-        priority={compiled?.params.priority ?? params.priority}
+        nextAccess={nextAccess}
         bytes={constructedBytes}
         selectionRevision={selectionRevision}
         selectedByte={selectedByte}
