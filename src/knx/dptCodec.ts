@@ -1,14 +1,16 @@
+import { EXPANDED_DPTS, encodeExpanded, expandedSummary, encodeFloat16, validateFields } from './dptExpandedCodec';
 // KNX Interworking Datapoint Types v02.02.01, §§3.1–3.20, 3.31, 6.6.
 // This catalogue names exact subtypes; it does not change the shared DPT matrix.
 export type Values = Record<string, string>;
-type Field = { key: string; label: string; type?: string; min?: number; max?: number; step?: string; options?: string[]; initial: string };
-type Spec = { name: string; size: number; fields: Field[]; note?: string };
+export type Field = { key: string; label: string; type?: string; min?: number; max?: number; step?: string; options?: string[]; optionValues?: number[]; initial: string };
+export type Spec = { name: string; size: number; fields: Field[]; note?: string; telegramAllowed?: boolean };
 const num = (key: string, label: string, min: number, max: number, initial = '0', step = '1'): Field => ({key,label,type:'number',min,max,initial,step});
 const select = (key: string,label: string, options: string[],initial='0'): Field => ({key,label,options,initial});
 const day = select('day','Day of week',['Not specified','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']);
 const time: Field = {key:'time',label:'Time (HH:MM:SS)',type:'time',step:'1',initial:'12:00:00'};
 const date: Field = {key:'date',label:'Date',type:'date',initial:'2026-01-01'};
 export const DPT_INPUTS: Record<string, Spec> = {
+ ...EXPANDED_DPTS,
  '1.001':{name:'Switch',size:1,fields:[select('value','Switch value',['Off','On'],'1')]},
  '2.001':{name:'Switch control',size:2,fields:[select('control','Control',['No control','Control active']),select('value','Switch value',['Off','On'])]},
  '3.007':{name:'Relative dimming',size:4,fields:[select('direction','Direction',['Decrease','Increase'],'1'),select('step','Step code',['Stop','100%','50%','25%','12.5%','6.25%','3.125%','1.5625%'])]},
@@ -38,10 +40,7 @@ export const bin = (n:number,width=8) => n.toString(2).padStart(width,'0');
 const octets = (ns:number[]) => ns.map(n=>bin(n)).join('');
 export const defaults = (id:string):Values => Object.fromEntries(DPT_INPUTS[id].fields.map(f=>[f.key,f.initial]));
 export function float16(value:number) {
- let e=0,m=Math.round(value*100);
- while(m < -2048 || m > 2047) m=Math.round(value*100/2**++e);
- if(e>15) throw Error('Outside KNX float range.');
- return bin((m<0?0x8000:0)|(e<<11)|(m&0x7ff),16);
+ return encodeFloat16(value);
 }
 export function decodeFloat(payload:string) {
  const n=parseInt(payload,2); let m=n&2047; if(n&32768)m-=2048;
@@ -61,12 +60,8 @@ function clock(text:string) {
 }
 export function encodeDpt(id:string,v:Values):string {
  const spec=DPT_INPUTS[id]; if(!spec)throw Error('Unsupported DPT.');
- for(const f of spec.fields) {
-  if(f.type==='number'||f.options) {
-   const n=Number(v[f.key]);
-   if(v[f.key]===undefined||!v[f.key].trim()||!Number.isFinite(n)||(f.step!=='any'&&!Number.isInteger(n))||n<(f.min??0)||n>(f.max??((f.options?.length??1)-1)))throw Error(`Invalid ${f.label.toLowerCase()}.`);
-  }
- }
+ if(EXPANDED_DPTS[id])return encodeExpanded(id,v);
+ validateFields(spec,v);
  const n=Number(v.value);
  switch(id) {
  case '1.001':return v.value;
@@ -76,7 +71,7 @@ export function encodeDpt(id:string,v:Values):string {
  case '5.001':return bin(Math.round(n*255/100));
  case '5.003':return bin(Math.round(n*255/360));
  case '5.010':case '6.001':case '7.001':case '8.001':case '12.001':case '13.001':return bin(n<0?n+2**spec.size:n,spec.size);
- case '9.001':case '9.007':return float16(n);
+ case '9.001':case '9.007':return encodeFloat16(n,spec.fields[0].min,spec.fields[0].max);
  case '10.001':{const [h,m,s]=clock(v.time);return octets([(Number(v.day)<<5)|h,m,s]);}
  case '11.001':{const {y,m,d}=calendar(v.date,1990,2089);return octets([d,m,y%100]);}
  case '14.000':{const b=new ArrayBuffer(4),d=new DataView(b);d.setFloat32(0,n,false);return octets([...new Uint8Array(b)]);}
@@ -91,6 +86,7 @@ export function encodeDpt(id:string,v:Values):string {
  }
 }
 export function decodedSummary(id:string,payload:string) {
+ if(EXPANDED_DPTS[id])return expandedSummary(id,payload);
  const n=parseInt(payload,2), spec=DPT_INPUTS[id];
  if(id==='5.001')return `${(n*100/255).toFixed(3)} %`;
  if(id==='5.003')return `${(n*360/255).toFixed(3)} °`;

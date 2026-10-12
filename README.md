@@ -14,7 +14,7 @@ Start with a prediction, run an example, then explain what the bytes or devices 
 | **Telegram** | Generate standard plain TP1 GroupValueRead, GroupValueResponse and GroupValueWrite examples. Follow a field through coloured byte cards, physical bits, an explanation and an illustrative waveform. |
 | **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
 | **Topology** | Follow a defined path through a course-style backbone/area/line/segment hierarchy, inspect every forwarding decision, explore address allocations, and budget current and interface loading for one TP segment. |
-| **DPT workbench** | Search 453 edition-specific catalogue entries, inspect provenance, and encode/decode 24 implemented subtypes. Transfer supported values to the telegram builder. |
+| **DPT workbench** | Search 453 edition-specific catalogue entries, inspect provenance, and encode/decode 288 implemented subtypes. Transfer eligible group values to the telegram builder. |
 | **Exercises** | Commit to a prediction before revealing the result of an object, routing or telegram exercise. |
 
 Short explanations stay visible. **Show details** sections provide layouts, assumptions, calculations and source notes without separate Basic/Advanced/Tutor modes.
@@ -47,6 +47,8 @@ This is an educational simulation and reference, **not ETS, a live bus monitor, 
 The teaching content was developed against the supplied **KNX Basic, Advanced and Tutor course documentation**, the TP1 document **v01.02.02** used for the timing model, and **KNX Interworking Datapoint Types v02.02.01 (2021)**. Relevant chapters and per-type printed page references appear in the app. These documents and current manufacturer instructions remain the authority for design and commissioning; the repository does not grant rights to redistribute course or standard PDFs.
 
 The DPT catalogue is edition-specific, not a claim to cover every later KNX release. All 453 identities and overview formats were checked. The previously missing descriptions and size-corrected rows were researched, while **three entries still explicitly require source clarification**. Other inherited descriptions are marked as such. Identity verification, description review and implemented codec coverage are deliberately separate.
+
+The workbench implements **288 subtypes**. Parameter-only and LTE structures remain inspectable but are excluded from ordinary group-value transfer. See [codec coverage and source pages](docs/dpt-codec-coverage.md) for exact subtype coverage, restrictions and remaining work.
 
 Report a technical discrepancy through [GitHub Issues](https://github.com/MrDahl/KNX/issues), ideally with the example settings, expected/actual result, and document edition and page. Please distinguish a reference correction from a request for another simulated service or DPT codec.
 
