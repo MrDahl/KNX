@@ -31,6 +31,10 @@ export function decodeDptHex(id:string,text:string):{values:Values;bits:string} 
   v={date:`${a[0]+1900}-${pad(a[1])}-${pad(a[2])}`,time:`${pad(a[3]&31)}:${pad(a[4])}:${pad(a[5])}`,working:a[6]&32?'0':a[6]&64?'2':'1',summer:str(a[6]&1)};
   const encoded=encodeDpt(id,v);if(encoded!==bits)throw Error('Weekday or flags do not match the complete-timestamp subset supported by this editor.');break;
  }
+ case '247.600':{
+  if(a[7]!==0)throw Error('This complete-timestamp subset requires CLQ=0 and all seven reserved bits (including SRC) zero.');
+  v={...decodeDptHex('19.001',hex.slice(0,16)).values,interval:str(a[8]*256+a[9]),duration:str(a[10]*256+a[11])};break;
+ }
  case '221.001':v={hex};break;
  case '232.600':v={colour:'#'+hex};break;
  default:throw Error('Unsupported decoder.');

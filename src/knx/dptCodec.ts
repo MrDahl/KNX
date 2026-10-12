@@ -36,6 +36,8 @@ export const DPT_INPUTS: Record<string, Spec> = {
  '221.001':{name:'Device serial number',size:48,fields:[{key:'hex',label:'Serial number (12 hexadecimal digits)',initial:'000100000001'}],note:'Two-byte manufacturer code followed by four-byte manufacturer-specific serial value. No manufacturer assignment is checked.'},
  '232.600':{name:'RGB colour',size:24,fields:[{key:'colour',label:'RGB colour',type:'color',initial:'#509e2f'}]}
 };
+// p. 190: conservative complete-timestamp subset; the subtype reserves SRC.
+DPT_INPUTS['247.600']={name:'Converter test information',size:96,fields:[...DPT_INPUTS['19.001'].fields,num('interval','Automatic-test interval (hours; 0 = disabled)',0,65535),num('duration','Preceding-test duration (seconds)',0,65535)],note:'Complete, fault-free, unsynchronised timestamp subset (1900–2155, hours 0–23, calculated weekday). CLQ and all seven following bits are zero; SRC is reserved here. Other timestamp flags and 24:00:00 are outside this editor. Interval is hours; duration is seconds.'};
 export const bin = (n:number,width=8) => n.toString(2).padStart(width,'0');
 const octets = (ns:number[]) => ns.map(n=>bin(n)).join('');
 export const defaults = (id:string):Values => Object.fromEntries(DPT_INPUTS[id].fields.map(f=>[f.key,f.initial]));
@@ -80,6 +82,7 @@ export function encodeDpt(id:string,v:Values):string {
  case '18.001':return bin((Number(v.action)<<7)|(Number(v.scene)-1));
  case '19.001':{const {y,m,d,day}=calendar(v.date,1900,2155),[h,min,s]=clock(v.time);return octets([y-1900,m,d,(day<<5)|h,min,s,(v.working==='0'?32:v.working==='2'?64:0)|Number(v.summer),0]);}
  case '20.102':return bin(n);
+ case '247.600':return encodeDpt('19.001',v)+bin(Number(v.interval),16)+bin(Number(v.duration),16);
  case '221.001':if(!/^[0-9a-fA-F]{12}$/.test(v.hex))throw Error('Enter exactly 12 hexadecimal digits.');return octets(v.hex.match(/../g)!.map(h=>parseInt(h,16)));
  case '232.600':if(!/^#[0-9a-f]{6}$/i.test(v.colour))throw Error('Choose an RGB colour.');return octets(v.colour.slice(1).match(/../g)!.map(h=>parseInt(h,16)));
  default:throw Error('Unsupported DPT.');

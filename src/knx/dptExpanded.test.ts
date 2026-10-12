@@ -74,8 +74,20 @@ test('LTE mode delay, DALI diagnostics and colour validity have independent fiel
  for(const h of ['A0 00','04 00','00 C0','00 03'])assert.throws(()=>decodeDptHex('244.600',h));
 });
 test('Additional codecs expose source pages and keep parameter/LTE data out of telegram choices',()=>{
- assert.equal(Object.keys(EXPANDED_DPTS).length,264);
+ assert.equal(Object.keys(EXPANDED_DPTS).length,265);
  for(const spec of Object.values(EXPANDED_DPTS))assert.ok(spec.sourcePages.length>0);
  for(const id of ['7.003','7.013','8.012','20.004','20.022','21.100','206.100','206.102','206.104','206.105'])assert.equal(DPT_INPUTS[id].telegramAllowed,false,id);
- for(const id of ['243.600','247.600','248.600'])assert.equal(DPT_INPUTS[id],undefined);
+ assert.equal(DPT_INPUTS['243.600'],undefined);assert.ok(DPT_INPUTS['247.600']);assert.ok(DPT_INPUTS['248.600']);
+});
+test('Owner-reviewed converter examples encode and decode without inferred units',()=>{
+ const testInfo={date:'2026-10-12',time:'15:20:00',working:'2',summer:'1',interval:'168',duration:'10800'};
+ const expected='7E 0A 0C 2F 14 00 41 00 00 A8 2A 30';
+ assert.equal(hex('247.600',testInfo),expected);assert.deepEqual(decodeDptHex('247.600',expected).values,testInfo);
+ for(const timestamp of ['7E 0A 0C 2F 14 00 41 40','7E 0A 0C 2F 14 00 41 80','7E A0 0C 2F 14 00 41 00','7E 0A 0C 38 00 00 41 00','7E 0A 0C 4F 14 00 41 00'])assert.throws(()=>decodeDptHex('247.600',timestamp+' 00 A8 2A 30'));
+ assert.throws(()=>hex('247.600',{interval:'65536'}));assert.throws(()=>hex('247.600',{duration:'-1'}));
+ const fixedInfo={validity:'1',minimum:'85',maximum:'254',durationRaw:'90',feature0:'1',feature3:'1',feature5:'1'};
+ assert.equal(hex('248.600',fixedInfo),'01 55 FE 5A 29');assert.equal(decodeDptHex('248.600','01 55 FE 5A 29').values.durationRaw,'90');
+ for(const raw of ['0','255'])assert.equal(decodeDptHex('248.600',hex('248.600',{durationRaw:raw,minimum:'255',maximum:'255'})).values.durationRaw,raw);
+ assert.throws(()=>decodeDptHex('248.600','03 55 FE 5A 29'));assert.throws(()=>hex('248.600',{durationRaw:'256'}));
+ for(let i=0;i<8;i++)assert.ok(hex('248.600',{['feature'+i]:'1'}).endsWith((2**i).toString(16).toUpperCase().padStart(2,'0')));
 });

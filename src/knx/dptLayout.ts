@@ -1,6 +1,7 @@
 import { expandedLayout } from './dptExpandedCodec';
 export type LayoutField={name:string;bits:number};
 export function dptLayout(id:string,size:number):LayoutField[]{
+ if(id==='247.600')return [...dptLayout('19.001',64).slice(0,-2),{name:'Reserved (including SRC)',bits:7},{name:'Automatic-test interval (hours)',bits:16},{name:'Preceding-test duration (seconds)',bits:16}];
  const expanded=expandedLayout(id);if(expanded)return expanded;
  const fields:Record<string,[string,number][]>= {
  '1.001':[['Switch',1]],'2.001':[['Control',1],['Switch',1]],'3.007':[['Direction',1],['Step code',3]],

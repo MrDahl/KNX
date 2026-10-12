@@ -9727,5 +9727,225 @@
     "note": "Converter mode and hardware status followed by four two-bit status enums. Unlisted enum codes are reserved; hardware bits 2 and 3 must be zero.",
     "unit": "",
     "telegramAllowed": true
+  },
+  "248.600": {
+    "name": "Converter_Info_Fix",
+    "size": 40,
+    "fields": [
+      {
+        "key": "validity",
+        "label": "Information validity",
+        "options": [
+          "Converter missing / no information",
+          "Valid",
+          "Invalid"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "minimum",
+        "label": "Minimum emergency level (raw DALI; 255 = unknown)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "maximum",
+        "label": "Maximum emergency level (raw DALI; 255 = unknown)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "durationRaw",
+        "label": "Rated duration (raw byte; unit pending)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "feature0",
+        "label": "Integral emergency gear",
+        "options": [
+          "Not supported",
+          "Supported"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "feature1",
+        "label": "Maintained gear",
+        "options": [
+          "Not supported",
+          "Supported"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "feature2",
+        "label": "Switched maintained gear",
+        "options": [
+          "Not supported",
+          "Supported"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "feature3",
+        "label": "Auto test capability",
+        "options": [
+          "Not supported",
+          "Supported"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "feature4",
+        "label": "Adjustable emergency level",
+        "options": [
+          "Not supported",
+          "Supported"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "feature5",
+        "label": "Hardwired inhibit",
+        "options": [
+          "Not supported",
+          "Supported"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "feature6",
+        "label": "Physical selection",
+        "options": [
+          "Not supported",
+          "Supported"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "feature7",
+        "label": "Re-light in rest mode",
+        "options": [
+          "Not supported",
+          "Supported"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      }
+    ],
+    "parts": [
+      {
+        "key": "validity",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "minimum",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "maximum",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "durationRaw",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "feature7",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "feature6",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "feature5",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "feature4",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "feature3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "feature2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "feature1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "feature0",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      191
+    ],
+    "note": "Rated duration is a raw 0–255 byte: its unit is unresolved in the supplied standard. No minutes/hours conversion is made. Emergency levels are raw DALI codes, not percentages; 255 means unknown (Mask). Gear-feature bits indicate support, not the current operating state.",
+    "unit": "Raw codes; rated-duration unit pending",
+    "telegramAllowed": true
   }
 }
