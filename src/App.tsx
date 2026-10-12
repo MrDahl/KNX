@@ -1,11 +1,12 @@
 import React, {useRef,useState} from 'react';
-import {BookOpen,Sliders,Send,Network,Layers,FlaskConical,ArrowRight} from 'lucide-react';
+import {BookOpen,Sliders,Send,Network,Layers,FlaskConical,ArrowRight,Shapes} from 'lucide-react';
 import {TelegramVisualizer} from './components/TelegramVisualizer';
 import {TopologyExplorer} from './components/TopologyExplorer';
 import {RoutingCounterExplorer} from './components/RoutingCounterExplorer';
 import {SendingSimulator} from './components/SendingSimulator';
 import {DatapointTypesList,DptScenario} from './components/DatapointTypesList';
 import {EducationalHandbook} from './components/EducationalHandbook';
+import {CadSymbols} from './components/CadSymbols';
 import {PredictionExercises} from './components/PredictionExercises';
 const navigation=[
  {id:'basics',label:'Basics',description:'Training handbook',icon:BookOpen},
@@ -14,6 +15,7 @@ const navigation=[
  {id:'topology',label:'Topology',description:'Hop count and power',icon:Network},
  {id:'dpt',label:'DPT workbench',description:'Values and encoding',icon:Layers},
  {id:'exercises',label:'Exercises',description:'Predict → run → explain',icon:FlaskConical},
+ {id:'symbols',label:'CAD symbols',description:'Drawing reference',icon:Shapes},
 ] as const;
 type Page=typeof navigation[number]['id'];
 export default function App() {
@@ -35,6 +37,8 @@ export default function App() {
    <div className="app-main min-w-0">
     <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer · learning workspace</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{active.label}</h1></div><span className="text-xs text-slate-500">Predict <ArrowRight size={12} className="inline"/> run <ArrowRight size={12} className="inline"/> explain</span></header>
     <main id="lesson-content">
+     {page==='symbols'&&<CadSymbols/>}
+     <div hidden={page==='symbols'}>
      <TelegramVisualizer scenario={scenario} showControls={page==='telegram'} onConfigure={()=>navigate('telegram')}>
       {page==='basics'&&<EducationalHandbook onNavigate={navigate}/>}
       {page==='objects'&&<SendingSimulator onTransmit={(destination,value)=>setScenario({id:'1.001',values:{value:value?'1':'0'},generate:true,destination,origin:'Objects exercise · Sensor 1.1.1'})}/>}
@@ -42,6 +46,7 @@ export default function App() {
       {page==='dpt'&&<DatapointTypesList onUseTelegram={selectDpt}/>}
       {page==='exercises'&&<PredictionExercises onTelegram={value=>setScenario({id:'1.001',values:{value},generate:true,origin:'ON becomes OFF exercise'})}/>}
      </TelegramVisualizer>
+     </div>
     </main>
     <footer className="app-footer">Marc Sonne Dahl · KNX++ Tutor · 2026<br/>Educational simulations and an edition-specific reference. No live bus connection.</footer>
    </div>
