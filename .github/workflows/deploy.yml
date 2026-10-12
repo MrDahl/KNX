@@ -1,7 +1,6 @@
 name: Deploy to GitHub Pages
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
@@ -41,6 +40,12 @@ jobs:
             npm install
           fi
 
+      - name: Test KNX models and interactions
+        run: npm test
+
+      - name: Type check
+        run: npm run lint
+
       - name: Build
         run: npm run build
 
@@ -50,11 +55,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}

@@ -84,4 +84,4 @@ Core implementation:
 
 Tests cover known frame vectors, parity/check bytes, timing boundaries, DPT round trips and invalid inputs, state retention, routing/filter decisions, power budgets and workspace interactions. Passing tests validate these implemented cases; they do not establish general KNX conformity.
 
-The GitHub Pages workflow builds and deploys `dist/` after changes reach `main` (or `master`). Keep Vite's repository base path consistent with `/KNX/` when changing hosting.
+The GitHub Pages workflow runs `npm test` and `npm run lint` before building and deploying `dist/` after changes reach `main` (or `master`). Keep Vite's repository base path consistent with `/KNX/` when changing hosting.
