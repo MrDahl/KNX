@@ -25,4 +25,10 @@ Use a distinct symbol name for each variant. Preserve channel counts in names wh
 3. Save each asset under public/symbols and map its path in src/symbols/catalogue.ts. Match existing slots where appropriate; otherwise add an English name, category and description for the actual drawing.
 4. Check the image at normal and enlarged sizes. Search uses name, description, category and keywords.
 
-There is no student-facing upload or raw-code editor. The owner's text file will be integrated into the repository after review. Existing generic placeholders are not extracted or reconstructed CAD drawings.
+There is no student-facing upload or raw-code editor. The owner's text file will be integrated into the repository after review. The page now contains eight supplied SVGs, replacing the initial placeholder catalogue. No drawings from the earlier product-specific PDF are used. Additional standalone SVG files are also accepted.
+
+## Supplied artwork
+
+Marc Sonne Dahl supplied and adapted the eight drawings from downloads at https://www.mepcontent.com/en/bim-files/?query=manufacturer%3D31. This records the supplied provenance; it does not assert a licence or standards endorsement. The repository copies preserve the geometry, with viewport padding, non-scaling strokes for screen readability and a common font fallback. Original uploaded files are unchanged.
+
+The general gateway does not imply DALI. Coupler/repeater is an example symbol: its precise topology role must be named in the project legend.
