@@ -1,6 +1,6 @@
 # DPT codec coverage
 
-The workbench implements **288 exact subtypes** from KNX Interworking Datapoint Types v02.02.01 (2021), up from 24. This batch adds 264 codecs. Coverage is not a claim of KNX certification or support for later editions.
+The workbench implements **290 exact subtypes** from KNX Interworking Datapoint Types v02.02.01 (2021), up from 24. The initial expansion added 264 codecs; owner review adds a complete-timestamp subset for 247.600 and a raw-value codec for 248.600. Coverage is not a claim of KNX certification or support for later editions.
 
 ## Scope
 
@@ -9,7 +9,7 @@ The workbench implements **288 exact subtypes** from KNX Interworking Datapoint 
 - F32 editors handle finite values only. Signed 64-bit energy values use decimal strings and BigInt, preserving values beyond JavaScript's safe integer range.
 - Parameter-only and LTE structures can be inspected but cannot be handed off to ordinary group-value telegrams. Companion-DPT requirements are explained; this simulator does not verify a physical device's implementation.
 - The existing DPT 19.001 editor remains a complete, fault-free, unsynchronised timestamp subset. DPT 16.000 remains NULL-padded ASCII without embedded NULL.
-- **243.600, 247.600 and 248.600 are unchanged**, pending the owner's manual source review. Other reference-only rows still require codec implementation and service-specific validation.
+- **243.600 remains reference-only**: coordinate order is unresolved. **247.600** supports complete, fault-free, unsynchronised timestamps, hours 0–23, with CLQ and all seven reserved bits zero; other valid timestamp states are outside this editor. **248.600** supports raw-byte encoding; its rated-duration unit remains pending and is never converted. Other reference-only rows still require codec implementation and service-specific validation.
 
 ## Implemented counts by family
 
@@ -44,6 +44,8 @@ The workbench implements **288 exact subtypes** from KNX Interworking Datapoint 
 | 238.x | 1 |
 | 242.x | 1 |
 | 244.x | 1 |
+| 247.x | 1 |
+| 248.x | 1 |
 
 ## This batch: exact subtypes and source pages
 
@@ -315,3 +317,12 @@ Printed page numbers refer to the supplied standard. The JSON manifest contains 
 | 238.600 | DALI_Diagnostics | 184 | Enabled |
 | 242.600 | Colour_xyY | 184 | Enabled |
 | 244.600 | Converter_Status | 186, 187 | Enabled |
+
+## Owner review follow-up
+
+PDF page images were inspected for 185, 190 and 191. The owner’s examples are regression vectors. 243.600 still has no codec. 247.600 follows the format and DPT 19.001 field reference, with the subtype-specific B1r7 final timestamp byte; no permissive SRC interpretation is assumed. 248.600 retains a source-clarification flag for the unit, independently of its working raw-byte codec.
+
+| DPT | Implementation | Printed page |
+| --- | --- | --- |
+| 247.600 | Complete timestamp subset, interval hours, duration seconds | 190 |
+| 248.600 | Raw emergency levels, raw rated duration, named feature flags | 191 |
