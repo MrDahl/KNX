@@ -17,6 +17,8 @@ Start with a prediction, run an example, then explain what the bytes or devices 
 | **DPT workbench** | Search 453 edition-specific catalogue entries, inspect provenance, and encode/decode 290 implemented subtypes. Transfer eligible group values to the telegram builder. |
 | **Exercises** | Commit to a prediction before revealing the result of an object, routing or telegram exercise. |
 
+**CAD symbols** adds a full-width “Example KNX CAD Symbols” reference with English descriptions, search and categories. Drawing slots are ready for the owner’s SVGs; see [SVG delivery format](docs/cad-symbols.md).
+
 Short explanations stay visible. **Show details** sections provide layouts, assumptions, calculations and source notes without separate Basic/Advanced/Tutor modes.
 
 ## Workspace and interaction

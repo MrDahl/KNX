@@ -1,0 +1,23 @@
+import React from 'react';
+import {strict as assert} from 'node:assert';
+import {test} from 'node:test';
+import {create,act} from 'react-test-renderer';
+import {CadSymbols} from './CadSymbols';
+import {symbolAssetUrl} from '../symbols/catalogue';
+(globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
+const text=(n:any):string=>typeof n==='string'?n:Array.isArray(n)?n.map(text).join(''):n?.children?text(n.children):'';
+test('Symbol reference filters English entries, labels placeholders and loads supplied SVGs as images',async()=>{
+ let r:any;await act(()=>{r=create(<CadSymbols/>);});
+ assert.match(text(r.toJSON()),/Example KNX CAD Symbols/);assert.match(text(r.toJSON()),/placeholder icons below are not CAD symbols/);
+ assert.doesNotMatch(text(r.toJSON()),/Product Reference|Busch-Jaeger/);
+ await act(()=>r.root.findByProps({'aria-label':'Search CAD symbols'}).props.onChange({target:{value:'fan coil'}}));
+ assert.match(text(r.toJSON()),/1 matching entry/);assert.match(text(r.toJSON()),/Fan-coil actuator/);
+ await act(()=>r.root.findByProps({'aria-label':'CAD symbol category'}).props.onChange({target:{value:'System devices'}}));
+ assert.match(text(r.toJSON()),/No matching symbols/);
+ await act(()=>r.update(<CadSymbols entries={[{id:'sample',name:'Sample',category:'Actuators',description:'A supplied drawing.',keywords:[],svgPath:'symbols/sample.svg'}]}/>));
+ await act(()=>r.root.findAllByType('button').find((b:any)=>text(b)==='Reset filters').props.onClick());
+ assert.equal(r.root.findAllByType('img')[0].props.src,'/symbols/sample.svg');assert.match(text(r.toJSON()),/Enlarge symbol/);
+ assert.equal(symbolAssetUrl('symbols/sample.svg','/KNX/'),'/KNX/symbols/sample.svg');
+ await act(()=>r.root.findAllByType('img')[0].props.onError());assert.match(text(r.toJSON()),/Drawing unavailable/);
+ await act(()=>r.unmount());
+});
