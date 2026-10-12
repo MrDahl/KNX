@@ -11,7 +11,7 @@ import { DPT_INPUTS, defaults, encodeDpt, type Values } from "../knx/dptCodec";
 // Scope: standard, plain TP1 group-value telegrams. DPT IDs are not sent on the bus.
 // Sources: supplied Tutor PDF pp. 111, 114, 121–123; DPT v02.02.01 p. 39.
 const GROUP_SERVICES = [APCICode.GroupValueRead, APCICode.GroupValueResponse, APCICode.GroupValueWrite];
-const STANDARD_DPTS = DPT_DEFS.filter(d => d.sizeBits <= 112 && DPT_INPUTS[d.id]);
+const STANDARD_DPTS = DPT_DEFS.filter(d => d.sizeBits <= 112 && DPT_INPUTS[d.id] && DPT_INPUTS[d.id].telegramAllowed!==false).sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));
 const bits = (value: number, width = 8) => value.toString(2).padStart(width, "0");
 const physicalBits = (binary: string) => ({
   start: "0", dataReversed: binary.split("").reverse().join(""),
@@ -49,7 +49,7 @@ export function buildStandardGroupTelegram(params: TelegramParams, payload: stri
   const dpt = STANDARD_DPTS.find(d => d.id === params.dptType);
   let extra: number[] = [], embedded = 0;
   if (!read) {
-    if (!dpt) throw new Error("This DPT needs an unsupported frame format.");
+    if (!dpt) throw new Error("This DPT is not enabled for ordinary group-value telegrams.");
     if (!/^[01]+$/.test(payload) || payload.length !== dpt.sizeBits) throw new Error(`Enter exactly ${dpt.sizeBits} binary digits; values are never padded or truncated.`);
     if (dpt.sizeBits <= 6) embedded = parseInt(payload, 2);
     else {
@@ -100,7 +100,7 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
   const [compiled, setCompiled] = useState<{signature: string; stream: string; params: TelegramParams} | null>(null);
   const [error, setError] = useState("");
   useEffect(() => {
-    if (!scenario || !DPT_INPUTS[scenario.id]) return;
+    if (!scenario || !DPT_INPUTS[scenario.id] || DPT_INPUTS[scenario.id].telegramAllowed===false) return;
     const [main,middle,sub]=(scenario.destination||'1/0/1').split('/').map(Number);
     const next:TelegramParams=scenario.generate?{repeatFlag:'1',targetType:'1',command:APCICode.GroupValueWrite,source:{area:1,line:1,device:scenario.destination?1:10},destination:{main,middle,sub},routingCounter:6,priority:'11',dptType:scenario.id,ackType:'CC'}:{...params,dptType:scenario.id,command:APCICode.GroupValueWrite};
     setParams(next);
