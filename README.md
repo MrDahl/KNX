@@ -1,10 +1,10 @@
 # KNX TP Explorer
 
-An interactive teaching companion for understanding KNX TP1 telegrams, group objects, topology and datapoint types. Built by **Marc Sonne Dahl · KNX++ Tutor**.
+An educational simulation and reference for KNX TP1 telegrams, group objects, topology and datapoint types. Built by **Marc Sonne Dahl · KNX++ Tutor**.
 
 **[Open the app](https://mrdahl.github.io/KNX/)**
 
-Start with a prediction, run an example, then explain what the bytes or devices did. No installation or bus interface is required to use the published app.
+The app runs in the browser without installation or a bus interface.
 
 ## Learning path
 
@@ -12,7 +12,7 @@ Start with a prediction, run an example, then explain what the bytes or devices 
 | --- | --- |
 | **Telegram** | Generate standard plain TP1 GroupValueRead, GroupValueResponse and GroupValueWrite examples. Follow a field through coloured byte cards, physical bits, an explanation and an illustrative waveform. |
 | **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
-| **Routing Counter** | Follow a defined path through the backbone/area/line/segment hierarchy and inspect each forwarding decision. |
+| **Hop Count** | Follow a defined path through the backbone/area/line/segment hierarchy and inspect each forwarding decision. |
 | **Topology Capacity Explorer** | Explore address allocations and budget current and interface loading for one TP segment. |
 | **DPT workbench** | Search 453 edition-specific catalogue entries, inspect provenance, and encode/decode 290 implemented subtypes. Transfer eligible group values to the telegram builder. |
 
@@ -26,7 +26,7 @@ Short explanations stay visible. **Show details** sections provide layouts, assu
 - **Narrow workspace:** bottom navigation and a monitor drawer/bottom sheet, with a sticky Generate action in the telegram lesson. Generate opens the monitor; close it with its button, Escape, the backdrop or a downward header gesture.
 - **Readable signals:** bit streams and waveforms scroll horizontally inside their own regions instead of shrinking to fit.
 - **Linked fields:** hover, tap or keyboard-focus a byte card to highlight the same field in the bit stream, explanation and waveform. Labels accompany colours.
-- **Shared state:** the generated telegram survives lesson navigation. Routing Counter and Topology Capacity Explorer do not modify that frame. The Objects sensor generates its own frame.
+- **Shared state:** the generated telegram survives lesson navigation. Hop Count and Topology Capacity Explorer do not modify that frame. The Objects sensor generates its own frame.
 
 Layout uses Tailwind CSS v4 container queries. The monitor changes mode at a **1,000 px workspace width**, measured by `ResizeObserver` to match the CSS query; it is not selected by device name. Navigation becomes a sidebar at a **72 rem app-container width**. A narrow desktop window therefore behaves like a tablet workspace.
 
@@ -40,7 +40,7 @@ This is an educational simulation and reference, **not ETS, a live bus monitor, 
 - Logical octets and serial framing are distinct. TP1 data bits are sent least-significant first; character parity is even over the eight data bits plus parity. The check byte is the inverted XOR of the preceding logical octets, not a CRC.
 - Waveform voltages and equalization decay are illustrative. Nominal timing uses 9,600 bit/s. Selecting ACK/NAK/BUSY/silence is a demonstration setting, not a measured receiver response.
 - The Advanced switching-course example counts **193 bit periods**, including the final two-bit character gap. The monitor's TP1 convention counts **191** for the comparable 50-bit next-access example. The app explains the difference and the documented priority/repetition rule; contention and retry-specific delays are not simulated.
-- Routing results belong to the displayed path. Ordinary RC 0 can be received on the reached segment, but cannot be forwarded again. The series-repeater cascade is a deliberately invalid teaching example. Legacy repeaters and modern filtering segment couplers are distinct profiles.
+- Routing results belong to the displayed path. Ordinary HC 0 can be received on the reached segment, but cannot be forwarded again. The series-repeater cascade is a deliberately invalid teaching example. Legacy repeaters and modern filtering segment couplers are distinct profiles.
 - Available addresses, addressed couplers, unaddressed supplies, current and interface loading are separate quantities. The topology template's **61,695 address positions** are not a universal device ceiling. PSU ratings and actual device consumption must be checked per electrical segment, alongside cable and product constraints.
 
 ## Reference material and review status
@@ -54,6 +54,10 @@ The workbench implements **290 subtypes**. Parameter-only and LTE structures rem
 DPT 247.600 now supports a conservative complete-timestamp subset. DPT 248.600 supports raw-byte encoding while its rated-duration unit remains unresolved; no minutes/hours conversion is inferred. DPT 243.600 remains reference-only.
 
 Report a technical discrepancy through [GitHub Issues](https://github.com/MrDahl/KNX/issues), ideally with the example settings, expected/actual result, and document edition and page. Please distinguish a reference correction from a request for another simulated service or DPT codec.
+
+## Language support
+
+The current interface is English. The [English/Danish localization plan](docs/localization.md) describes translation resources, terminology review, locale-aware input and protocol-independent rendering. Danish support is planned, not yet implemented.
 
 ## Development
 

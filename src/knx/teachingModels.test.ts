@@ -23,7 +23,7 @@ test('power budget keeps current and interface loading independent',()=>{
   assert.equal(calculatePowerBudget(160,[{...item,tp:'TP1-256'}]).currentOK,false);
   for (const patch of [{quantity:-1},{quantity:1.5},{current:NaN},{current:-1}]) assert.equal(calculatePowerBudget(640,[{...item,...patch}]).valid,false);
 });
-test('routing follows the actual path, accepts final RC 0, rejects the next crossing',()=>{
+test('routing follows the actual path, accepts final HC 0, rejects the next crossing',()=>{
   const parallel=traceRoute(routingExample('parallel'),6);
   assert.equal(parallel.at(-1)?.id,'destination');
   assert.equal(parallel.at(-1)?.after,0);
@@ -36,7 +36,7 @@ test('routing follows the actual path, accepts final RC 0, rejects the next cros
   assert.equal(traceRoute(routingExample('parallel'),5).at(-1)?.id,'15.15.192');
   assert.throws(()=>traceRoute(routingExample('parallel'),7));
 });
-test('filter rejection and RC exhaustion are independent; repeater has no filter',()=>{
+test('filter rejection and HC exhaustion are independent; repeater has no filter',()=>{
   const nodes=routingExample('parallel');
   const filtered=traceRoute(nodes,6,'1.1.0');
   assert.equal(filtered.at(-1)?.before,5);

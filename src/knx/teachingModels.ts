@@ -23,21 +23,21 @@ export function calculatePowerBudget(rating: number, items: PowerItem[]) {
 
 export type RouteNode = {id: string; label: string; address: string; type: 'device' | 'repeater' | 'line_coupler' | 'backbone_coupler' | 'static_device'};
 export function traceRoute(nodes: RouteNode[], initial: number, blockedCoupler: string = '') {
-  if (!Number.isInteger(initial) || initial < 0 || initial > 6) throw new Error('Normal group-telegram exercise supports RC 0–6.');
-  let rc = initial;
+  if (!Number.isInteger(initial) || initial < 0 || initial > 6) throw new Error('Normal group-telegram simulation supports HC 0–6.');
+  let hopCount = initial;
   return nodes.reduce<Array<{id: string; before: number; after: number; forwarded: boolean; blocked: boolean; reason: string}>>((trace, node, index) => {
     if (trace.some(e => e.blocked)) return trace;
-    const before = rc;
+    const before = hopCount;
     const bridge = node.type !== 'device' && node.type !== 'static_device';
     const filtered = bridge && node.type !== 'repeater' && node.id === blockedCoupler;
     const blocked = bridge && (before === 0 || filtered);
-    if (bridge && !blocked) rc--;
-    const reason = index === 0 ? `Source sends a group telegram with RC ${rc}.` :
-      !bridge ? `Telegram present on this segment with RC ${rc}. End devices do not forward it; a linked receiver may accept it even at RC 0.` :
-      before === 0 ? 'Not forwarded: incoming RC is 0. Devices on the incoming segment can still receive it.' :
+    if (bridge && !blocked) hopCount--;
+    const reason = index === 0 ? `Source sends a group telegram with HC ${hopCount}.` :
+      !bridge ? `Telegram present on this segment with HC ${hopCount}. End devices do not forward it; a linked receiver may accept it even at HC 0.` :
+      before === 0 ? 'Not forwarded: incoming HC is 0. Devices on the incoming segment can still receive it.' :
       filtered ? 'Not forwarded: destination group address is absent from this coupler’s filter table.' :
-      `${node.type === 'repeater' ? 'Repeater has no group-address filter' : 'Group-address filter permits this route'}; forwarded with RC ${before} → ${rc}.`;
-    trace.push({id: node.id, before, after: rc, forwarded: bridge && !blocked, blocked, reason});
+      `${node.type === 'repeater' ? 'Repeater has no group-address filter' : 'Group-address filter permits this route'}; forwarded with HC ${before} → ${hopCount}.`;
+    trace.push({id: node.id, before, after: hopCount, forwarded: bridge && !blocked, blocked, reason});
     return trace;
   }, []);
 }

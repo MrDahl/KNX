@@ -1,15 +1,15 @@
 import React, {useRef,useState} from 'react';
-import {Sliders,Send,Network,Calculator,Layers,ArrowRight,Shapes} from 'lucide-react';
+import {Sliders,Send,Network,Calculator,Layers,Shapes} from 'lucide-react';
 import {TelegramVisualizer} from './components/TelegramVisualizer';
 import {TopologyExplorer} from './components/TopologyExplorer';
-import {RoutingCounterExplorer} from './components/RoutingCounterExplorer';
+import {HopCountExplorer} from './components/HopCountExplorer';
 import {SendingSimulator} from './components/SendingSimulator';
 import {DatapointTypesList,DptScenario} from './components/DatapointTypesList';
 import {CadSymbols} from './components/CadSymbols';
 const navigation=[
- {id:'telegram',label:'Telegram',description:'Build and inspect',icon:Sliders},
+ {id:'telegram',label:'Telegram',description:'Fields, bytes and signal',icon:Sliders},
  {id:'objects',label:'Objects',description:'Sending and C/W flags',icon:Send},
- {id:'routing',label:'Routing Counter',description:'Follow telegram hops',icon:Network},
+ {id:'routing',label:'Hop Count',description:'Forwarding and filtering',icon:Network},
  {id:'capacity',label:'Topology Capacity Explorer',description:'Addresses and power',icon:Calculator},
  {id:'dpt',label:'DPT workbench',description:'Values and encoding',icon:Layers},
  {id:'symbols',label:'CAD symbols',description:'Drawing reference',icon:Shapes},
@@ -26,18 +26,18 @@ export default function App() {
   <a href="#lesson-content" className="skip-link">Skip to lesson</a>
   <div className="app-layout">
    <nav className="learning-nav" aria-label="Learning path">
-    <div className="nav-brand"><span className="text-green-700 font-extrabold text-2xl tracking-tight">KNX <span className="text-slate-800">Explorer</span></span><p className="text-xs text-slate-500 mt-2">Learn the bus, one idea at a time.</p></div>
+    <div className="nav-brand"><span className="text-green-700 font-extrabold text-2xl tracking-tight">KNX <span className="text-slate-800">Explorer</span></span><p className="text-xs text-slate-500 mt-2">KNX TP1 simulation and reference</p></div>
     {navigation.map((item,i)=>{const Icon=item.icon;return <button key={item.id} aria-current={page===item.id?'page':undefined} className="nav-item" onClick={()=>navigate(item.id)}><Icon size={19}/><span><span className="nav-number">0{i+1} · </span>{item.label}<small>{item.description}</small></span></button>;})}
     <div className="nav-credit">Marc Sonne Dahl<br/>KNX++ Tutor<br/><span className="text-[11px]">Teaching tool · TP1</span></div>
    </nav>
    <div className="app-main min-w-0">
-    <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer · learning workspace</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{active.label}</h1></div><span className="text-xs text-slate-500">Predict <ArrowRight size={12} className="inline"/> run <ArrowRight size={12} className="inline"/> explain</span></header>
+    <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{active.label}</h1></div></header>
     <main id="lesson-content">
      {page==='symbols'&&<CadSymbols/>}
      <div hidden={page==='symbols'}>
      <TelegramVisualizer scenario={scenario} showControls={page==='telegram'} onConfigure={()=>navigate('telegram')}>
-      {page==='objects'&&<SendingSimulator onTransmit={(destination,value)=>setScenario({id:'1.001',values:{value:value?'1':'0'},generate:true,destination,origin:'Objects exercise · Sensor 1.1.1'})}/>}
-      {page==='routing'&&<RoutingCounterExplorer/>}
+      {page==='objects'&&<SendingSimulator onTransmit={(destination,value)=>setScenario({id:'1.001',values:{value:value?'1':'0'},generate:true,destination,origin:'Objects simulator · Sensor 1.1.1'})}/>}
+      {page==='routing'&&<HopCountExplorer/>}
       {page==='capacity'&&<TopologyExplorer/>}
       {page==='dpt'&&<DatapointTypesList onUseTelegram={selectDpt}/>}
 

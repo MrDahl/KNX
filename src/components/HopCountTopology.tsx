@@ -34,7 +34,7 @@ export function HopCountTopology({nodes, trace, step, mode}: {
   return <div className="space-y-3">
     <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
       <span><strong className="text-slate-900">Read the route:</strong> source ↑ backbone → receiver ↓</span>
-      <span><strong>HC</strong> = hop count (RC in the trace)</span>
+      <span><strong>HC</strong> = hop count</span>
     </div>
     <div className="overflow-x-auto rounded-xl bg-slate-50 border border-slate-200">
       <svg viewBox={`0 0 1100 ${height}`} className="w-full min-w-[760px]" role="img" aria-label="Hierarchical KNX topology: source rises through Area 1 to the backbone and descends through Area 15 to the receiver">
@@ -88,7 +88,7 @@ export function HopCountTopology({nodes, trace, step, mode}: {
             <text x="52" y="54" fontSize="11" fill={blocked?'#be123c':reached?'#166534':'#64748b'}>{reached?blocked?`STOP · incoming HC ${e!.before}`:e!.forwarded?`HC ${e!.before} → ${e!.after}`:`HC ${e!.after}`:'Not yet reached'}</text>
           </g>;
         })}
-        <text x="285" y={deviceY+88} textAnchor="middle" fontSize="13" fontWeight="700" fill="#1e40af">START HERE · telegram travels upward</text>
+        <text x="285" y={deviceY+88} textAnchor="middle" fontSize="13" fontWeight="700" fill="#1e40af">SOURCE · telegram travels upward</text>
         <text x="815" y={deviceY+88} textAnchor="middle" fontSize="13" fontWeight="700" fill="#166534">DESTINATION · telegram travels downward</text>
       </svg>
     </div>

@@ -15,13 +15,13 @@ test('shared telegram survives lesson navigation and field focus links the bit s
  let r:any;await act(()=>{r=create(<App/>);});
  assert.doesNotMatch(text(r.toJSON()),/Training handbook/);
  const navText=text(r.root.findByProps({'aria-label':'Learning path'}));
- assert.doesNotMatch(navText,/Exercises/);assert.match(navText,/Routing Counter/);assert.match(navText,/Topology Capacity Explorer/);
+ assert.doesNotMatch(navText,/Exercises/);assert.match(navText,/Hop Count/);assert.match(navText,/Topology Capacity Explorer/);
  const nav=(name:string)=>r.root.findByProps({'aria-label':'Learning path'}).findAllByType('button').find((b:any)=>text(b).includes(name));
  await act(()=>nav('Telegram').props.onClick());await act(()=>button(r,'Generate Telegram').props.onClick());
  const before=text(label(r,'Generated hexadecimal telegram'));
  await act(()=>nav('Topology Capacity Explorer').props.onClick());
  assert.equal(r.root.findAllByType('h1')[0].children.join(''),'Topology Capacity Explorer');
- await act(()=>nav('Routing Counter').props.onClick());assert.equal(text(label(r,'Generated hexadecimal telegram')),before);
+ await act(()=>nav('Hop Count').props.onClick());assert.equal(text(label(r,'Generated hexadecimal telegram')),before);
  await act(()=>label(r,'Inspect byte 4: Destination address high').props.onFocus());
  assert.match(text(label(r,'Selected field summary')),/Destination · byte 4/);
  assert.equal(label(r,'Inspect serial character 4').props['aria-pressed'],true);
@@ -35,10 +35,10 @@ test('Objects transmission generates its own valid source, destination and value
  await act(()=>label(r,'sensor1 1/1/2').props.onChange());
  await act(()=>button(r,'Press Push Button (Sensor 1)').props.onClick());
  assert.match(text(label(r,'Generated hexadecimal telegram')),/BC 11 01 09 02 E1 00 81 38/);
- assert.match(text(r.toJSON()),/Frame source: Objects exercise/);
+ assert.match(text(r.toJSON()),/Frame source: Objects simulator/);
  await act(()=>r.unmount());
 });
-test('automatic exercise generation does not inherit invalid builder addresses',async()=>{
+test('automatic scenario generation does not inherit invalid builder addresses',async()=>{
  let r:any;await act(()=>{r=create(<TelegramVisualizer/>);});
  await act(()=>label(r,'Source area').props.onChange({target:{value:'16'}}));
  await act(()=>r.update(<TelegramVisualizer scenario={{id:'1.001',values:{value:'0'},generate:true,origin:'Exercise'}}/>));
