@@ -1,24 +1,22 @@
 import React, {useRef,useState} from 'react';
-import {Sliders,Send,Network,Layers,FlaskConical,ArrowRight,Shapes} from 'lucide-react';
+import {Sliders,Send,Network,Calculator,Layers,ArrowRight,Shapes} from 'lucide-react';
 import {TelegramVisualizer} from './components/TelegramVisualizer';
 import {TopologyExplorer} from './components/TopologyExplorer';
 import {RoutingCounterExplorer} from './components/RoutingCounterExplorer';
 import {SendingSimulator} from './components/SendingSimulator';
 import {DatapointTypesList,DptScenario} from './components/DatapointTypesList';
 import {CadSymbols} from './components/CadSymbols';
-import {PredictionExercises} from './components/PredictionExercises';
 const navigation=[
  {id:'telegram',label:'Telegram',description:'Build and inspect',icon:Sliders},
  {id:'objects',label:'Objects',description:'Sending and C/W flags',icon:Send},
- {id:'topology',label:'Topology',description:'Hop count and power',icon:Network},
+ {id:'routing',label:'Routing Counter',description:'Follow telegram hops',icon:Network},
+ {id:'capacity',label:'Topology Capacity Explorer',description:'Addresses and power',icon:Calculator},
  {id:'dpt',label:'DPT workbench',description:'Values and encoding',icon:Layers},
- {id:'exercises',label:'Exercises',description:'Predict → run → explain',icon:FlaskConical},
  {id:'symbols',label:'CAD symbols',description:'Drawing reference',icon:Shapes},
 ] as const;
 type Page=typeof navigation[number]['id'];
 export default function App() {
  const [page,setPage]=useState<Page>('telegram');
- const [topology,setTopology]=useState<'routing'|'capacity'>('routing');
  const [scenario,setScenario]=useState<(DptScenario&{generate?:boolean;destination?:string;origin?:string})|null>(null);
  const heading=useRef<HTMLHeadingElement>(null);
  const navigate=(id:string)=>{if(!navigation.some(n=>n.id===id))return;setPage(id as Page);requestAnimationFrame(()=>{heading.current?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});});};
@@ -39,9 +37,10 @@ export default function App() {
      <div hidden={page==='symbols'}>
      <TelegramVisualizer scenario={scenario} showControls={page==='telegram'} onConfigure={()=>navigate('telegram')}>
       {page==='objects'&&<SendingSimulator onTransmit={(destination,value)=>setScenario({id:'1.001',values:{value:value?'1':'0'},generate:true,destination,origin:'Objects exercise · Sensor 1.1.1'})}/>}
-      {page==='topology'&&<div className="space-y-4"><div className="flex flex-wrap gap-2" role="group" aria-label="Topology lesson"><button className="lesson-button" aria-pressed={topology==='routing'} onClick={()=>setTopology('routing')}>Routing Counter</button><button className="lesson-button" aria-pressed={topology==='capacity'} onClick={()=>setTopology('capacity')}>Topology Capacity Explorer</button></div>{topology==='routing'?<RoutingCounterExplorer/>:<TopologyExplorer/>}</div>}
+      {page==='routing'&&<RoutingCounterExplorer/>}
+      {page==='capacity'&&<TopologyExplorer/>}
       {page==='dpt'&&<DatapointTypesList onUseTelegram={selectDpt}/>}
-      {page==='exercises'&&<PredictionExercises onTelegram={value=>setScenario({id:'1.001',values:{value},generate:true,origin:'ON becomes OFF exercise'})}/>}
+
      </TelegramVisualizer>
      </div>
     </main>

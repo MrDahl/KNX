@@ -79,12 +79,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
  .workspace-actions { left:224px; bottom:16px; }
 }
 @container workspace (min-width: 1000px) {
- .workspace-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; align-items:start; }
- .controls-pane { max-height:calc(100dvh - 115px); overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; padding-right:5px; }
- .monitor-dock[data-compact="false"][open] { display:block; position:sticky; inset:auto; top:16px; align-self:start; width:100%; max-width:none; max-height:calc(100dvh - 115px); overflow-y:auto; margin:0; border-radius:20px; overscroll-behavior:contain; }
+ .workspace-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; align-items:start; }
+ .controls-pane { max-height:none; overflow:visible; padding-right:0; }
+ .monitor-dock[data-compact="false"][open] { display:block; position:static; inset:auto; width:100%; max-width:none; max-height:none; overflow:visible; margin:0; border-radius:20px; }
  .drawer-handle { display:none; }
  .workspace-actions { display:none; }
- .generate-inline { position:sticky; bottom:0; width:100%; }
+ .generate-inline { position:static; width:100%; }
 }
 @container (min-width: 40rem) { .monitor-content { padding:20px; } }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }

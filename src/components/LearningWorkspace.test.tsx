@@ -4,7 +4,6 @@ import {test} from 'node:test';
 import {act,create} from 'react-test-renderer';
 import App from '../App';
 import {TelegramVisualizer} from './TelegramVisualizer';
-import {PredictionExercises} from './PredictionExercises';
 import {MonitorDock} from './MonitorDock';
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
 (globalThis as any).requestAnimationFrame=(fn:()=>void)=>{fn();return 0;};
@@ -15,10 +14,14 @@ const label=(r:any,name:string)=>r.root.findAllByProps({'aria-label':name}).find
 test('shared telegram survives lesson navigation and field focus links the bit stream and waveform',async()=>{
  let r:any;await act(()=>{r=create(<App/>);});
  assert.doesNotMatch(text(r.toJSON()),/Training handbook/);
+ const navText=text(r.root.findByProps({'aria-label':'Learning path'}));
+ assert.doesNotMatch(navText,/Exercises/);assert.match(navText,/Routing Counter/);assert.match(navText,/Topology Capacity Explorer/);
  const nav=(name:string)=>r.root.findByProps({'aria-label':'Learning path'}).findAllByType('button').find((b:any)=>text(b).includes(name));
  await act(()=>nav('Telegram').props.onClick());await act(()=>button(r,'Generate Telegram').props.onClick());
  const before=text(label(r,'Generated hexadecimal telegram'));
- await act(()=>nav('Topology').props.onClick());assert.equal(text(label(r,'Generated hexadecimal telegram')),before);
+ await act(()=>nav('Topology Capacity Explorer').props.onClick());
+ assert.equal(r.root.findAllByType('h1')[0].children.join(''),'Topology Capacity Explorer');
+ await act(()=>nav('Routing Counter').props.onClick());assert.equal(text(label(r,'Generated hexadecimal telegram')),before);
  await act(()=>label(r,'Inspect byte 4: Destination address high').props.onFocus());
  assert.match(text(label(r,'Selected field summary')),/Destination · byte 4/);
  assert.equal(label(r,'Inspect serial character 4').props['aria-pressed'],true);
@@ -33,15 +36,6 @@ test('Objects transmission generates its own valid source, destination and value
  await act(()=>button(r,'Press Push Button (Sensor 1)').props.onClick());
  assert.match(text(label(r,'Generated hexadecimal telegram')),/BC 11 01 09 02 E1 00 81 38/);
  assert.match(text(r.toJSON()),/Frame source: Objects exercise/);
- await act(()=>r.unmount());
-});
-test('prediction exercises gate the result and reset when switching scenario',async()=>{
- let r:any,calls:string[]=[];await act(()=>{r=create(<PredictionExercises onTelegram={v=>calls.push(v)}/>);});
- assert.equal(button(r,'2 · Run scenario').props.disabled,true);assert.doesNotMatch(text(r.toJSON()),/3 · Explain the result/);
- await act(()=>label(r,'Exercise scenario').props.onChange({target:{value:'2'}}));
- await act(()=>r.root.findAllByType('input')[1].props.onChange());
- await act(()=>button(r,'2 · Run scenario').props.onClick());assert.deepEqual(calls,['0']);assert.match(text(r.toJSON()),/Your prediction matches/);
- await act(()=>label(r,'Exercise scenario').props.onChange({target:{value:'0'}}));assert.equal(button(r,'2 · Run scenario').props.disabled,true);
  await act(()=>r.unmount());
 });
 test('automatic exercise generation does not inherit invalid builder addresses',async()=>{
