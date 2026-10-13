@@ -31,7 +31,7 @@ export function HopCountExplorer() {
   return <div className="space-y-6 max-w-6xl mx-auto text-left">
     <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-3 shadow-sm">
       <h2 className="text-xl font-extrabold text-slate-900 flex gap-2 items-center"><Network className="text-knx-green"/>Hop Count · TP path simulation</h2>
-      <p className="text-sm text-slate-600">Follow a normal group telegram from 1.1.255 to 15.15.255 through the devices shown below. The normal starting hop count (HC) is 6. A forwarding coupler or legacy line repeater receives HC &gt; 0 and sends it onward with HC reduced by one. An incoming HC of 0 prevents another crossing; receivers on the reached segment can still accept the telegram.</p>
+      <p className="text-sm text-slate-600">Follow a normal group telegram from 1.1.252 to 15.1.255 through the devices shown below. The normal starting hop count (HC) is 6. A forwarding coupler or legacy line repeater receives HC &gt; 0 and sends it onward with HC reduced by one. An incoming HC of 0 prevents another crossing; receivers on the reached segment can still accept the telegram.</p>
       <p className="text-xs text-slate-500">Scope: ordinary group-addressed traffic, matching receiver with C/W enabled, healthy TP links and no repetitions or ACK simulation. Each relevant group-address filter permits forwarding unless you select a rejection below. HC 7 has special non-decrementing behavior; it is outside this ordinary-traffic simulation, not an extra hop to use in planning.</p>
     </section>
     <details className="detail-box"><summary>Show details · compare the two arrangements</summary><section className="grid @2xl:grid-cols-2 gap-4 text-sm">
@@ -50,7 +50,7 @@ export function HopCountExplorer() {
         <button onClick={()=>{setPlaying(false);setStep(s=>Math.min(s+1,trace.length-1));}} disabled={finished} className="border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold disabled:opacity-40">Next event</button>
         <button onClick={reset} className="border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold flex items-center gap-2"><RotateCcw size={16}/>Reset</button>
       </div>
-      <p className="text-xs text-slate-500">Selected route only, not the complete physical wiring. Grey = not yet reached; green = reached; red = rejection. Off-path branches are omitted: a repeater has no filter and may also send telegrams into those branches. Ordinary devices do not relay telegrams.</p>
+      <p className="text-xs text-slate-500">Dashed green lines show the example bus connections. Directional arrows trace the selected telegram path; each HC label is the value carried into the next device.</p>
       <HopCountTopology nodes={nodes} trace={trace} step={step} mode={mode}/>
       <div aria-live="polite" className="bg-slate-50 rounded-xl p-4 text-sm space-y-2">
         <p><strong>{nodes.length-2} forwarding devices on this selected path.</strong> {step<0?'Ready to trace.':finished?delivered?'Receiver reached.':'Trace stopped.':'Trace in progress.'}</p>
@@ -64,7 +64,7 @@ export function HopCountExplorer() {
     </section>
     <details className="detail-box text-sm space-y-3"><summary>Show details · device profiles and sources</summary>
       <h3 className="font-bold flex gap-2 items-center"><Info size={18}/>Repeater and segment coupler are different profiles</h3>
-      <p className="text-slate-600">The LR devices in this demonstration are legacy TP1 repeaters: they extend a line without group-address filtering. A modern segment coupler connects subsegments within a logical line and supports filter tables, including ETS-managed individual-address filtering. Do not treat its behavior or permitted arrangement as identical to the legacy repeater example. Neither .64, .128 nor .192 is a required segment boundary.</p>
+      <p className="text-slate-600">The LR devices in this demonstration are legacy TP1 repeaters: they extend a line without group-address filtering. A modern segment coupler connects subsegments within a logical line and supports filter tables, including ETS-managed individual-address filtering. Do not treat its behavior or permitted arrangement as identical to the legacy repeater example. The illustrated addresses do not define required segment boundaries.</p>
       <p className="text-slate-600">The normal-traffic HC budget and filtering are separate decisions. Reaching HC 0 on the destination segment is allowed; forwarding it through another coupler is not. A healthy cable and an adequate HC do not override a filter rejection.</p>
       <p className="text-xs text-slate-500">Sources: KNX Basic, “TP Topology”, sections 8 and 14; KNX Advanced, “Couplers”, sections 2.3–2.4. This is a teaching trace, not a complete KNX network validator.</p>
       <a className="text-xs underline text-knx-blue" href="https://support.knx.org/hc/en-us/articles/27352680887442-TP-TP-Couplers-in-Repeater-Mode" target="_blank" rel="noreferrer">KNX Association: repeater versus segment-coupler profiles</a>

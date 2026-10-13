@@ -29,11 +29,11 @@ test('routing follows the actual path, accepts final HC 0, rejects the next cros
   assert.equal(parallel.at(-1)?.after,0);
   assert.equal(parallel.filter(e=>e.forwarded).length,6);
   const series=traceRoute(routingExample('series'),6);
-  assert.equal(series.at(-1)?.id,'15.15.0');
+  assert.equal(series.at(-1)?.id,'15.1.0');
   assert.equal(series.at(-1)?.blocked,true);
   assert.equal(series.find(e=>e.id==='15.0.0')?.forwarded,true);
-  assert.equal(traceRoute(routingExample('parallel'),0).at(-1)?.id,'1.1.192');
-  assert.equal(traceRoute(routingExample('parallel'),5).at(-1)?.id,'15.15.192');
+  assert.equal(traceRoute(routingExample('parallel'),0).at(-1)?.id,'1.1.204');
+  assert.equal(traceRoute(routingExample('parallel'),5).at(-1)?.id,'15.1.201');
   assert.throws(()=>traceRoute(routingExample('parallel'),7));
 });
 test('filter rejection and HC exhaustion are independent; repeater has no filter',()=>{
@@ -41,7 +41,7 @@ test('filter rejection and HC exhaustion are independent; repeater has no filter
   const filtered=traceRoute(nodes,6,'1.1.0');
   assert.equal(filtered.at(-1)?.before,5);
   assert.match(filtered.at(-1)!.reason,/filter table/);
-  assert.equal(traceRoute(nodes,6,'1.1.192').at(-1)?.id,'destination');
+  assert.equal(traceRoute(nodes,6,'1.1.204').at(-1)?.id,'destination');
   const local=traceRoute([nodes[0],nodes.at(-1)!],0);
   assert.equal(local.at(-1)?.id,'destination');
   assert.equal(local.at(-1)?.blocked,false);
