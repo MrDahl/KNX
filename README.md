@@ -12,9 +12,9 @@ Start with a prediction, run an example, then explain what the bytes or devices 
 | --- | --- |
 | **Telegram** | Generate standard plain TP1 GroupValueRead, GroupValueResponse and GroupValueWrite examples. Follow a field through coloured byte cards, physical bits, an explanation and an illustrative waveform. |
 | **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
-| **Topology** | Follow a defined path through a course-style backbone/area/line/segment hierarchy, inspect every forwarding decision, explore address allocations, and budget current and interface loading for one TP segment. |
+| **Routing Counter** | Follow a defined path through the backbone/area/line/segment hierarchy and inspect each forwarding decision. |
+| **Topology Capacity Explorer** | Explore address allocations and budget current and interface loading for one TP segment. |
 | **DPT workbench** | Search 453 edition-specific catalogue entries, inspect provenance, and encode/decode 290 implemented subtypes. Transfer eligible group values to the telegram builder. |
-| **Exercises** | Commit to a prediction before revealing the result of an object, routing or telegram exercise. |
 
 **CAD symbols** adds a full-width “Example KNX CAD Symbols” reference with English descriptions, search and categories. Thirteen original SVG drawings by Marc Sonne Dahl illustrate generic device functions, with enlarged views; see [SVG delivery format](docs/cad-symbols.md).
 
@@ -22,11 +22,11 @@ Short explanations stay visible. **Show details** sections provide layouts, assu
 
 ## Workspace and interaction
 
-- **Wide workspace:** learning-path sidebar, controls on the left and a closable telegram monitor on the right. Closing it gives the explorer the full workspace width; Show telegram monitor restores it without losing the telegram. The two open panes scroll independently.
+- **Wide workspace:** learning-path sidebar and full-width sections stacked vertically: the active explorer first, then the closable telegram monitor. The page scrolls naturally, with no competing pane scrollbars. Show telegram monitor restores a closed monitor without losing the telegram.
 - **Narrow workspace:** bottom navigation and a monitor drawer/bottom sheet, with a sticky Generate action in the telegram lesson. Generate opens the monitor; close it with its button, Escape, the backdrop or a downward header gesture.
 - **Readable signals:** bit streams and waveforms scroll horizontally inside their own regions instead of shrinking to fit.
 - **Linked fields:** hover, tap or keyboard-focus a byte card to highlight the same field in the bit stream, explanation and waveform. Labels accompany colours.
-- **Shared state:** the generated telegram survives lesson navigation. Topology and standalone object/routing prediction exercises do not claim to modify that frame. The Objects sensor and the ON→OFF exercise explicitly generate their own frames.
+- **Shared state:** the generated telegram survives lesson navigation. Routing Counter and Topology Capacity Explorer do not modify that frame. The Objects sensor generates its own frame.
 
 Layout uses Tailwind CSS v4 container queries. The monitor changes mode at a **1,000 px workspace width**, measured by `ResizeObserver` to match the CSS query; it is not selected by device name. Navigation becomes a sidebar at a **72 rem app-container width**. A narrow desktop window therefore behaves like a tablet workspace.
 
