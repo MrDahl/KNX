@@ -14,10 +14,11 @@ const button=(r:any,label:string)=>r.root.findAllByType('button').find((b:any)=>
 const label=(r:any,name:string)=>r.root.findAllByProps({'aria-label':name}).find((n:any)=>typeof n.type==='string');
 test('shared telegram survives lesson navigation and field focus links the bit stream and waveform',async()=>{
  let r:any;await act(()=>{r=create(<App/>);});
+ assert.doesNotMatch(text(r.toJSON()),/Training handbook/);
  const nav=(name:string)=>r.root.findByProps({'aria-label':'Learning path'}).findAllByType('button').find((b:any)=>text(b).includes(name));
  await act(()=>nav('Telegram').props.onClick());await act(()=>button(r,'Generate Telegram').props.onClick());
  const before=text(label(r,'Generated hexadecimal telegram'));
- await act(()=>nav('Basics').props.onClick());assert.equal(text(label(r,'Generated hexadecimal telegram')),before);
+ await act(()=>nav('Topology').props.onClick());assert.equal(text(label(r,'Generated hexadecimal telegram')),before);
  await act(()=>label(r,'Inspect byte 4: Destination address high').props.onFocus());
  assert.match(text(label(r,'Selected field summary')),/Destination · byte 4/);
  assert.equal(label(r,'Inspect serial character 4').props['aria-pressed'],true);
@@ -60,6 +61,9 @@ test('monitor changes between nonmodal pane and modal drawer, restores scroll an
  try{
   await act(()=>{r=create(<MonitorDock controls={<p>Controls</p>}><p>Frame</p></MonitorDock>,{createNodeMock:element=>element.type==='dialog'?dialog:element.type==='div'?{}:null});});
   assert.equal(dialog.open,true);assert.equal(dialog.modal,false);
+  await act(()=>label(r,'Close telegram monitor').props.onClick());assert.equal(dialog.open,false);
+  assert.equal(r.root.findByProps({'data-monitor-hidden':true}).props.className,'workspace-grid');
+  await act(()=>button(r,'Show telegram monitor').props.onClick());assert.equal(dialog.open,true);
   await act(()=>resize([{contentRect:{width:390}}]));assert.equal(dialog.open,false);
   await act(()=>r.update(<MonitorDock openRevision={1} controls={<p>Controls</p>}><p>Frame</p></MonitorDock>));
   assert.equal(dialog.modal,true);assert.equal(document.body.style.overflow,'hidden');

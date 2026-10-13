@@ -1,6 +1,6 @@
 # Example KNX CAD Symbols
 
-Student page: seventh navigation item, CAD symbols. Full-width reference with search, category filtering, desktop table and narrow-container cards. Columns: Symbol, English name, What it represents. No product-reference column or manufacturer branding.
+Student page: sixth navigation item, CAD symbols. Full-width reference with search, category filtering, desktop table and narrow-container cards. Columns: Symbol, English name, What it represents. No product-reference column or manufacturer branding.
 
 ## Supplying the drawings
 
