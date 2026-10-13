@@ -1,97 +1,84 @@
 import React, {useId} from 'react';
 import {RouteNode, traceRoute} from '../knx/teachingModels';
+import {hopCountDevices} from '../knx/routingExample';
 
-/** Course-style hierarchy; the trace model remains the sole source of event state. */
-export function HopCountTopology({nodes, trace, step, mode}: {
-  nodes: RouteNode[]; trace: ReturnType<typeof traceRoute>; step: number; mode: 'series'|'parallel';
-}) {
-  const marker = useId().replace(/:/g,'');
-  const cascade = mode === 'series';
-  const deviceY = cascade ? 825 : 585;
-  const height = deviceY + 110;
-  const center = (right:boolean) => right ? 815 : 285;
-  const yFor = (node:RouteNode) => {
-    if (node.type === 'device') return deviceY;
-    if (node.type === 'backbone_coupler') return 135;
-    if (node.type === 'line_coupler') return 285;
-    if (!cascade) return 435;
-    return 435 + (Number(node.address.split('.')[2])/64-1)*120;
-  };
-  const rightSide = (node:RouteNode) => node.address.startsWith('15.');
-  const seen = (id:string) => trace.findIndex(e=>e.id===id)>=0 && trace.findIndex(e=>e.id===id)<=step;
-  const event = (id:string) => trace.find(e=>e.id===id);
-  const outgoing = (id:string) => seen(id) && !event(id)?.blocked;
-  const lineColor = (active:boolean) => active ? '#509E2F' : '#cbd5e1';
-  const badge = (x:number,y:number,id:string) => {
-    const active=outgoing(id);
-    return <g transform={`translate(${x},${y-13})`}><rect width="85" height="26" rx="13" fill={active?'#dcfce7':'#f1f5f9'}/><text x="42.5" y="18" textAnchor="middle" fontSize="13" fontWeight="700" fill={active?'#166534':'#64748b'}>{active?`HC ${event(id)!.after}`:'HC —'}</text></g>;
-  };
-  const bus = (right:boolean,y:number,label:string,origin:string) => <g key={`${right}-${y}`}>
-    <line x1={right?645:115} x2={right?985:455} y1={y} y2={y} stroke={lineColor(outgoing(origin))} strokeWidth="3"/>
-    <text x={right?650:120} y={y-16} fontSize="13" fontWeight="600" fill="#475569">{label}</text>
-    {badge(right?900:370,y-17,origin)}
-  </g>;
-  return <div className="space-y-3">
-    <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
-      <span><strong className="text-slate-900">Read the route:</strong> source ↑ backbone → receiver ↓</span>
-      <span><strong>HC</strong> = hop count</span>
-    </div>
-    <div className="overflow-x-auto rounded-xl bg-slate-50 border border-slate-200">
-      <svg viewBox={`0 0 1100 ${height}`} className="w-full min-w-[760px]" role="img" aria-label="Hierarchical KNX topology: source rises through Area 1 to the backbone and descends through Area 15 to the receiver">
-        <title>Backbone, area main lines, secondary lines and repeater segments — course-style hop-count hierarchy.</title>
-        <defs><marker id={marker} markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#509E2F"/></marker></defs>
-        <rect x="75" y="107" width="420" height={height-130} rx="18" fill="#eff6ff" fillOpacity=".55" stroke="#dbeafe"/>
-        <rect x="605" y="107" width="420" height={height-130} rx="18" fill="#f0fdf4" fillOpacity=".55" stroke="#dcfce7"/>
-        <text x="100" y="130" fontSize="12" fontWeight="800" fill="#1e40af">AREA 1</text>
-        <text x="630" y="130" fontSize="12" fontWeight="800" fill="#166534">AREA 15</text>
-        <text x="550" y="29" textAnchor="middle" fontSize="17" fontWeight="800" fill="#0f172a">Backbone line 0.0</text>
-        <text x="550" y="49" textAnchor="middle" fontSize="12" fill="#64748b">Connects the areas</text>
-        <line x1="115" x2="985" y1="80" y2="80" stroke={lineColor(outgoing('1.0.0'))} strokeWidth="3"/>
-        {nodes.slice(1).map((node,index)=>{
-          const from=nodes[index],right=rightSide(from),x1=center(right),x2=center(rightSide(node));
-          const y1=yFor(from),y2=yFor(node);
-          const backbone=from.type==='backbone_coupler'&&node.type==='backbone_coupler';
-          const d=backbone?`M ${x1} ${y1} V 80 H ${x2} V ${y2}`:
-            right?`M ${x1} ${y1+64} V ${y2}`:`M ${x1} ${y1} V ${y2+64}`;
-          const active=outgoing(from.id);
-          return <g key={node.id}>
-            <path d={d} fill="none" stroke="#cbd5e1" strokeWidth="3"/>
-            {active&&<path d={d} fill="none" stroke="#509E2F" strokeWidth="3" markerEnd={`url(#${marker})`}/>}
-          </g>;
-        })}
-        {badge(508,80,'1.0.0')}
-        {[false,true].map(right=>{
-          const prefix=right?'15.15':'1.1';
-          return <g key={prefix}>
-            {bus(right,245,`Main line ${right?'15':'1'}.0`,right?'15.0.0':'1.1.0')}
-            {bus(right,395,`Line ${prefix} · main segment`,right?'15.15.0':cascade?'1.1.64':'1.1.192')}
-            {cascade&&<>
-              {bus(right,535,'Segment 2',right?`${prefix}.64`:`${prefix}.128`)}
-              {bus(right,655,'Segment 3',right?`${prefix}.128`:`${prefix}.192`)}
-            </>}
-            {bus(right,deviceY-40,`Line ${prefix} · segment 4`,right?'15.15.192':'source')}
-          </g>;
-        })}
-        <text x="550" y="237" textAnchor="middle" fontSize="12" fill="#64748b">Main lines</text>
-        <text x="550" y="387" textAnchor="middle" fontSize="12" fill="#64748b">Secondary lines</text>
-        <text x="550" y={deviceY-48} textAnchor="middle" fontSize="12" fill="#64748b">Line segments</text>
-        {nodes.map((node,index)=>{
-          const x=center(rightSide(node))-110,y=yFor(node),e=event(node.id),reached=seen(node.id),blocked=reached&&e?.blocked;
-          const abbr=node.type==='backbone_coupler'?'BC':node.type==='line_coupler'?'LC':node.type==='repeater'?'LR':node.id==='source'?'TX':'RX';
-          const label=node.type==='device'?(node.id==='source'?'Source device':'Receiving device'):node.label;
-          const tint=node.type==='backbone_coupler'?'#e0f2fe':node.type==='line_coupler'?'#fef9c3':node.type==='repeater'?'#dcfce7':'#f1f5f9';
-          return <g key={node.id} transform={`translate(${x},${y})`}>
-            <rect width="220" height="64" rx="10" fill={blocked?'#fff1f2':'white'} stroke={blocked?'#be123c':reached?'#509E2F':'#cbd5e1'} strokeWidth={index===step?3:1.5}/>
-            <rect x="9" y="12" width="34" height="34" rx="7" fill={tint}/><text x="26" y="34" textAnchor="middle" fontSize="12" fontWeight="800" fill="#334155">{abbr}</text>
-            <text x="52" y="19" fontSize="12" fontWeight="700" fill="#334155">{label}</text>
-            <text x="52" y="37" fontSize="13" fontFamily="monospace" fill="#334155">{node.address}</text>
-            <text x="52" y="54" fontSize="11" fill={blocked?'#be123c':reached?'#166534':'#64748b'}>{reached?blocked?`STOP · incoming HC ${e!.before}`:e!.forwarded?`HC ${e!.before} → ${e!.after}`:`HC ${e!.after}`:'Not yet reached'}</text>
-          </g>;
-        })}
-        <text x="285" y={deviceY+88} textAnchor="middle" fontSize="13" fontWeight="700" fill="#1e40af">SOURCE · telegram travels upward</text>
-        <text x="815" y={deviceY+88} textAnchor="middle" fontSize="13" fontWeight="700" fill="#166534">DESTINATION · telegram travels downward</text>
-      </svg>
-    </div>
-    <p className="text-xs text-slate-500">BC = backbone/area coupler · LC = line coupler · LR = legacy line repeater. Horizontal strokes are TP bus sections, not extra hops. A repeater segment stays within its line: its devices keep the same Area.Line prefix. Other branches and power supplies are omitted.</p>
-  </div>;
+const colours={backbone_coupler:'#44546a',line_coupler:'#305496',repeater:'#c55a11',device:'#70ad47',static_device:'#70ad47'};
+const ys=[62,132,202,272,342,412,482,552,622];
+const position=(node:RouteNode)=>{
+ const i=hopCountDevices.findIndex(n=>n.id===node.id),right=i>=9,row=i%9;
+ return {x:right?(row%2===0?990:1085):(row%2===0?175:60),y:ys[row],row,right};
+};
+type Leg={d:string;x:number;y:number};
+function leg(from:RouteNode,to:RouteNode,series:boolean):Leg {
+ const a=position(from),b=position(to);
+ if(from.id==='1.0.0')return {d:`M 310 62 H 990`,x:650,y:48};
+ if(from.id==='source')return {d:'M 310 622 H 340 V 552 H 195',x:365,y:590};
+ if(to.id==='destination')return {d:'M 1220 552 H 1270 V 622 H 1125',x:1240,y:600};
+ if(from.id==='1.1.0')return {d:'M 195 132 H 242 V 86',x:290,y:119};
+ if(from.id==='15.0.0')return {d:'M 1125 62 H 1260 V 132 H 1220',x:1205,y:95};
+ if(!series&&from.id==='1.1.204')return {d:'M 60 552 H 25 V 132 H 60',x:58,y:108};
+ if(!series&&from.id==='15.1.0')return {d:'M 1220 132 H 1290 V 552 H 1220',x:1230,y:175};
+ const outer=a.row===7||a.row===3;
+ const bend=a.right?(outer?1270:960):(outer?335:25);
+ const ax=outer?a.x+135:a.x;
+ const bx=outer?b.x+135:b.x;
+ return {d:`M ${ax} ${a.y} H ${bend} V ${b.y} H ${bx}`,x:a.right?(outer?1230:932):(outer?365:62),y:(a.y+b.y)/2-8};
+}
+
+/** Physical bus wiring and the selected telegram route are separate SVG layers. */
+export function HopCountTopology({nodes,trace,step,mode}:{nodes:RouteNode[];trace:ReturnType<typeof traceRoute>;step:number;mode:'series'|'parallel'}) {
+ const id=useId().replace(/:/g,''),series=mode==='series';
+ const visible=trace.slice(0,step+1),blocked=visible.find(e=>e.blocked);
+ const stoppedAt=blocked?nodes.findIndex(n=>n.id===blocked.id):-1;
+ const title=series?'Series-connected line repeaters':'Parallel-connected line repeaters';
+ const busPaths=['M 242 38 V 28 H 1057 V 38'];
+ for(const right of [false,true]){
+  const col=hopCountDevices.slice(right?9:0,right?18:9).map(position);
+  busPaths.push(`M ${col[0].x+67.5} 86 L ${col[1].x+67.5} 108`,`M ${col[1].x+67.5} 156 L ${col[2].x+67.5} 178`);
+  if(series){for(let i=2;i<8;i++)busPaths.push(`M ${col[i].x+67.5} ${col[i].y+24} L ${col[i+1].x+67.5} ${col[i+1].y-24}`);}
+  else {
+   const trunk=right?1242:46;
+   busPaths.push(`M ${trunk} 132 V 552`);
+   for(const row of [1,3,5,7])busPaths.push(`M ${trunk} ${col[row].y} H ${right?col[row].x+135:col[row].x}`);
+   for(const row of [3,5,7])busPaths.push(`M ${col[row].x+67.5} ${col[row].y+24} L ${col[row+1].x+67.5} ${col[row+1].y-24}`);
+  }
+ }
+ return <div className="space-y-3">
+  <div className="overflow-x-auto border border-slate-200 bg-white rounded-lg" role="region" aria-label="Scrollable Hop Count diagram" tabIndex={0}>
+   <svg viewBox="0 0 1320 810" className="w-full min-w-[1000px]" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
+    <title id={`${id}-title`}>{title}</title>
+    <desc id={`${id}-desc`}>Two area couplers across the top, line 1.1 on the left and line 15.1 on the right. Dashed green lines show TP bus connections. Arrows show only the selected path from 1.1.252 to 15.1.255. HC labels appear as the trace advances. Red dotted arrows mark the unreached remainder after a rejection.</desc>
+    <defs>{[['route','#111827'],['unreached','#dc2626'],['delivered','#509e2f']].map(([name,colour])=><marker key={name} id={`${id}-${name}`} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 1 1 L 7 4 L 1 7" fill="none" stroke={colour} strokeWidth="1.5"/></marker>)}</defs>
+    <g aria-label="KNX TP bus connections" fill="none" stroke="#70ad47" strokeWidth="3" strokeDasharray="12 9">{busPaths.map((d,i)=><path key={i} d={d}/>)}</g>
+    <text x="660" y="195" textAnchor="middle" fontSize="23" fill="#111827">{title}</text>
+    <text x="660" y="225" textAnchor="middle" fontSize="15" fill={series?'#b91c1c':'#475569'}>{series?'Invalid legacy-repeater arrangement':'Repeaters connected to the main segment'}</text>
+    <g aria-label="Selected telegram path">{nodes.slice(1).map((to,i)=>{
+     const from=nodes[i],edge=leg(from,to,series),arrival=visible.find(e=>e.id===to.id),sent=trace.find(e=>e.id===from.id);
+     const unreached=stoppedAt>=0&&i>=stoppedAt,reached=!!arrival,delivered=reached&&to.id==='destination';
+     const stroke=unreached?'#dc2626':delivered?'#509e2f':reached?'#111827':'#cbd5e1';
+     return <g key={to.id} data-route-to={to.id} data-route-state={unreached?'not-reached':reached?'reached':'pending'}>
+      <path d={edge.d} fill="none" stroke={stroke} strokeWidth={delivered?3:2} strokeDasharray={unreached?'2 4':reached?undefined:'5 5'} markerEnd={reached||unreached?`url(#${id}-${unreached?'unreached':delivered?'delivered':'route'})`:undefined}/>
+      {reached&&<g><rect x={edge.x-45} y={edge.y-16} width="90" height="24" fill="white"/><text x={edge.x} y={edge.y+1} textAnchor="middle" fontSize="16" fill={stroke}>HC = {sent?.after}</text></g>}
+     </g>;
+    })}</g>
+    {hopCountDevices.map(node=>{
+     const p=position(node),event=visible.find(e=>e.id===node.id),active=trace[step]?.id===node.id,rejected=!!event?.blocked;
+     return <g key={node.id} data-device-address={node.address}>
+      <title>{`${node.label} · ${node.address}${event?` · ${event.reason}`:''}`}</title>
+      {(active||rejected)&&<rect x={p.x-5} y={p.y-29} width="145" height="58" fill="none" stroke={rejected?'#dc2626':'#111827'} strokeWidth="3"/>}
+      <rect x={p.x} y={p.y-24} width="135" height="48" fill={colours[node.type]} stroke="#24334a"/>
+      <text x={p.x+67.5} y={p.y+7} textAnchor="middle" fill="white" fontSize="23">{node.address}</text>
+      {rejected&&<text x={p.right?p.x-15:p.x+150} y={p.y-33} textAnchor={p.right?'end':'start'} fontSize="16" fill="#b91c1c">STOP · HC = {event.before}</text>}
+     </g>;
+    })}
+    <text x="242" y="670" textAnchor="middle" fontSize="15" fill="#334155">Source · line 1.1</text>
+    <text x="1057" y="670" textAnchor="middle" fontSize="15" fill="#334155">Receiver · line 15.1</text>
+    {blocked&&<g><rect x="430" y="290" width="460" height="82" rx="6" fill="#fff1f2" stroke="#fecaca"/><text x="660" y="319" textAnchor="middle" fontSize="18" fill="#b91c1c">Forwarding stopped at {nodes[stoppedAt].address}</text><text x="660" y="348" textAnchor="middle" fontSize="16" fill="#b91c1c">Red dotted path: not reached</text></g>}
+    {[['Area coupler',colours.backbone_coupler],['Line coupler',colours.line_coupler],['Line repeater',colours.repeater],['Bus device',colours.device]].map(([label,fill],i)=><g key={label}><rect x={35+i*265} y="699" width="255" height="46" fill={fill} stroke="#24334a"/><text x={162.5+i*265} y="728" textAnchor="middle" fill="white" fontSize="17">{label}</text></g>)}
+    <path d="M 1105 711 H 1285" stroke="#70ad47" strokeWidth="3" strokeDasharray="12 9"/><text x="1195" y="738" textAnchor="middle" fontSize="16">KNX TP bus</text>
+    <text x="35" y="786" fontSize="15" fill="#475569">Solid arrow: traced telegram · grey dashed: pending · red dotted: not reached · outline: current event / rejection</text>
+   </svg>
+  </div>
+  <p className="text-xs text-slate-500">HC = hop count. Device colours identify their functions, not reception status. The arrows trace one selected path; telegram propagation into other branches is not animated. Bus devices do not forward telegrams. Addresses are examples; power supplies are omitted.</p>
+ </div>;
 }
