@@ -10,7 +10,6 @@ Start with a prediction, run an example, then explain what the bytes or devices 
 
 | Lesson | What students can do |
 | --- | --- |
-| **Basics** | Read the Training Handbook one topic at a time: physical signalling, addresses, objects, frame structure, timing, bus access, topology, power, DPTs and interface representations. |
 | **Telegram** | Generate standard plain TP1 GroupValueRead, GroupValueResponse and GroupValueWrite examples. Follow a field through coloured byte cards, physical bits, an explanation and an illustrative waveform. |
 | **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
 | **Topology** | Follow a defined path through a course-style backbone/area/line/segment hierarchy, inspect every forwarding decision, explore address allocations, and budget current and interface loading for one TP segment. |
@@ -23,7 +22,7 @@ Short explanations stay visible. **Show details** sections provide layouts, assu
 
 ## Workspace and interaction
 
-- **Wide workspace:** learning-path sidebar, controls on the left and a persistent telegram monitor on the right. The two panes scroll independently.
+- **Wide workspace:** learning-path sidebar, controls on the left and a closable telegram monitor on the right. Closing it gives the explorer the full workspace width; Show telegram monitor restores it without losing the telegram. The two open panes scroll independently.
 - **Narrow workspace:** bottom navigation and a monitor drawer/bottom sheet, with a sticky Generate action in the telegram lesson. Generate opens the monitor; close it with its button, Escape, the backdrop or a downward header gesture.
 - **Readable signals:** bit streams and waveforms scroll horizontally inside their own regions instead of shrinking to fit.
 - **Linked fields:** hover, tap or keyboard-focus a byte card to highlight the same field in the bit stream, explanation and waveform. Labels accompany colours.
@@ -83,7 +82,6 @@ Core implementation:
 | `src/components/TelegramVisualizer.tsx` | Typed inputs, standard frame generation and scenario handoff |
 | `src/components/TelegramMonitor.tsx` | Linked byte/bit/detail views |
 | `src/components/WaveformRenderer.tsx` | Illustrative TP1 signal and timing display |
-| `src/components/EducationalHandbook.tsx` | Topic-based teaching guide |
 | `src/knx/tp1Timing.ts` | Nominal timing and next-access model |
 | `src/knx/teachingModels.ts` | Object reception, routing, address validation and segment budgets |
 | `src/knx/telegramFields.ts` | Shared semantic field palette |

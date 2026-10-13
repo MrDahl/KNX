@@ -33,7 +33,7 @@ export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,v
     actuator2: { ga1: false, ga2: false }
   });
 
-  // Keep track of the S-Flag for Sensor 1 ("1/1/1" or "1/1/2" or null)
+  // Keep track of the sending address for Sensor 1 ("1/1/1" or "1/1/2" or null)
   const [sFlagGa, setSFlagGa] = useState<"1/1/1" | "1/1/2" | null>(null);
 
   // Visual status of Lamp A and Lamp B
@@ -91,7 +91,7 @@ export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,v
   const handlePressButton = () => {
     const timeStr = new Date().toLocaleTimeString();
 
-    // 1. Check if S-Flag exists
+    // 1. Check if sending address exists
     if (!sFlagGa) {
       const errorLog: BusLog = {
         time: timeStr,
@@ -143,17 +143,18 @@ export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,v
         <div className="max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-knx-blue/10 text-knx-blue rounded-full text-xs font-bold tracking-wide">
             <Layers className="h-3.5 w-3.5" />
-            <span>ETS GROUP OBJECTS & S-FLAG</span>
+            <span>ETS GROUP OBJECTS & SENDING ADDRESS</span>
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-            The S-Flag & Multicast Sending Limit
+            Sending address and group communication
           </h2>
           <p className="text-slate-600 text-sm leading-relaxed">
-            In KNX, a Group Object (such as a physical push button sensor) can be associated with 
+            In KNX, a group object (for example, a switching object in a push-button sensor) can be associated with 
             multiple Group Addresses (GAs). However, a standard multicast telegram only has room 
             for <strong>exactly one Destination Address (2 bytes)</strong>. 
           </p>
           
+          <p className="text-sm text-slate-600">In ETS, S marks the sending group address. It is not a communication flag. The communication flags are C, R, W, T, U and I.</p>
           <details className="detail-box"><summary>Show details · one destination per telegram</summary><div className="bg-slate-50 border border-slate-200/60 rounded-xl p-4 font-mono text-xs text-slate-700 space-y-2">
             <div className="font-bold text-knx-blue border-b border-slate-200/80 pb-1 flex items-center gap-1.5">
               <Info className="h-3.5 w-3.5" />
@@ -183,7 +184,7 @@ export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,v
           <div className="flex justify-between items-center border-b border-slate-100 pb-4">
             <div>
               <h3 className="text-lg font-bold text-slate-900">ETS Group Address Matrix</h3>
-              <p className="text-xs text-slate-500">Configure device links. Notice how the S-Flag behaves on Sensor 1.</p>
+              <p className="text-xs text-slate-500">Configure device links. Notice how the sending address behaves on Sensor 1.</p>
             </div>
             <button
               onClick={handleReset}
@@ -351,7 +352,7 @@ export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,v
           <div className="bg-slate-50 border border-slate-200/60 rounded-2xl p-4 flex gap-3 text-xs leading-relaxed text-slate-600">
             <HelpCircle className="h-5 w-5 text-knx-blue shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <p className="font-bold text-slate-800">Visualizing the S-Flag Constraint</p>
+              <p className="font-bold text-slate-800">One sending address per group object</p>
               <p>
                 Notice how the <strong>(S) Sending Flag</strong> resides only on the 
                 first Group Address checked for Sensor 1. If you check both boxes, 

@@ -7,7 +7,7 @@ import {RoutingCounterExplorer} from './RoutingCounterExplorer';
 import {TopologyExplorer} from './TopologyExplorer';
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
 const text=(n:any):string=>typeof n==='string'?n:Array.isArray(n)?n.map(text).join(''):n?.children?text(n.children):'';
-test('S-flag exercise retains Lamp A when sending to B, then writes OFF only to A',async()=>{
+test('Sending-address exercise retains Lamp A when sending to B, then writes OFF only to A',async()=>{
   let r:any;await act(()=>{r=create(<SendingSimulator/>);});
   const input=(label:string)=>r.root.findByProps({'aria-label':label});
   const toggle=async(label:string)=>act(()=>input(label).props.onChange());

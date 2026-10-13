@@ -28,7 +28,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .app-main { min-width: 0; }
 .workspace-heading { display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; padding: 8px 0 22px; }
 .eyebrow { color:#547460; font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom:5px; }
-.learning-nav { position:fixed; z-index:30; bottom:0; left:0; right:0; display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); background:white; border-top:1px solid #dce3e7; padding:6px 4px max(8px,env(safe-area-inset-bottom)); }
+.learning-nav { position:fixed; z-index:30; bottom:0; left:0; right:0; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); background:white; border-top:1px solid #dce3e7; padding:6px 4px max(8px,env(safe-area-inset-bottom)); }
 .nav-brand,.nav-credit,.nav-number,.nav-item small { display:none; }
 .nav-item { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; min-height:52px; padding:6px 2px; color:#52616b; font-size:9px; font-weight:700; border-radius:10px; }
 .nav-item[aria-current="page"] { color:#166534; background:#edf7e9; }
@@ -81,7 +81,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 @container workspace (min-width: 1000px) {
  .workspace-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px; align-items:start; }
  .controls-pane { max-height:calc(100dvh - 115px); overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; padding-right:5px; }
- .monitor-dock[data-compact="false"] { display:block; position:sticky; inset:auto; top:16px; align-self:start; width:100%; max-width:none; max-height:calc(100dvh - 115px); overflow-y:auto; margin:0; border-radius:20px; overscroll-behavior:contain; }
+ .monitor-dock[data-compact="false"][open] { display:block; position:sticky; inset:auto; top:16px; align-self:start; width:100%; max-width:none; max-height:calc(100dvh - 115px); overflow-y:auto; margin:0; border-radius:20px; overscroll-behavior:contain; }
  .drawer-handle { display:none; }
  .workspace-actions { display:none; }
  .generate-inline { position:sticky; bottom:0; width:100%; }
@@ -108,4 +108,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
  .symbol-table td:first-child { width:230px; }
  .symbol-table tbody th { width:28%; }
  .symbol-table tbody tr:last-child>* { border-bottom:0; }
+}
+
+@container workspace (min-width: 1000px) {
+ .workspace-grid[data-monitor-hidden="true"] { grid-template-columns:minmax(0,1fr); }
+ .workspace-grid[data-monitor-hidden="true"] .controls-pane { max-height:none; overflow:visible; padding-right:0; }
 }
