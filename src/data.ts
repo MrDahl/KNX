@@ -204,7 +204,7 @@ export const PRESET_TELEGRAMS = [
       command: APCICode.GroupValueWrite,
       source: { area: 1, line: 1, device: 10 },
       destination: { main: 1, middle: 0, sub: 1 }, // Group Address 1/0/1
-      routingCounter: 6,
+      hopCount: 6,
       priority: "11", // Low (Normal)
       dptType: "1.001", // 1-bit Switch value "On"
       ackType: "CC" as const,
@@ -219,7 +219,7 @@ export const PRESET_TELEGRAMS = [
       command: APCICode.GroupValueWrite,
       source: { area: 1, line: 3, device: 50 },
       destination: { main: 3, middle: 2, sub: 10 }, // Group Address 3/2/10
-      routingCounter: 5,
+      hopCount: 5,
       priority: "11",
       dptType: "5.001", // 8-bit scale
       ackType: "CC" as const,
@@ -234,7 +234,7 @@ export const PRESET_TELEGRAMS = [
       command: APCICode.GroupValueRead,
       source: { area: 2, line: 1, device: 15 },
       destination: { main: 4, middle: 1, sub: 2 }, // 4/1/2
-      routingCounter: 6,
+      hopCount: 6,
       priority: "11",
       dptType: "1.001", // 1-bit switching (ignored in read, but length is 1 byte)
       ackType: "CC" as const,
@@ -249,7 +249,7 @@ export const PRESET_TELEGRAMS = [
       command: APCICode.GroupValueResponse,
       source: { area: 2, line: 1, device: 100 }, // Sensor
       destination: { main: 4, middle: 1, sub: 2 }, // 4/1/2
-      routingCounter: 6,
+      hopCount: 6,
       priority: "11",
       dptType: "9.001", // Float temperature
       ackType: "CC" as const,
@@ -264,7 +264,7 @@ export const PRESET_TELEGRAMS = [
       command: APCICode.GroupValueWrite,
       source: { area: 1, line: 1, device: 200 },
       destination: { main: 0, middle: 5, sub: 12 }, // 0/5/12
-      routingCounter: 6,
+      hopCount: 6,
       priority: "10", // Alarm Priority
       dptType: "1.001",
       ackType: "CC" as const,

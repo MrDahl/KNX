@@ -370,7 +370,7 @@ export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,v
           {/* Active Device Simulation Workspace */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-6">
             <h3 className="text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">
-              Live Bus Output Visualizer
+              Simulated receiver states
             </h3>
 
             {/* Lamp state circles */}

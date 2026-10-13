@@ -44,7 +44,7 @@ export function buildStandardGroupTelegram(params: TelegramParams, payload: stri
   const source = (integer(src.area, 15, "Source area") << 12) | (integer(src.line, 15, "Source line") << 8) | integer(src.device, 255, "Source device");
   const destination = (integer(dst.main, 31, "Main group") << 11) | (integer(dst.middle, 7, "Middle group") << 8) | integer(dst.sub, 255, "Subgroup");
   if (!destination) throw new Error("0/0/0 is reserved for broadcast; choose a nonzero group address.");
-  const hop = integer(params.routingCounter, 7, "Hop count");
+  const hop = integer(params.hopCount, 7, "Hop count");
   const read = params.command === APCICode.GroupValueRead;
   const dpt = STANDARD_DPTS.find(d => d.id === params.dptType);
   let extra: number[] = [], embedded = 0;
@@ -83,7 +83,7 @@ export { telegramTiming } from "../knx/tp1Timing";
 
 export function TelegramVisualizer({scenario,showControls=true,children,onConfigure}:{scenario?:{id:string;values:Values;generate?:boolean;destination?:string;origin?:string}|null;showControls?:boolean;children?:React.ReactNode;onConfigure?:()=>void} = {}) {
   const [params, setParams] = useState<TelegramParams>({repeatFlag: "1", targetType: "1", command: APCICode.GroupValueWrite,
-    source: {area: 1, line: 1, device: 10}, destination: {main: 1, middle: 0, sub: 1}, routingCounter: 6, priority: "11", dptType: "1.001", ackType: "CC"});
+    source: {area: 1, line: 1, device: 10}, destination: {main: 1, middle: 0, sub: 1}, hopCount: 6, priority: "11", dptType: "1.001", ackType: "CC"});
   // The editor and encoder share one source of truth, including while Read hides the editor.
   const [dptValues, setDptValues] = useState<Values>(defaults('1.001'));
   let dptValue = '';
@@ -92,8 +92,6 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
   const [response, setResponse] = useState<'CC'|'0C'|'C0'|'NONE'>('CC');
   const [selectedByte, setSelectedByte] = useState(0);
   const [openRevision,setOpenRevision] = useState(0);
-  const [prediction,setPrediction] = useState('');
-  const [usedPrediction,setUsedPrediction] = useState('');
   const [frameOrigin,setFrameOrigin] = useState<string|undefined>();
   const [currentPreset, setCurrentPreset] = useState(-1);
   const [constructedBytes, setLogicalBytes] = useState<TelegramByte[]>([]);
@@ -102,12 +100,12 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
   useEffect(() => {
     if (!scenario || !DPT_INPUTS[scenario.id] || DPT_INPUTS[scenario.id].telegramAllowed===false) return;
     const [main,middle,sub]=(scenario.destination||'1/0/1').split('/').map(Number);
-    const next:TelegramParams=scenario.generate?{repeatFlag:'1',targetType:'1',command:APCICode.GroupValueWrite,source:{area:1,line:1,device:scenario.destination?1:10},destination:{main,middle,sub},routingCounter:6,priority:'11',dptType:scenario.id,ackType:'CC'}:{...params,dptType:scenario.id,command:APCICode.GroupValueWrite};
+    const next:TelegramParams=scenario.generate?{repeatFlag:'1',targetType:'1',command:APCICode.GroupValueWrite,source:{area:1,line:1,device:scenario.destination?1:10},destination:{main,middle,sub},hopCount:6,priority:'11',dptType:scenario.id,ackType:'CC'}:{...params,dptType:scenario.id,command:APCICode.GroupValueWrite};
     setParams(next);
-    setDptValues({...scenario.values});setCurrentPreset(-1);setCompiled(null);setLogicalBytes([]);setError('');setUsedPrediction('');
+    setDptValues({...scenario.values});setCurrentPreset(-1);setCompiled(null);setLogicalBytes([]);setError('');
     setFrameOrigin(scenario.generate?scenario.origin:undefined);
     if(scenario.generate){
-      try{const payload=encodeDpt(scenario.id,scenario.values),result=buildStandardGroupTelegram(next,payload);setLogicalBytes(result.cards);setSelectedByte(0);setCompiled({signature:JSON.stringify([next,payload]),stream:result.stream,params:next});setOpenRevision(v=>v+1);}catch(e){setError(e instanceof Error?e.message:'Cannot generate the exercise telegram.');}
+      try{const payload=encodeDpt(scenario.id,scenario.values),result=buildStandardGroupTelegram(next,payload);setLogicalBytes(result.cards);setSelectedByte(0);setCompiled({signature:JSON.stringify([next,payload]),stream:result.stream,params:next});setOpenRevision(v=>v+1);}catch(e){setError(e instanceof Error?e.message:'Cannot generate the scenario telegram.');}
     }
   }, [scenario]);
   const updateParams: typeof setParams = next => { setParams(next); setCurrentPreset(-1); setError(''); };
@@ -131,7 +129,7 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
     try {
       if (!isRead && !dptValue) throw new Error('Correct the invalid DPT value before generating.');
       const result = buildStandardGroupTelegram(params, dptValue);
-      setLogicalBytes(result.cards); setSelectedByte(0);setOpenRevision(v=>v+1);setUsedPrediction(prediction);
+      setLogicalBytes(result.cards); setSelectedByte(0);setOpenRevision(v=>v+1);
       setCompiled({signature, stream: result.stream, params: {...params}}); setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Cannot generate this telegram.");
@@ -161,19 +159,19 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
   const showReadExample = (reply:boolean) => {
     setFrameOrigin(undefined);
     const p:TelegramParams = {repeatFlag:'1',targetType:'1',command:reply?APCICode.GroupValueResponse:APCICode.GroupValueRead,
-      source:{area:1,line:1,device:reply?20:10},destination:{main:1,middle:0,sub:1},routingCounter:6,priority:'11',dptType:'9.001',ackType:'CC'};
+      source:{area:1,line:1,device:reply?20:10},destination:{main:1,middle:0,sub:1},hopCount:6,priority:'11',dptType:'9.001',ackType:'CC'};
     const values={value:'23.5'}, payload=encodeDpt('9.001',values),result=buildStandardGroupTelegram(p,payload);
     setParams(p);setDptValues(values);setCurrentPreset(-1);setError('');setResponse('CC');setSelectedByte(0);
-    setOpenRevision(v=>v+1);setUsedPrediction(prediction);setLogicalBytes(result.cards);setCompiled({signature:JSON.stringify([p,payload]),stream:result.stream,params:p});
+    setOpenRevision(v=>v+1);setLogicalBytes(result.cards);setCompiled({signature:JSON.stringify([p,payload]),stream:result.stream,params:p});
   };
 
   const inputClass="lesson-input";
   const controls = <div className="space-y-4">
     <div hidden={!showControls} className="space-y-4">
       <section className="lesson-card space-y-4">
-        <div><p className="eyebrow">01 · Telegram</p><h2 className="text-2xl font-extrabold text-slate-900">Build it. Predict it. See it.</h2><p className="text-sm text-slate-600 mt-2">Choose the sender, the group and a value. Generate the telegram, then follow each coloured field through its bytes and signal.</p></div>
+        <div><p className="eyebrow">01 · Telegram</p><h2 className="text-2xl font-extrabold text-slate-900">TP1 telegram configuration</h2><p className="text-sm text-slate-600 mt-2">Configure the source, destination, service and datapoint value to inspect the resulting bytes, serial bits and TP1 waveform.</p></div>
         <details className="detail-box"><summary>Show details · scope of this simulator</summary><p className="text-sm">Standard plain TP1 group-value telegrams: Read, Response and Write. Maximum 14 value octets. Management services, extended frames and KNX Secure are not implemented here.</p></details>
-        <div><h3 className="text-sm font-bold mb-2">Start with an example</h3><div className="grid @md:grid-cols-2 gap-2">{PRESET_TELEGRAMS.map((t,idx)=><button key={idx} aria-pressed={currentPreset===idx} className={`lesson-button text-left ${currentPreset===idx?'bg-green-50 border-green-700':''}`} onClick={()=>applyPreset(idx)}>{t.name.replace('(High Priority)','(Alarm Priority)')}</button>)}</div></div>
+        <div><h3 className="text-sm font-bold mb-2">Example telegrams</h3><div className="grid @md:grid-cols-2 gap-2">{PRESET_TELEGRAMS.map((t,idx)=><button key={idx} aria-pressed={currentPreset===idx} className={`lesson-button text-left ${currentPreset===idx?'bg-green-50 border-green-700':''}`} onClick={()=>applyPreset(idx)}>{t.name.replace('(High Priority)','(Alarm Priority)')}</button>)}</div></div>
         <label className="block text-sm font-semibold">Service<select className={inputClass} aria-label="APCI group-value service" value={params.command} onChange={e=>updateParams(p=>({...p,command:e.target.value as APCICode}))}>{APCI_DEFS.filter(c=>GROUP_SERVICES.includes(c.code)).map(c=><option key={c.code} value={c.code}>{c.name}</option>)}</select></label>
         <fieldset className="field-config field-source"><legend>Source · individual address</legend><div className="grid grid-cols-3 gap-2">{(['area','line','device'] as const).map((part,i)=><label key={part} className="text-xs capitalize">{part}<input className={inputClass} type="number" min="0" max={i===2?255:15} aria-label={`Source ${part}`} aria-invalid={!Number.isInteger(params.source[part])||params.source[part]<0||params.source[part]>(i===2?255:15)} value={Number.isNaN(params.source[part])?'':params.source[part]} onChange={e=>updateParams(p=>({...p,source:{...p.source,[part]:e.target.value===''?NaN:Number(e.target.value)}}))}/></label>)}</div></fieldset>
         <fieldset className="field-config field-destination"><legend>Destination · group address</legend><div className="grid grid-cols-3 gap-2">{(['main','middle','sub'] as const).map((part,i)=><label key={part} className="text-xs capitalize">{part}<input className={inputClass} type="number" min="0" max={[31,7,255][i]} aria-label={['Main group','Middle group','Subgroup'][i]} aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup)[part])||(params.destination as KNXAddressGroup)[part]<0||(params.destination as KNXAddressGroup)[part]>[31,7,255][i]} value={Number.isNaN((params.destination as KNXAddressGroup)[part])?'':(params.destination as KNXAddressGroup)[part]} onChange={e=>updateParams(p=>({...p,destination:{...(p.destination as KNXAddressGroup),[part]:e.target.value===''?NaN:Number(e.target.value)}}))}/></label>)}</div></fieldset>
@@ -181,10 +179,9 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
         <details className="detail-box"><summary>Show details · priority, repetition and hop count</summary><div className="grid @md:grid-cols-2 gap-4 pt-3">
           <label className="text-sm">Repeat flag<select className={inputClass} aria-label="Repeat flag" value={params.repeatFlag} onChange={e=>updateParams(p=>({...p,repeatFlag:e.target.value as '0'|'1'}))}><option value="1">Original</option><option value="0">Repeated</option></select></label>
           <label className="text-sm">Priority<select className={inputClass} aria-label="Telegram priority" value={params.priority} onChange={e=>updateParams(p=>({...p,priority:e.target.value as TelegramParams['priority']}))}><option value="00">System (00)</option><option value="10">Alarm / urgent (10)</option><option value="01">High / normal (01)</option><option value="11">Low (11)</option></select></label>
-          <label className="text-sm">Hop count<select aria-label="Routing hop count" className={inputClass} value={params.routingCounter} onChange={e=>updateParams(p=>({...p,routingCounter:Number(e.target.value)}))}>{Array.from({length:8},(_,i)=><option key={i} value={i}>{i}{i===7?' · special value':''}</option>)}</select></label>
+          <label className="text-sm">Hop count<select aria-label="Hop count" className={inputClass} value={params.hopCount} onChange={e=>updateParams(p=>({...p,hopCount:Number(e.target.value)}))}>{Array.from({length:8},(_,i)=><option key={i} value={i}>{i}{i===7?' · special value':''}</option>)}</select></label>
           <p className="text-xs text-slate-600">HC 0 permits local reception but no forwarding. HC 7 is special, not a seven-hop budget. This tool uses group destinations only.</p>
         </div></details>
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-2"><h3 className="font-bold text-sm text-amber-950">1 · What do you think happens?</h3><label className="block text-xs text-amber-950">Predict which fields will change, or what the receiver will do.<textarea aria-label="Telegram prediction" value={prediction} onChange={e=>setPrediction(e.target.value)} className={inputClass} rows={2} placeholder="My prediction… (optional for free exploration)"/></label></div>
         {error&&<p role="alert" className="text-sm text-red-800 bg-red-50 p-3 rounded-lg">{error}</p>}
         {addressErrors.length>0&&<div role="alert" className="text-sm text-red-800">{addressErrors.map(m=><p key={m}>{m}</p>)}</div>}
         {isDirty&&<p className="text-sm text-amber-900">Modified input: the monitor still shows the previous telegram.</p>}
@@ -234,6 +231,6 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
           <p className="text-xs text-slate-600">For simultaneous group acknowledgements, the Tutor course gives BUSY → NAK → ACK priority. A group ACK cannot identify which individual receivers acknowledged. Negative or absent responses can cause repetitions; these are not included in the displayed frame and acknowledgement. Reference: Tutor §3.6.4.</p>
         </aside>;
   return <MonitorDock controls={controls} openRevision={openRevision} actions={showControls?<button className="primary-button generate-mobile" onClick={handleGenerateClick}><Play size={17}/>Generate Telegram</button>:<button className="lesson-button configure-mobile" onClick={onConfigure}>Build telegram</button>}>
-    <TelegramMonitor bytes={constructedBytes} stream={compiled?.stream??''} selected={selectedByte} onSelect={setSelectedByte} dirty={isDirty} response={response} ackBits={getAckPhysicalBitStream()} nextAccess={nextAccess} timingDetails={timingDetails} prediction={usedPrediction} origin={frameOrigin}/>
+    <TelegramMonitor bytes={constructedBytes} stream={compiled?.stream??''} selected={selectedByte} onSelect={setSelectedByte} dirty={isDirty} response={response} ackBits={getAckPhysicalBitStream()} nextAccess={nextAccess} timingDetails={timingDetails} origin={frameOrigin}/>
   </MonitorDock>;
 }

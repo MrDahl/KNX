@@ -13,8 +13,8 @@ export function LinePowerBudget() {
   const update = (id: number, patch: Partial<PowerItem>) => setItems(prev => prev.map(i => i.id === id ? {...i, ...patch} : i));
   const inputClass = 'w-full min-w-20 border border-slate-200 rounded-lg p-2 bg-white text-slate-800';
   return <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 text-left" aria-label="Line power budget">
-    <h3 className="text-lg font-bold text-slate-900">Design one TP segment at a time</h3>
-    <p className="text-sm text-slate-600">Select a line and budget its main segment. Each electrically separated subsegment needs its own calculation and supply. The line selector labels this working example; changing it keeps your entered budget. The address directory below is independent of this exercise.</p>
+    <h3 className="text-lg font-bold text-slate-900">TP segment power budget</h3>
+    <p className="text-sm text-slate-600">Select a line and budget its main segment. Each electrically separated subsegment needs its own calculation and supply. The line selector labels this working example; changing it keeps your entered budget. The address directory below is independent of this calculation.</p>
     <div className="flex flex-wrap gap-4 text-sm">
       <label>Line <select aria-label="Power budget line" className={inputClass} value={line} onChange={e => setLine(e.target.value)}>
         {Array.from({length: 15}, (_, a) => Array.from({length: 15}, (_, l) => `${a + 1}.${l + 1}`)).flat().map(v => <option key={v}>{v}</option>)}

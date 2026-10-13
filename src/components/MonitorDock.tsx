@@ -24,7 +24,7 @@ export function MonitorDock({children,controls,openRevision=0,actions}:{children
    <div className="@container controls-pane min-w-0">{controls}</div>
    <dialog ref={dialog} aria-label="Telegram monitor" className="monitor-dock @container" data-compact={compact} onCancel={e=>{e.preventDefault();close();}} onClick={e=>{if(compact&&e.target===dialog.current)close();}}>
     <div className="monitor-header" onPointerDown={e=>{if((e.target as HTMLElement).closest('button')&&e.currentTarget.tagName!=='BUTTON')return;touchY.current=e.clientY;e.currentTarget.setPointerCapture(e.pointerId);}} onPointerUp={e=>{if(compact&&touchY.current!==null&&e.clientY-touchY.current>60)close();touchY.current=null;}}>
-     <div><span className="drawer-handle"/><p className="eyebrow">Observe · explain</p><h2 className="text-lg font-extrabold text-slate-900">Telegram monitor</h2></div>
+     <div><span className="drawer-handle"/><h2 className="text-lg font-extrabold text-slate-900">Telegram monitor</h2></div>
      {<button autoFocus={compact} onClick={close} className="icon-button" aria-label="Close telegram monitor"><X size={20}/></button>}
     </div>
     <div className="monitor-content">{children}</div>

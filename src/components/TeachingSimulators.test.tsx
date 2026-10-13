@@ -3,7 +3,7 @@ import {strict as assert} from 'node:assert';
 import {test} from 'node:test';
 import {act,create} from 'react-test-renderer';
 import {SendingSimulator} from './SendingSimulator';
-import {RoutingCounterExplorer} from './RoutingCounterExplorer';
+import {HopCountExplorer} from './HopCountExplorer';
 import {TopologyExplorer} from './TopologyExplorer';
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
 const text=(n:any):string=>typeof n==='string'?n:Array.isArray(n)?n.map(text).join(''):n?.children?text(n.children):'';
@@ -24,12 +24,12 @@ test('Sending-address exercise retains Lamp A when sending to B, then writes OFF
   assert.equal(text(input('Lamp A state')),'OFF');assert.equal(text(input('Lamp B state')),'ON');
   await act(()=>r.unmount());
 });
-test('routing UI shows final RC 0 delivery and resets after filter changes',async()=>{
-  let r:any;await act(()=>{r=create(<RoutingCounterExplorer/>);});
+test('routing UI shows final HC 0 delivery and resets after filter changes',async()=>{
+  let r:any;await act(()=>{r=create(<HopCountExplorer/>);});
   const next=()=>r.root.findAllByType('button').find((n:any)=>text(n)==='Next event');
   for(let i=0;i<8;i++) await act(()=>next().props.onClick());
   assert.match(text(r.toJSON()),/Receiver reached/);
-  assert.match(text(r.root.findByProps({'aria-label':'Routing event log'})),/segment with RC 0/);
+  assert.match(text(r.root.findByProps({'aria-label':'Routing event log'})),/segment with HC 0/);
   await act(()=>r.root.findByProps({'aria-label':'Routing filter'}).props.onChange({target:{value:'1.1.0'}}));
   assert.match(text(r.toJSON()),/No telegram sent yet/);
   for(let i=0;i<3;i++) await act(()=>next().props.onClick());

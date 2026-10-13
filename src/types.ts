@@ -50,7 +50,7 @@ export interface TelegramParams {
   command: APCICode;
   source: KNXAddressIndividual;
   destination: KNXAddressGroup | KNXAddressIndividual;
-  routingCounter: number; // 0 - 7 (Hop Count, default 6)
+  hopCount: number; // 0 - 7 (Hop Count, default 6)
   priority: "00" | "10" | "01" | "11"; // System, Alarm, High, Low
   dptType: string;
   ackType: "CC" | "0C" | "C0"; // CC = LL_ACK, 0C = LL_NAK, C0 = LL_BUSY
