@@ -6,9 +6,9 @@ import {CadSymbols} from './CadSymbols';
 import {symbolAssetUrl} from '../symbols/catalogue';
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT=true;
 const text=(n:any):string=>typeof n==='string'?n:Array.isArray(n)?n.map(text).join(''):n?.children?text(n.children):'';
-test('Symbol reference filters English entries, loads the eight supplied SVGs as images',async()=>{
+test('Symbol reference filters English entries, loads the thirteen original SVGs as images',async()=>{
  let r:any;await act(()=>{r=create(<CadSymbols/>);});
- assert.match(text(r.toJSON()),/Example KNX CAD Symbols/);assert.match(text(r.toJSON()),/8 drawings available · 0 pending/); assert.equal(r.root.findAllByType("img").length,16);
+ assert.match(text(r.toJSON()),/Example KNX CAD Symbols/);assert.match(text(r.toJSON()),/13 drawings available · 0 pending/); assert.equal(r.root.findAllByType("img").length,26);
  assert.doesNotMatch(text(r.toJSON()),/Product Reference|Busch-Jaeger/);
  await act(()=>r.root.findByProps({'aria-label':'Search CAD symbols'}).props.onChange({target:{value:'dimming actuator'}}));
  assert.match(text(r.toJSON()),/1 matching entry/);assert.match(text(r.toJSON()),/Dimming actuator/);

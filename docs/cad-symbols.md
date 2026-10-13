@@ -25,10 +25,10 @@ Use a distinct symbol name for each variant. Preserve channel counts in names wh
 3. Save each asset under public/symbols and map its path in src/symbols/catalogue.ts. Match existing slots where appropriate; otherwise add an English name, category and description for the actual drawing.
 4. Check the image at normal and enlarged sizes. Search uses name, description, category and keywords.
 
-There is no student-facing upload or raw-code editor. The owner's text file will be integrated into the repository after review. The page now contains eight supplied SVGs, replacing the initial placeholder catalogue. No drawings from the earlier product-specific PDF are used. Additional standalone SVG files are also accepted.
+There is no student-facing upload or raw-code editor. The owner's text file will be integrated into the repository after review. The page contains thirteen original SVGs created by Marc Sonne Dahl, including the supplied Generic Sensor. The earlier eight drawings have been removed. No symbols from the product-specific PDF or the earlier MEPcontent-derived set remain in the current asset directory.
 
-## Supplied artwork
+## Original artwork
 
-Marc Sonne Dahl supplied and adapted the eight drawings from downloads at https://www.mepcontent.com/en/bim-files/?query=manufacturer%3D31. This records the supplied provenance; it does not assert a licence or standards endorsement. The repository copies preserve the geometry, with viewport padding, non-scaling strokes for screen readability and a common font fallback. Original uploaded files are unchanged.
+Standalone SVGs are stored under `public/symbols` with descriptive filenames. Their contents are preserved byte-for-byte from the supplied files, including colours, geometry, viewBox and stroke widths. They are displayed as images to isolate their internal CSS.
 
-The general gateway does not imply DALI. Coupler/repeater is an example symbol: its precise topology role must be named in the project legend.
+These are examples for this teaching reference. A shared coupler or IP-device symbol does not imply identical device behaviour: the English descriptions distinguish the roles, and the project legend should identify the selected role.
