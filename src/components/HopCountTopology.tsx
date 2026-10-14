@@ -1,3 +1,5 @@
+import {tr} from '../i18n';
+import {useTranslation} from 'react-i18next';
 import React, {useId} from 'react';
 import {RouteNode, traceRoute} from '../knx/teachingModels';
 import {hopCountDevices} from '../knx/routingExample';
@@ -27,6 +29,7 @@ function leg(from:RouteNode,to:RouteNode,series:boolean):Leg {
 
 /** Physical bus wiring and the selected telegram route are separate SVG layers. */
 export function HopCountTopology({nodes,trace,step,mode}:{nodes:RouteNode[];trace:ReturnType<typeof traceRoute>;step:number;mode:'series'|'parallel'}) {
+ useTranslation();
  const id=useId().replace(/:/g,''),series=mode==='series';
  const visible=trace.slice(0,step+1),blocked=visible.find(e=>e.blocked);
  const stoppedAt=blocked?nodes.findIndex(n=>n.id===blocked.id):-1;
@@ -44,15 +47,15 @@ export function HopCountTopology({nodes,trace,step,mode}:{nodes:RouteNode[];trac
   }
  }
  return <div className="space-y-3">
-  <div className="overflow-x-auto border border-slate-200 bg-white rounded-lg" role="region" aria-label="Scrollable Hop Count diagram" tabIndex={0}>
+  <div className="overflow-x-auto border border-slate-200 bg-white rounded-lg" role="region" aria-label={tr("Scrollable Hop Count diagram")} tabIndex={0}>
    <svg viewBox="0 0 1320 810" className="w-full min-w-[1000px]" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
-    <title id={`${id}-title`}>{title}</title>
-    <desc id={`${id}-desc`}>Two area couplers across the top, line 1.1 on the left and line 15.1 on the right. Dashed green lines show TP bus connections. Arrows show only the selected path from 1.1.252 to 15.1.255. HC labels appear as the trace advances. Red dotted arrows mark the unreached remainder after a rejection.</desc>
+    <title id={`${id}-title`}>{tr(title)}</title>
+    <desc id={`${id}-desc`}>{tr("Two area couplers across the top, line 1.1 on the left and line 15.1 on the right. Dashed green lines show TP bus connections. Arrows show only the selected path from 1.1.252 to 15.1.255. HC labels appear as the trace advances. Red dotted arrows mark the unreached remainder after a rejection.")}</desc>
     <defs>{[['route','#111827'],['unreached','#dc2626'],['delivered','#509e2f']].map(([name,colour])=><marker key={name} id={`${id}-${name}`} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M 1 1 L 7 4 L 1 7" fill="none" stroke={colour} strokeWidth="1.5"/></marker>)}</defs>
-    <g aria-label="KNX TP bus connections" fill="none" stroke="#70ad47" strokeWidth="3" strokeDasharray="12 9">{busPaths.map((d,i)=><path key={i} d={d}/>)}</g>
-    <text x="660" y="195" textAnchor="middle" fontSize="23" fill="#111827">{title}</text>
-    <text x="660" y="225" textAnchor="middle" fontSize="15" fill={series?'#b91c1c':'#475569'}>{series?'Invalid legacy-repeater arrangement':'Repeaters connected to the main segment'}</text>
-    <g aria-label="Selected telegram path">{nodes.slice(1).map((to,i)=>{
+    <g aria-label={tr("KNX TP bus connections")} fill="none" stroke="#70ad47" strokeWidth="3" strokeDasharray="12 9">{busPaths.map((d,i)=><path key={i} d={d}/>)}</g>
+    <text x="660" y="195" textAnchor="middle" fontSize="23" fill="#111827">{tr(title)}</text>
+    <text x="660" y="225" textAnchor="middle" fontSize="15" fill={series?'#b91c1c':'#475569'}>{series?tr("Invalid legacy-repeater arrangement"):tr("Repeaters connected to the main segment")}</text>
+    <g aria-label={tr("Selected telegram path")}>{nodes.slice(1).map((to,i)=>{
      const from=nodes[i],edge=leg(from,to,series),arrival=visible.find(e=>e.id===to.id),sent=trace.find(e=>e.id===from.id);
      const unreached=stoppedAt>=0&&i>=stoppedAt,reached=!!arrival,delivered=reached&&to.id==='destination';
      const stroke=unreached?'#dc2626':delivered?'#509e2f':reached?'#111827':'#cbd5e1';
@@ -64,21 +67,21 @@ export function HopCountTopology({nodes,trace,step,mode}:{nodes:RouteNode[];trac
     {hopCountDevices.map(node=>{
      const p=position(node),event=visible.find(e=>e.id===node.id),active=trace[step]?.id===node.id,rejected=!!event?.blocked;
      return <g key={node.id} data-device-address={node.address}>
-      <title>{`${node.label} · ${node.address}${event?` · ${event.reason}`:''}`}</title>
+      <title>{`${tr(node.label)} · ${node.address}${event?` · ${event.reason}`:''}`}</title>
       {(active||rejected)&&<rect x={p.x-5} y={p.y-29} width="145" height="58" fill="none" stroke={rejected?'#dc2626':'#111827'} strokeWidth="3"/>}
       <rect x={p.x} y={p.y-24} width="135" height="48" fill={colours[node.type]} stroke="#24334a"/>
       <text x={p.x+67.5} y={p.y+7} textAnchor="middle" fill="white" fontSize="23">{node.address}</text>
       {rejected&&<text x={p.right?p.x-15:p.x+150} y={p.y-33} textAnchor={p.right?'end':'start'} fontSize="16" fill="#b91c1c">STOP · HC = {event.before}</text>}
      </g>;
     })}
-    <text x="242" y="670" textAnchor="middle" fontSize="15" fill="#334155">Source · line 1.1</text>
-    <text x="1057" y="670" textAnchor="middle" fontSize="15" fill="#334155">Receiver · line 15.1</text>
-    {blocked&&<g><rect x="430" y="290" width="460" height="82" rx="6" fill="#fff1f2" stroke="#fecaca"/><text x="660" y="319" textAnchor="middle" fontSize="18" fill="#b91c1c">Forwarding stopped at {nodes[stoppedAt].address}</text><text x="660" y="348" textAnchor="middle" fontSize="16" fill="#b91c1c">Red dotted path: not reached</text></g>}
+    <text x="242" y="670" textAnchor="middle" fontSize="15" fill="#334155">{tr("Source · line 1.1")}</text>
+    <text x="1057" y="670" textAnchor="middle" fontSize="15" fill="#334155">{tr("Receiver · line 15.1")}</text>
+    {blocked&&<g><rect x="430" y="290" width="460" height="82" rx="6" fill="#fff1f2" stroke="#fecaca"/><text x="660" y="319" textAnchor="middle" fontSize="18" fill="#b91c1c">{tr("Forwarding stopped at")} {nodes[stoppedAt].address}</text><text x="660" y="348" textAnchor="middle" fontSize="16" fill="#b91c1c">{tr("Red dotted path: not reached")}</text></g>}
     {[['Area coupler',colours.backbone_coupler],['Line coupler',colours.line_coupler],['Line repeater',colours.repeater],['Bus device',colours.device]].map(([label,fill],i)=><g key={label}><rect x={35+i*265} y="699" width="255" height="46" fill={fill} stroke="#24334a"/><text x={162.5+i*265} y="728" textAnchor="middle" fill="white" fontSize="17">{label}</text></g>)}
-    <path d="M 1105 711 H 1285" stroke="#70ad47" strokeWidth="3" strokeDasharray="12 9"/><text x="1195" y="738" textAnchor="middle" fontSize="16">KNX TP bus</text>
-    <text x="35" y="786" fontSize="15" fill="#475569">Solid arrow: traced telegram · grey dashed: pending · red dotted: not reached · outline: current event / rejection</text>
+    <path d="M 1105 711 H 1285" stroke="#70ad47" strokeWidth="3" strokeDasharray="12 9"/><text x="1195" y="738" textAnchor="middle" fontSize="16">{tr("KNX TP bus")}</text>
+    <text x="35" y="786" fontSize="15" fill="#475569">{tr("Solid arrow: traced telegram · grey dashed: pending · red dotted: not reached · outline: current event / rejection")}</text>
    </svg>
   </div>
-  <p className="text-xs text-slate-500">HC = hop count. Device colours identify their functions, not reception status. The arrows trace one selected path; telegram propagation into other branches is not animated. Bus devices do not forward telegrams. Addresses are examples; power supplies are omitted.</p>
+  <p className="text-xs text-slate-500">{tr("HC = hop count. Device colours identify their functions, not reception status. The arrows trace one selected path; telegram propagation into other branches is not animated. Bus devices do not forward telegrams. Addresses are examples; power supplies are omitted.")}</p>
  </div>;
 }

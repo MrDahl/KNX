@@ -1,3 +1,5 @@
+import {tr,msg,i18n,setLanguage,type Language} from './i18n';
+import {useTranslation} from 'react-i18next';
 import {CaptureAnalyser} from './components/CaptureAnalyser';
 import type {CaptureScenario} from './knx/capture';
 import React, {useRef,useState} from 'react';
@@ -19,6 +21,7 @@ const navigation=[
 ] as const;
 type Page=typeof navigation[number]['id'];
 export default function App() {
+ useTranslation();
  const [page,setPage]=useState<Page>('telegram');
  const [scenario,setScenario]=useState<(DptScenario&{generate?:boolean;destination?:string;origin?:string;captureParams?:CaptureScenario['captureParams']})|null>(null);
  const heading=useRef<HTMLHeadingElement>(null);
@@ -26,16 +29,17 @@ export default function App() {
  const selectDpt=(value:DptScenario)=>{setScenario(value);navigate('telegram');};
  const active=navigation.find(n=>n.id===page)!;
  return <div className="@container/app app-root">
-  <a href="#lesson-content" className="skip-link">Skip to lesson</a>
+  <a href="#lesson-content" className="skip-link">{tr("Skip to lesson")}</a>
   <div className="app-layout">
-   <nav className="learning-nav" aria-label="Learning path">
-    <div className="nav-brand"><span className="text-green-700 font-extrabold text-2xl tracking-tight">KNX <span className="text-slate-800">Explorer</span></span><p className="text-xs text-slate-500 mt-2">KNX TP1 simulation and reference</p></div>
-    {navigation.map((item,i)=>{const Icon=item.icon;return <button key={item.id} aria-current={page===item.id?'page':undefined} className="nav-item" onClick={()=>navigate(item.id)}><Icon size={19}/><span><span className="nav-number">0{i+1} · </span>{item.label}<small>{item.description}</small></span></button>;})}
-    <div className="nav-credit">Marc Sonne Dahl<br/>KNX++ Tutor<br/><span className="text-[11px]">Teaching tool · TP1</span></div>
+   <nav className="learning-nav" aria-label={tr("Learning path")}>
+    <div className="nav-brand"><span className="text-green-700 font-extrabold text-2xl tracking-tight">KNX <span className="text-slate-800">Explorer</span></span><p className="text-xs text-slate-500 mt-2">{tr("KNX TP1 simulation and reference")}</p></div>
+    {navigation.map((item,i)=>{const Icon=item.icon;return <button key={item.id} aria-current={page===item.id?'page':undefined} className="nav-item" onClick={()=>navigate(item.id)}><Icon size={19}/><span><span className="nav-number">0{i+1} · </span>{tr(item.label)}<small>{tr(item.description)}</small></span></button>;})}
+    <div className="nav-credit">Marc Sonne Dahl<br/>KNX++ Tutor<br/><span className="text-[11px]">{tr("Teaching tool · TP1")}</span></div>
    </nav>
    <div className="app-main min-w-0">
-    <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{active.label}</h1></div></header>
+    <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{tr(active.label)}</h1></div><label className="language-selector"><span>{i18n.language==='da'?'Sprog':'Language'}</span><select aria-label={i18n.language==='da'?'Sprog':'Language'} value={i18n.language} onChange={e=>void setLanguage(e.target.value as Language)}><option value="en" lang="en">English</option><option value="da" lang="da">Dansk</option></select></label></header>
     <main id="lesson-content">
+     {i18n.language==='da'&&<p className="px-4 py-2 text-xs text-slate-500" role="note">{msg('locale.partial')}</p>}
      {page==='symbols'&&<CadSymbols/>}
      <div hidden={page!=='capture'}><CaptureAnalyser onUseTelegram={value=>{setScenario(value);navigate('telegram');}}/></div>
      <div hidden={page==='symbols'||page==='capture'}>
@@ -48,7 +52,7 @@ export default function App() {
      </TelegramVisualizer>
      </div>
     </main>
-    <footer className="app-footer">Marc Sonne Dahl · KNX++ Tutor · 2026<br/>Educational simulations and an edition-specific reference. No live bus connection.</footer>
+    <footer className="app-footer">Marc Sonne Dahl · KNX++ Tutor · 2026<br/>{tr("Educational simulations and an edition-specific reference. No live bus connection.")}</footer>
    </div>
   </div>
  </div>;

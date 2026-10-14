@@ -1,3 +1,5 @@
+import {tr} from '../i18n';
+import {useTranslation} from 'react-i18next';
 import React, { useState, useRef } from "react";
 import {parseIndividualAddress} from "../knx/teachingModels";
 import {LinePowerBudget} from "./LinePowerBudget";
@@ -7,6 +9,7 @@ import {
 } from "lucide-react";
 
 export function TopologyExplorer() {
+ useTranslation();
   const [searchInput, setSearchInput] = useState<string>("");
   const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({
     backbone: false
@@ -86,7 +89,7 @@ export function TopologyExplorer() {
   };
 
   // Helper renderers
-  const renderPsu = (segment: string) => <div className="border border-rose-200 bg-rose-50 text-rose-700 px-2 py-1 rounded text-center text-[10px] font-bold" title="Illustrative unaddressed KNX power supply with choke. Not an individual-address position.">PSU · {segment} · no IA</div>;
+  const renderPsu = (segment: string) => <div className="border border-rose-200 bg-rose-50 text-rose-700 px-2 py-1 rounded text-center text-[10px] font-bold" title={tr("Illustrative unaddressed KNX power supply with choke. Not an individual-address position.")}>PSU · {segment} {tr("· no IA")}</div>;
 
   return (
     <div className="space-y-8 font-sans text-slate-705 bg-transparent">
@@ -97,31 +100,25 @@ export function TopologyExplorer() {
           <div className="flex flex-col @2xl:flex-row @2xl:items-center justify-between gap-6">
             <div className="space-y-1">
               <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Network className="h-5 w-5 text-knx-blue" />
-                KNX Hierarchical Tree Topology Capacity Explorer
-              </h3>
-              <p className="text-slate-500 text-xs font-semibold">
-                Explore a defined address-allocation example, then calculate a separate TP segment power budget.
-              </p>
+                <Network className="h-5 w-5 text-knx-blue" /> {tr("KNX Hierarchical Tree Topology Capacity Explorer")} </h3>
+              <p className="text-slate-500 text-xs font-semibold"> {tr("Explore a defined address-allocation example, then calculate a separate TP segment power budget.")} </p>
             </div>
             
             <form onSubmit={handleSearch} className="flex gap-2 w-full @2xl:w-auto">
               <div className="relative flex-grow @2xl:w-72">
                 <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
                 <input 
-                  type="text" aria-label="Individual address search"
+                  type="text" aria-label={tr("Individual address search")}
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  placeholder="Locate e.g. 1.1.10, 5.0.0, 3.4.64"
+                  placeholder={tr("Locate e.g. 1.1.10, 5.0.0, 3.4.64")}
                   className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-800 font-mono focus:border-knx-blue focus:outline-none focus:ring-1 focus:ring-knx-blue/20"
                 />
               </div>
               <button 
                 type="submit"
                 className="bg-knx-blue hover:bg-knx-blue/90 text-white font-bold px-4 py-2 rounded-xl text-xs transition-colors shrink-0 cursor-pointer shadow-xs"
-              >
-                Locate Address
-              </button>
+              > {tr("Locate Address")} </button>
             </form>
           </div>
 
@@ -142,8 +139,8 @@ export function TopologyExplorer() {
       </div>
 
       <section className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 text-left">
-        <h3 className="font-bold text-lg text-slate-900">Address capacity is not an installation device limit</h3>
-        <p className="text-sm text-slate-600">This template has a TP backbone, 15 TP main lines and 225 secondary lines. Each secondary line illustrates three segment couplers and four separately powered segments. Ordinary device positions are available slots, not installed devices. The former 59,687 total mixed incompatible quantities and has been removed.</p>
+        <h3 className="font-bold text-lg text-slate-900">{tr("Address capacity is not an installation device limit")}</h3>
+        <p className="text-sm text-slate-600">{tr("This template has a TP backbone, 15 TP main lines and 225 secondary lines. Each secondary line illustrates three segment couplers and four separately powered segments. Ordinary device positions are available slots, not installed devices. The former 59,687 total mixed incompatible quantities and has been removed.")}</p>
         <div className="grid @lg:grid-cols-2 @4xl:grid-cols-4 gap-4">
           {[
             ['61,695', 'Individual-address positions', 'In this conventional topology template'],
@@ -152,44 +149,34 @@ export function TopologyExplorer() {
             ['916', 'Unaddressed supplies', 'One per illustrated electrical segment'],
           ].map(([value,title,detail]) => <div key={title} className="bg-slate-50 rounded-xl p-4 border border-slate-200"><strong className="block text-2xl text-knx-blue">{value}</strong><span className="block font-bold text-sm">{title}</span><span className="text-xs text-slate-600">{detail}</span></div>)}
         </div>
-        <details className="detail-box"><summary>Show details · address allocation and electrical loading</summary><div className="overflow-x-auto"><table className="w-full text-sm min-w-[600px]">
-          <thead><tr className="text-left border-b"><th className="py-2">Address allocation</th><th>Positions</th><th>Allocated couplers</th><th>Unallocated</th></tr></thead>
+        <details className="detail-box"><summary>{tr("Show details · address allocation and electrical loading")}</summary><div className="overflow-x-auto"><table className="w-full text-sm min-w-[600px]">
+          <thead><tr className="text-left border-b"><th className="py-2">{tr("Address allocation")}</th><th>{tr("Positions")}</th><th>{tr("Allocated couplers")}</th><th>{tr("Unallocated")}</th></tr></thead>
           <tbody>{[
             ['Backbone: 0.0.1–0.0.255', '255', '0', '255'],
             ['15 main lines: A.0.0–A.0.255', '15 × 256 = 3,840', '15 BC', '3,825'],
             ['225 lines: A.L.0–A.L.255', '225 × 256 = 57,600', '225 LC + 675 SC = 900', '56,700'],
           ].map(row => <tr key={row[0]} className="border-b border-slate-100">{row.map((cell,i) => <td key={i} className="py-3 pr-4">{cell}</td>)}</tr>)}</tbody>
         </table></div>
-        <p className="text-sm text-slate-600">Positions: 255 + 15 × 256 + 225 × 256 = 61,695. Supplies: 1 backbone + 15 main lines + 225 × 4 line segments = 916. Unaddressed supplies add no individual addresses. A supply with its own KNX diagnostic interface does need an address and must be budgeted as a bus device.</p>
-        <p className="text-sm text-slate-600">A coupler has one individual address but a bus interface on each connected segment. For example, the 15 backbone-coupler interfaces also load the backbone, and the 15 line-coupler interfaces load each main line. Thus not every available address slot can be populated simultaneously on one TP segment. Electrical loading, PSU current, cable constraints and product specifications must all be checked separately.</p>
-        <p className="text-xs text-slate-500">The 16-bit address field contains 65,536 bit patterns; that is neither a count of installable devices nor this template’s capacity. Reserved positions and topology placement still apply. Sources: KNX Basic, “TP Topology”, sections 3–5 and 8; KNX Advanced, “Couplers”.</p>
+        <p className="text-sm text-slate-600">{tr("Positions: 255 + 15 × 256 + 225 × 256 = 61,695. Supplies: 1 backbone + 15 main lines + 225 × 4 line segments = 916. Unaddressed supplies add no individual addresses. A supply with its own KNX diagnostic interface does need an address and must be budgeted as a bus device.")}</p>
+        <p className="text-sm text-slate-600">{tr("A coupler has one individual address but a bus interface on each connected segment. For example, the 15 backbone-coupler interfaces also load the backbone, and the 15 line-coupler interfaces load each main line. Thus not every available address slot can be populated simultaneously on one TP segment. Electrical loading, PSU current, cable constraints and product specifications must all be checked separately.")}</p>
+        <p className="text-xs text-slate-500">{tr("The 16-bit address field contains 65,536 bit patterns; that is neither a count of installable devices nor this template’s capacity. Reserved positions and topology placement still apply. Sources: KNX Basic, “TP Topology”, sections 3–5 and 8; KNX Advanced, “Couplers”.")}</p>
       </details></section>
       <LinePowerBudget />
 
       {/* Read Me guide */}
-      <details className="detail-box space-y-3"><summary>Show details · reading network addresses</summary>
+      <details className="detail-box space-y-3"><summary>{tr("Show details · reading network addresses")}</summary>
         <label className="text-xs font-bold text-knx-blue uppercase tracking-widest flex items-center gap-2">
-          <Info className="h-4 w-4" />
-          Technical Handbook: How to read network topologies
-        </label>
+          <Info className="h-4 w-4" /> {tr("Technical Handbook: How to read network topologies")} </label>
         <div className="text-xs text-slate-600 leading-relaxed space-y-2 font-medium">
-          <p>
-            An address on the TP1 bus is formatted as <strong className="text-slate-900">Area.Line.Device</strong>.
-            A backbone coupler always sits as <strong className="text-knx-blue font-bold">x.0.0</strong> to connect and map area lines together. 
-            Line couplers occupy address <strong className="text-knx-blue font-bold">x.y.0</strong> on each secondary line.
-          </p>
-          <p>
-            Segment couplers occupy ordinary device addresses on their line. Here .64, .128 and .192 are example allocations, not mandatory boundaries: a device’s address does not identify its physical segment. These couplers are included within the 256 address positions, never added on top. Each electrical segment has its own KNX supply with choke; the PSU badges show infrastructure, not addresses. No paired or redundant supplies are assumed.
-          </p>
+          <p> {tr("An address on the TP1 bus is formatted as")} <strong className="text-slate-900">{tr("Area.Line.Device")}</strong>{tr(". A backbone coupler always sits as")} <strong className="text-knx-blue font-bold">x.0.0</strong> {tr("to connect and map area lines together. Line couplers occupy address")} <strong className="text-knx-blue font-bold">x.y.0</strong> {tr("on each secondary line.")} </p>
+          <p> {tr("Segment couplers occupy ordinary device addresses on their line. Here .64, .128 and .192 are example allocations, not mandatory boundaries: a device’s address does not identify its physical segment. These couplers are included within the 256 address positions, never added on top. Each electrical segment has its own KNX supply with choke; the PSU badges show infrastructure, not addresses. No paired or redundant supplies are assumed.")} </p>
         </div>
       </details>
 
       {/* Interactive network directory explorer */}
       <div className="space-y-4">
         <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
-          <Cpu className="h-5 w-5 text-knx-blue" />
-          Individual-Address Directory — Example Allocations
-        </h4>
+          <Cpu className="h-5 w-5 text-knx-blue" /> {tr("Individual-Address Directory — Example Allocations")} </h4>
 
         <div className="space-y-2 text-xs">
           
@@ -201,10 +188,8 @@ export function TopologyExplorer() {
             >
               <div className="flex items-center gap-2 font-bold text-slate-800">
                 {openFolders["backbone"] ? <ChevronDown className="h-4 w-4 text-knx-blue" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
-                <Network className="h-4 w-4 text-knx-blue" />
-                Backbone line (0.0.x)
-              </div>
-              <span className="font-mono text-slate-500 text-[11px] font-bold">255 address positions; electrical limits separate</span>
+                <Network className="h-4 w-4 text-knx-blue" /> {tr("Backbone line (0.0.x)")} </div>
+              <span className="font-mono text-slate-500 text-[11px] font-bold">{tr("255 address positions; electrical limits separate")}</span>
             </button>
 
             {openFolders["backbone"] && (
@@ -248,10 +233,9 @@ export function TopologyExplorer() {
                 >
                   <div className="flex items-center gap-2 font-bold text-slate-800">
                     {isAreaOpen ? <ChevronDown className="h-4 w-4 text-knx-blue" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
-                    <Server className="h-4 w-4 text-knx-blue animate-pulse-slow" />
-                    Area {areaNum} mainline (coupler address: {areaNum}.0.0)
+                    <Server className="h-4 w-4 text-knx-blue animate-pulse-slow" /> {tr("Area")} {areaNum} {tr("mainline (coupler address:")} {areaNum}.0.0)
                   </div>
-                  <span className="font-mono text-slate-500 text-[11px] font-bold">15 logical sublines available</span>
+                  <span className="font-mono text-slate-500 text-[11px] font-bold">{tr("15 logical sublines available")}</span>
                 </button>
 
                 {isAreaOpen && (
@@ -265,7 +249,7 @@ export function TopologyExplorer() {
                             ? "bg-knx-blue border-knx-blue/90 text-white font-extrabold scale-105 shadow-md animate-pulse"
                             : "bg-knx-blue/5 border-knx-blue/10 text-knx-blue"
                         }`}
-                        title="Area Backbone Coupler - Bridging Section Area to TP backbone"
+                        title={tr("Area Backbone Coupler - Bridging Section Area to TP backbone")}
                       >
                         {areaNum}.0.0 (BC)
                       </div>
@@ -287,10 +271,9 @@ export function TopologyExplorer() {
                             >
                               <div className="flex items-center gap-2 font-bold text-slate-700">
                                 {isLineOpen ? <ChevronDown className="h-3.5 w-3.5 text-knx-blue" /> : <ChevronRight className="h-3.5 w-3.5 text-slate-400" />}
-                                <Network className="h-3.5 w-3.5 text-knx-blue" />
-                                Sub-Line {areaNum}.{lineNum}
+                                <Network className="h-3.5 w-3.5 text-knx-blue" /> {tr("Sub-Line")} {areaNum}.{lineNum}
                               </div>
-                              <span className="font-mono text-slate-500 text-[10px] font-bold">256 positions including LC and 3 example SCs</span>
+                              <span className="font-mono text-slate-500 text-[10px] font-bold">{tr("256 positions including LC and 3 example SCs")}</span>
                             </button>
 
                             {isLineOpen && (
@@ -304,7 +287,7 @@ export function TopologyExplorer() {
                                         ? "bg-knx-blue border-knx-blue/90 text-white font-extrabold scale-105 shadow-md animate-pulse"
                                         : "bg-knx-blue/10 border-knx-blue/20 text-knx-blue"
                                     }`}
-                                    title="Line Coupler - Maps data from mainline down onto this line"
+                                    title={tr("Line Coupler - Maps data from mainline down onto this line")}
                                   >
                                     {areaNum}.{lineNum}.0 (LC)
                                   </div>
@@ -326,7 +309,7 @@ export function TopologyExplorer() {
                                                 ? "bg-knx-blue border-knx-blue/90 text-white font-extrabold scale-105 shadow-md animate-pulse"
                                                 : "bg-knx-blue/5 border-knx-blue/10 text-knx-blue"
                                             }`}
-                                            title="Example segment-coupler allocation. Shares the line address space; supports filtering. Its interfaces load both connected segments."
+                                            title={tr("Example segment-coupler allocation. Shares the line address space; supports filtering. Its interfaces load both connected segments.")}
                                           >
                                             {areaNum}.{lineNum}.{deviceNum} (SC)
                                           </div>

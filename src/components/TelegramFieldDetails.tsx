@@ -1,3 +1,5 @@
+import {tr} from '../i18n';
+import {useTranslation} from 'react-i18next';
 import React from 'react';
 import type { TelegramByte } from '../types';
 export function fieldRows(byte:TelegramByte,count:number):[string,string,string][] {
@@ -14,10 +16,11 @@ export function fieldRows(byte:TelegramByte,count:number):[string,string,string]
  return [['Value octet · b7..0',b,'Part of the selected DPT payload. DPT identifiers are not carried in the telegram.']];
 }
 export function TelegramFieldDetails({byte,count}:{byte?:TelegramByte;count:number}) {
+ useTranslation();
  if(!byte)return null;
- return <section aria-label="Selected byte explanation" className="border border-green-200 rounded-xl bg-green-50 p-4 space-y-3">
- <h4 className="font-bold text-slate-900">Byte {byte.index+1}: {byte.name} · 0x{byte.hex}</h4>
- <p className="text-xs text-slate-700">Logical bits below run b7 → b0. On the wire, data bits travel D0 → D7, preceded by Start and followed by even Parity and Stop.</p>
- <div className="overflow-x-auto"><table className="w-full text-xs text-left"><thead><tr><th className="p-2">Field</th><th className="p-2">Bits</th><th className="p-2">Meaning</th></tr></thead><tbody>{fieldRows(byte,count).map(([field,bits,meaning])=><tr key={field} className="border-t border-green-200"><td className="p-2 font-semibold">{field}</td><td className="p-2 font-mono whitespace-nowrap">{bits}</td><td className="p-2">{meaning}</td></tr>)}</tbody></table></div>
+ return <section aria-label={tr("Selected byte explanation")} className="border border-green-200 rounded-xl bg-green-50 p-4 space-y-3">
+ <h4 className="font-bold text-slate-900">Byte {byte.index+1}: {tr(byte.name)} · 0x{byte.hex}</h4>
+ <p className="text-xs text-slate-700">{tr("Logical bits below run b7 → b0. On the wire, data bits travel D0 → D7, preceded by Start and followed by even Parity and Stop.")}</p>
+ <div className="overflow-x-auto"><table className="w-full text-xs text-left"><thead><tr><th className="p-2">{tr("Field")}</th><th className="p-2">{tr("Bits")}</th><th className="p-2">{tr("Meaning")}</th></tr></thead><tbody>{fieldRows(byte,count).map(([field,bits,meaning])=><tr key={field} className="border-t border-green-200"><td className="p-2 font-semibold">{tr(field)}</td><td className="p-2 font-mono whitespace-nowrap">{bits}</td><td className="p-2">{tr(meaning)}</td></tr>)}</tbody></table></div>
  </section>;
 }
