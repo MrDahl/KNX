@@ -11,6 +11,7 @@ The app runs in the browser without installation or a bus interface.
 | Lesson | What students can do |
 | --- | --- |
 | **Telegram** | Generate standard plain TP1 GroupValueRead, GroupValueResponse and GroupValueWrite examples. Follow a field through coloured byte cards, physical bits, an explanation and an illustrative waveform. |
+| **Capture analyser** | Open ETS monitor XML locally, inspect cEMI bytes, filter telegrams and test DPT interpretations per group address. Transfer supported frames to a clearly labelled TP1 reconstruction. |
 | **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
 | **Hop Count** | Follow a defined path through the backbone/area/line/segment hierarchy and inspect each forwarding decision. |
 | **Topology Capacity Explorer** | Explore address allocations and budget current and interface loading for one TP segment. |
@@ -36,12 +37,20 @@ Field colours come from `src/knx/telegramFields.ts`: control orange, source blue
 
 This is an educational simulation and reference, **not ETS, a live bus monitor, a certification tool or a complete installation validator**.
 
-- The frame builder supports standard plain group-value frames with at most **14 value octets**. Management services, extended frames, KNX Secure and arbitrary cEMI parsing are outside its scope. DPT identifiers are not transmitted in ordinary group-value telegrams.
+- The frame builder supports standard plain group-value frames with at most **14 value octets**. Management services, extended frames, KNX Secure and arbitrary cEMI generation are outside its scope. DPT identifiers are not transmitted in ordinary group-value telegrams.
 - Logical octets and serial framing are distinct. TP1 data bits are sent least-significant first; character parity is even over the eight data bits plus parity. The check byte is the inverted XOR of the preceding logical octets, not a CRC.
 - Waveform voltages and equalization decay are illustrative. Nominal timing uses 9,600 bit/s. Selecting ACK/NAK/BUSY/silence is a demonstration setting, not a measured receiver response.
 - The Advanced switching-course example counts **193 bit periods**, including the final two-bit character gap. The monitor's TP1 convention counts **191** for the comparable 50-bit next-access example. The app explains the difference and the documented priority/repetition rule; contention and retry-specific delays are not simulated.
 - Routing results belong to the displayed path. Ordinary HC 0 can be received on the reached segment, but cannot be forwarded again. The series-repeater cascade is a deliberately invalid teaching example. Legacy repeaters and modern filtering segment couplers are distinct profiles.
 - Available addresses, addressed couplers, unaddressed supplies, current and interface loading are separate quantities. The topology template's **61,695 address positions** are not a universal device ceiling. PSU ratings and actual device consumption must be checked per electrical segment, alongside cable and product constraints.
+
+## ETS capture analysis
+
+Open **Capture analyser** and select an ETS CommunicationLog XML export (`http://knx.org/xml/telegrams/01`). Processing is local, with a limit of 5 MB / 10,000 records. Connection metadata is ignored; captures and address interpretations remain in memory until cleared or the page reloads. No uploaded capture is bundled in the repository.
+
+The analyser separates receive indications, transmit requests and local confirmations. Compatible fixed-size DPT families are candidates, not automatic identification. Compact payload length does not distinguish 1-, 2- and 4-bit values. Read requests have no value. Implemented decoders validate only their documented subset; reference-only and unresolved DPTs cannot be decoded or transferred. Teacher confirmation is a manual annotation, not evidence from the capture.
+
+Supported standard group frames can be reconstructed in the visualiser with original addressing, operation, priority, Hop Count and round-tripped value bytes. cEMI is not a physical TP1 recording: the check byte, serial timing and waveform are generated, and ACK is not captured. Unsupported or malformed records remain inspectable as raw data.
 
 ## Reference material and review status
 

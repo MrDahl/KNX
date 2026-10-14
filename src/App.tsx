@@ -1,5 +1,7 @@
+import {CaptureAnalyser} from './components/CaptureAnalyser';
+import type {CaptureScenario} from './knx/capture';
 import React, {useRef,useState} from 'react';
-import {Sliders,Send,Network,Calculator,Layers,Shapes} from 'lucide-react';
+import {Sliders,Send,Network,Calculator,Layers,Shapes,FileSearch} from 'lucide-react';
 import {TelegramVisualizer} from './components/TelegramVisualizer';
 import {TopologyExplorer} from './components/TopologyExplorer';
 import {HopCountExplorer} from './components/HopCountExplorer';
@@ -8,6 +10,7 @@ import {DatapointTypesList,DptScenario} from './components/DatapointTypesList';
 import {CadSymbols} from './components/CadSymbols';
 const navigation=[
  {id:'telegram',label:'Telegram',description:'Fields, bytes and signal',icon:Sliders},
+ {id:'capture',label:'Capture analyser',description:'ETS recordings and DPT interpretation',icon:FileSearch},
  {id:'objects',label:'Objects',description:'Sending and C/W flags',icon:Send},
  {id:'routing',label:'Hop Count',description:'Forwarding and filtering',icon:Network},
  {id:'capacity',label:'Topology Capacity Explorer',description:'Addresses and power',icon:Calculator},
@@ -17,7 +20,7 @@ const navigation=[
 type Page=typeof navigation[number]['id'];
 export default function App() {
  const [page,setPage]=useState<Page>('telegram');
- const [scenario,setScenario]=useState<(DptScenario&{generate?:boolean;destination?:string;origin?:string})|null>(null);
+ const [scenario,setScenario]=useState<(DptScenario&{generate?:boolean;destination?:string;origin?:string;captureParams?:CaptureScenario['captureParams']})|null>(null);
  const heading=useRef<HTMLHeadingElement>(null);
  const navigate=(id:string)=>{if(!navigation.some(n=>n.id===id))return;setPage(id as Page);requestAnimationFrame(()=>{heading.current?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});});};
  const selectDpt=(value:DptScenario)=>{setScenario(value);navigate('telegram');};
@@ -34,7 +37,8 @@ export default function App() {
     <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{active.label}</h1></div></header>
     <main id="lesson-content">
      {page==='symbols'&&<CadSymbols/>}
-     <div hidden={page==='symbols'}>
+     <div hidden={page!=='capture'}><CaptureAnalyser onUseTelegram={value=>{setScenario(value);navigate('telegram');}}/></div>
+     <div hidden={page==='symbols'||page==='capture'}>
      <TelegramVisualizer scenario={scenario} showControls={page==='telegram'} onConfigure={()=>navigate('telegram')}>
       {page==='objects'&&<SendingSimulator onTransmit={(destination,value)=>setScenario({id:'1.001',values:{value:value?'1':'0'},generate:true,destination,origin:'Objects simulator · Sensor 1.1.1'})}/>}
       {page==='routing'&&<HopCountExplorer/>}
