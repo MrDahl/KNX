@@ -12,14 +12,14 @@ The app runs in the browser without installation or a bus interface.
 
 ## Learning path
 
-| Lesson | What students can do |
+| Lesson | Available functions |
 | --- | --- |
 | **Telegram** | Generate standard plain TP1 GroupValueRead, GroupValueResponse and GroupValueWrite examples. Follow a field through coloured byte cards, physical bits, an explanation and an illustrative waveform. |
 | **Capture analyser** | Open ETS monitor XML locally, inspect cEMI bytes, filter telegrams and test DPT interpretations per group address. Transfer supported frames to a clearly labelled TP1 reconstruction. |
 | **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
 | **Hop Count** | Follow a defined path through the backbone/area/line/segment hierarchy and inspect each forwarding decision. |
 | **Topology Capacity Explorer** | Explore address allocations and budget current and interface loading for one TP segment. |
-| **DPT workbench** | Search 453 edition-specific catalogue entries, inspect provenance, and encode/decode 290 implemented subtypes. Transfer eligible group values to the telegram builder. |
+| **DPT workbench** | Search 454 edition-specific catalogue entries, inspect provenance, and encode/decode 316 implemented subtypes. Transfer eligible group values to the telegram builder. |
 
 **CAD symbols** adds a full-width “Example KNX CAD Symbols” reference with English descriptions, search and categories. Thirteen original SVG drawings by Marc Sonne Dahl illustrate generic device functions, with enlarged views; see [SVG delivery format](docs/cad-symbols.md).
 
@@ -52,7 +52,7 @@ This is an educational simulation and reference, **not ETS, a live bus monitor, 
 
 Open **Capture analyser** and select an ETS CommunicationLog XML export (`http://knx.org/xml/telegrams/01`). Processing is local, with a limit of 5 MB / 10,000 records. Connection metadata is ignored; captures and address interpretations remain in memory until cleared or the page reloads. No uploaded capture is bundled in the repository.
 
-The analyser separates receive indications, transmit requests and local confirmations. Compatible fixed-size DPT families are candidates, not automatic identification. Compact payload length does not distinguish 1-, 2- and 4-bit values. Read requests have no value. Implemented decoders validate only their documented subset; reference-only and unresolved DPTs cannot be decoded or transferred. Teacher confirmation is a manual annotation, not evidence from the capture.
+The analyser separates receive indications, transmit requests and local confirmations. Compatible fixed-size DPT families are candidates, not automatic identification. Compact payload length does not distinguish 1-, 2- and 4-bit values. Read requests have no value. Implemented decoders validate only their documented subset; reference-only and unresolved DPTs cannot be decoded or transferred. Manual confirmation is a manual annotation, not evidence from the capture.
 
 Supported standard group frames can be reconstructed in the visualiser with original addressing, operation, priority, Hop Count and round-tripped value bytes. cEMI is not a physical TP1 recording: the check byte, serial timing and waveform are generated, and ACK is not captured. Unsupported or malformed records remain inspectable as raw data.
 
@@ -60,9 +60,9 @@ Supported standard group frames can be reconstructed in the visualiser with orig
 
 The teaching content was developed against the supplied **KNX Basic, Advanced and Tutor course documentation**, the TP1 document **v01.02.02** used for the timing model, and **KNX Interworking Datapoint Types v02.02.01 (2021)**. Relevant chapters and per-type printed page references appear in the app. These documents and current manufacturer instructions remain the authority for design and commissioning; the repository does not grant rights to redistribute course or standard PDFs.
 
-The DPT catalogue is edition-specific, not a claim to cover every later KNX release. All 453 identities and overview formats were checked. The previously missing descriptions and size-corrected rows were researched, while **two entries still explicitly require source clarification** (243.600 coordinate order and 248.600 rated-duration unit). Other inherited descriptions are marked as such. Identity verification, description review and implemented codec coverage are deliberately separate.
+The DPT catalogue is edition-specific, not a claim to cover every later KNX release. All 454 identities and overview formats were checked. The previously missing descriptions and size-corrected rows were researched, while **two entries still explicitly require source clarification** (243.600 coordinate order and 248.600 rated-duration unit). Other inherited descriptions are marked as such. Identity verification, description review and implemented codec coverage are deliberately separate.
 
-The workbench implements **290 subtypes**. Parameter-only and LTE structures remain inspectable but are excluded from ordinary group-value transfer. See [codec coverage and source pages](docs/dpt-codec-coverage.md) for exact subtype coverage, restrictions and remaining work.
+The workbench implements **316 subtypes**. Parameter-only and LTE structures remain inspectable but are excluded from ordinary group-value transfer. See [codec coverage and source pages](docs/dpt-codec-coverage.md) for exact subtype coverage, restrictions and remaining work.
 
 DPT 247.600 now supports a conservative complete-timestamp subset. DPT 248.600 supports raw-byte encoding while its rated-duration unit remains unresolved; no minutes/hours conversion is inferred. DPT 243.600 remains reference-only.
 

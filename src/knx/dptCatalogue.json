@@ -1295,7 +1295,7 @@
     "name": "DPT_Status_Mode3",
     "size": "1 byte",
     "dataType": "Bitfield",
-    "range": "A,B,C,D,E = {0,1}; Mode FFF = {001b=mode0, 010b=mode1, 100b=mode2}",
+    "range": "Five status bits use 0 = set, 1 = clear. The final three bits select mode 0 (001), mode 1 (010) or mode 2 (100). Other mode codes are reserved.",
     "format": "B5N3",
     "overviewPage": 17,
     "detailPages": [
@@ -1305,8 +1305,39 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "A",
+        "bits": 1,
+        "meaning": "0 = Set; 1 = Clear"
+      },
+      {
+        "name": "B",
+        "bits": 1,
+        "meaning": "0 = Set; 1 = Clear"
+      },
+      {
+        "name": "C",
+        "bits": 1,
+        "meaning": "0 = Set; 1 = Clear"
+      },
+      {
+        "name": "D",
+        "bits": 1,
+        "meaning": "0 = Set; 1 = Clear"
+      },
+      {
+        "name": "E",
+        "bits": 1,
+        "meaning": "0 = Set; 1 = Clear"
+      },
+      {
+        "name": "Active mode",
+        "bits": 3,
+        "meaning": "1 = Mode 0; 2 = Mode 1; 4 = Mode 2"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -1489,7 +1520,7 @@
     "name": "DPT_PropDataType",
     "size": "2 bytes",
     "dataType": "Unsigned",
-    "range": "Interface Object Property ID [0 … 65535]",
+    "range": "Unsigned property datatype identifier. A numeric value does not establish an assigned property datatype.",
     "format": "U16",
     "overviewPage": 18,
     "detailPages": [
@@ -1499,8 +1530,14 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Property datatype identifier (raw)",
+        "bits": 16,
+        "meaning": "0 to 65535"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -5388,7 +5425,7 @@
     "name": "DPT_String_8859_1",
     "size": "14 bytes",
     "dataType": "String",
-    "range": "14 chars, [0 … 255] each (ISO 8859-1), null-padded",
+    "range": "Fixed 14-byte ISO 8859-1 string. Shorter strings are NULL padded; embedded NULLs are not accepted.",
     "format": "A112",
     "overviewPage": 20,
     "detailPages": [
@@ -5398,8 +5435,14 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "ISO 8859-1 text (up to 14 characters)",
+        "bits": 112,
+        "meaning": "ISO 8859-1 text, NULL padded."
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -6965,7 +7008,7 @@
     "name": "DPT_AddInfoTypes",
     "size": "1 byte",
     "dataType": "Enum",
-    "range": "One-byte enumeration. Hex codes: 01 = PL domain address; 02 = RF control octet and serial number/domain address; 03 = bus-monitor error flags; 04 = relative timestamp; 05 = time delay; 06 = extended relative timestamp; 07 = BiBat information. 00 and 08–FE reserved; FF reserved for future system extensions (escape).",
+    "range": "Only explicitly defined enumeration codes are accepted. System/property type; ordinary group-value transfer is disabled.",
     "format": "N8",
     "overviewPage": 21,
     "detailPages": [
@@ -6989,7 +7032,7 @@
       {
         "name": "Value",
         "bits": 8,
-        "meaning": "Hex codes: 01 = PL domain address; 02 = RF control octet and serial number/domain address; 03 = bus-monitor error flags; 04 = relative timestamp; 05 = time delay; 06 = extended relative timestamp; 07 = BiBat information. 00 and 08–FE reserved; FF reserved for future system extensions (escape)."
+        "meaning": "1 = PL domain address; 2 = RF control and serial/domain address; 3 = Bus-monitor error flags; 4 = Relative timestamp; 5 = Time delay; 6 = Extended relative timestamp; 7 = BiBat information"
       }
     ],
     "layoutNotes": []
@@ -6999,7 +7042,7 @@
     "name": "DPT_RF_ModeSelect",
     "size": "1 byte",
     "dataType": "Enum",
-    "range": "One-byte enumeration. 0 = asynchronous; 1 = asynchronous with BiBat master; 2 = asynchronous with BiBat slave. 3–255 reserved.",
+    "range": "Only explicitly defined enumeration codes are accepted. System/property type; ordinary group-value transfer is disabled.",
     "format": "N8",
     "overviewPage": 21,
     "detailPages": [
@@ -7023,7 +7066,7 @@
       {
         "name": "Value",
         "bits": 8,
-        "meaning": "0 = asynchronous; 1 = asynchronous with BiBat master; 2 = asynchronous with BiBat slave. 3–255 reserved."
+        "meaning": "0 = Asynchronous; 1 = Asynchronous with BiBat master; 2 = Asynchronous with BiBat slave"
       }
     ],
     "layoutNotes": []
@@ -7052,7 +7095,7 @@
     "name": "DPT_Medium",
     "size": "1 byte",
     "dataType": "Enum",
-    "range": "One-byte enumeration. Defined codes: 0 = KNX TP1; 1 = KNX PL110; 2 = KNX RF; 5 = KNX IP. Use only these defined codes.",
+    "range": "Only explicitly defined enumeration codes are accepted. System/property type; ordinary group-value transfer is disabled.",
     "format": "N8",
     "overviewPage": 21,
     "detailPages": [
@@ -7076,7 +7119,7 @@
       {
         "name": "Value",
         "bits": 8,
-        "meaning": "Defined codes: 0 = KNX TP1; 1 = KNX PL110; 2 = KNX RF; 5 = KNX IP. Use only these defined codes."
+        "meaning": "0 = KNX TP1; 1 = KNX PL110; 2 = KNX RF; 5 = KNX IP"
       }
     ],
     "layoutNotes": [
@@ -7369,7 +7412,7 @@
     "name": "DPT_StatusGen",
     "size": "1 byte",
     "dataType": "Bitfield",
-    "range": "bits: 0=out of service, 1=fault, 2=overridden, 3=alarm",
+    "range": "General status: b0 out of service, b1 fault, b2 overridden, b3 in alarm, b4 alarm unacknowledged. b5–b7 reserved. This is status information, not the LTE command interpretation.",
     "format": "B8",
     "overviewPage": 22,
     "detailPages": [
@@ -7379,8 +7422,39 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Reserved",
+        "bits": 3,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "Alarm unacknowledged",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "In alarm",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Overridden",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Fault",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Out of service",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -7847,7 +7921,7 @@
     "name": "DPT_RF_ModeInfo",
     "size": "1 byte",
     "dataType": "Bitfield",
-    "range": "One-byte bitfield; bit 0 is the least significant bit. b0 Asynchronous support: Must be 1; 0 is not allowed; b1 BiBat master support: 1 = supported; 0 = not supported; b2 BiBat slave support: 1 = supported; 0 = not supported; b3 Reserved: Set to 0; b4 Reserved: Set to 0; b5 Reserved: Set to 0; b6 Reserved: Set to 0; b7 Reserved: Set to 0",
+    "range": "Asynchronous support must be 1. The upper five bits are reserved. System type; ordinary group transfer is disabled.",
     "format": "B8",
     "overviewPage": 22,
     "detailPages": [
@@ -7869,44 +7943,24 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "b7 · Reserved",
-        "bits": 1,
-        "meaning": "Set to 0"
+        "name": "Reserved",
+        "bits": 5,
+        "meaning": "Set to 0."
       },
       {
-        "name": "b6 · Reserved",
+        "name": "BiBat slave supported",
         "bits": 1,
-        "meaning": "Set to 0"
+        "meaning": "0 = False; 1 = True"
       },
       {
-        "name": "b5 · Reserved",
+        "name": "BiBat master supported",
         "bits": 1,
-        "meaning": "Set to 0"
+        "meaning": "0 = False; 1 = True"
       },
       {
-        "name": "b4 · Reserved",
+        "name": "Asynchronous support (required)",
         "bits": 1,
-        "meaning": "Set to 0"
-      },
-      {
-        "name": "b3 · Reserved",
-        "bits": 1,
-        "meaning": "Set to 0"
-      },
-      {
-        "name": "b2 · BiBat slave support",
-        "bits": 1,
-        "meaning": "1 = supported; 0 = not supported"
-      },
-      {
-        "name": "b1 · BiBat master support",
-        "bits": 1,
-        "meaning": "1 = supported; 0 = not supported"
-      },
-      {
-        "name": "b0 · Asynchronous support",
-        "bits": 1,
-        "meaning": "Must be 1; 0 is not allowed"
+        "meaning": "Must be 1; 0 is not allowed."
       }
     ],
     "layoutNotes": []
@@ -7954,7 +8008,7 @@
     "name": "DPT_Channel_Activation_8",
     "size": "1 byte",
     "dataType": "Bitfield",
-    "range": "bits 0–7: channels 1–8 active={0,1}",
+    "range": "Bit n indicates the visual-effect activation state of channel n+1. System type; ordinary group transfer is disabled.",
     "format": "B8",
     "overviewPage": 22,
     "detailPages": [
@@ -7964,8 +8018,49 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Channel 8 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 7 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 6 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 5 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 4 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 3 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 2 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 1 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -8077,7 +8172,7 @@
     "name": "DPT_StatusDHWC",
     "size": "2 bytes",
     "dataType": "Bitfield",
-    "range": "16 bits status: DHW heating active, solar load, legionella mode, boiler active etc.",
+    "range": "DHW controller LTE status. Bits 8–15 are reserved. Standard mode uses separate Boolean datapoints; ordinary group transfer is disabled.",
     "format": "B16",
     "overviewPage": 22,
     "detailPages": [
@@ -8087,8 +8182,54 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Reserved",
+        "bits": 8,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "Temperature optimisation shift active",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Solar energy support",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Solar energy only",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Other energy source active",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "DHW push active",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Legionella protection active",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "DHW load active",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Fault",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -8096,18 +8237,100 @@
     "name": "DPT_StatusRHCC",
     "size": "2 bytes",
     "dataType": "Bitfield",
-    "range": "16 bits status: Heating coil active, cooling coil active, fan stage active, etc.",
+    "range": "Room HVAC controller status. Bit 8 is 0 cooling / 1 heating; bit 15 is reserved. Other named bits indicate their respective states.",
     "format": "B16",
     "overviewPage": 22,
     "detailPages": [
-      127
+      127,
+      128
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Reserved",
+        "bits": 1,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "Overheat alarm",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Frost alarm",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Dew point alarm",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Cooling disabled",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Pre-cooling active",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Cooling ECO status",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Heat/cool mode",
+        "bits": 1,
+        "meaning": "0 = Cooling; 1 = Heating"
+      },
+      {
+        "name": "Heating disabled",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Optimum stop",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Optimum start",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Heating morning boost",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Return temperature limitation",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Flow temperature limitation",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Heating ECO status",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Fault",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -8134,7 +8357,7 @@
     "name": "DPT_Channel_Activation_16",
     "size": "2 bytes",
     "dataType": "Bitfield",
-    "range": "bits 0–15: channels 1–16 active={0,1}",
+    "range": "Bit n indicates the visual-effect activation state of channel n+1. System type; ordinary group transfer is disabled.",
     "format": "B16",
     "overviewPage": 22,
     "detailPages": [
@@ -8144,8 +8367,89 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Channel 16 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 15 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 14 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 13 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 12 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 11 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 10 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 9 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 8 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 7 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 6 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 5 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 4 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 3 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 2 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 1 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -8266,7 +8570,7 @@
     "name": "DPT_DoubleNibble",
     "size": "1 byte",
     "dataType": "Unsigned",
-    "range": "Upper nibble=[0…15], Lower nibble=[0…15]",
+    "range": "Two nibbles: Busy repetitions followed by Inack repetitions, each restricted to 0–3. System type; ordinary group transfer is disabled.",
     "format": "U4U4",
     "overviewPage": 22,
     "detailPages": [
@@ -8276,8 +8580,19 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Busy repetitions",
+        "bits": 4,
+        "meaning": "0 to 3"
+      },
+      {
+        "name": "Inack repetitions",
+        "bits": 4,
+        "meaning": "0 to 3"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -8322,18 +8637,181 @@
     "name": "DPT_CombinedInfoOnOff",
     "size": "4 bytes",
     "dataType": "Bitfield",
-    "range": "16 masks + 16 values for on/off switching",
+    "range": "Combined binary output status only. High 16 bits are validity masks; low 16 bits are output states. Ignore a stored state when its corresponding validity bit is 0.",
     "format": "B32",
     "overviewPage": 22,
     "detailPages": [
-      62
+      62,
+      63,
+      64
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Output 16 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 15 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 14 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 13 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 12 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 11 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 10 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 9 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 8 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 7 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 6 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 5 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 4 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 3 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 2 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 1 validity",
+        "bits": 1,
+        "meaning": "0 = Invalid; 1 = Valid"
+      },
+      {
+        "name": "Output 16 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 15 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 14 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 13 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 12 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 11 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 10 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 9 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 8 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 7 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 6 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 5 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 4 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 3 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 2 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      },
+      {
+        "name": "Output 1 stored state",
+        "bits": 1,
+        "meaning": "0 = Off; 1 = On"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -8441,7 +8919,7 @@
     "name": "DPT_Channel_Activation_24",
     "size": "3 bytes",
     "dataType": "Bitfield",
-    "range": "24-bit channel mask, bits 0–23: channels 1–24 active={0,1}",
+    "range": "Bit n indicates the visual-effect activation state of channel n+1. System type; ordinary group transfer is disabled.",
     "format": "B24",
     "overviewPage": 22,
     "detailPages": [
@@ -8451,8 +8929,129 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Channel 24 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 23 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 22 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 21 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 20 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 19 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 18 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 17 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 16 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 15 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 14 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 13 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 12 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 11 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 10 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 9 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 8 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 7 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 6 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 5 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 4 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 3 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 2 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      },
+      {
+        "name": "Channel 1 visual effect",
+        "bits": 1,
+        "meaning": "0 = Inactive; 1 = Active"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -11632,11 +12231,66 @@
     ]
   },
   {
+    "id": "249.600",
+    "name": "DPT_Brightness_Colour_Temperature_Transition",
+    "size": "6 bytes",
+    "dataType": "Composite",
+    "range": "Six-byte value: time in 100 ms steps, colour temperature in K, scaled brightness and three validity bits. Ignore fields whose validity bit is 0. The printed format line says four octets, but diagram, widths and PDT_GENERIC_06 establish six.",
+    "format": "U16U16U8B8",
+    "overviewPage": 24,
+    "detailPages": [
+      192
+    ],
+    "unit": "mixed",
+    "layoutPending": false,
+    "changes": [],
+    "sourceNotes": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Transition time (s)",
+        "bits": 16,
+        "meaning": "0 to 6553.5"
+      },
+      {
+        "name": "Colour temperature (K)",
+        "bits": 16,
+        "meaning": "0 to 65535"
+      },
+      {
+        "name": "Brightness (%)",
+        "bits": 8,
+        "meaning": "0 to 100"
+      },
+      {
+        "name": "Reserved",
+        "bits": 5,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "Time valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Colour temperature valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Brightness valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      }
+    ],
+    "layoutNotes": []
+  },
+  {
     "id": "250.600",
     "name": "DPT_Brightness_Colour_Temperature_Control",
     "size": "3 bytes",
     "dataType": "Composite",
-    "range": "Relative control of Colour temperature, Brightness. Each component occupies one padded control octet. A final validity mask selects the affected components.",
+    "range": "Each component occupies a padded direction/step octet. Step 0 stops; 1–7 specify relative steps. Validity bits use 0 = ignore, 1 = valid.",
     "format": "r4B1U3r4B1U3B8",
     "overviewPage": 24,
     "detailPages": [
@@ -11658,39 +12312,49 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Colour temperature reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Colour temperature direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Colour temperature step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Brightness reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Brightness direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Brightness step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Validity mask",
-        "bits": 8,
-        "meaning": "b1 colour temperature valid; b0 brightness valid; b2–b7 = 0. 0 = invalid/leave component unchanged; 1 = valid."
+        "name": "Reserved",
+        "bits": 6,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "Colour temperature valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Brightness valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
       }
     ],
     "layoutNotes": [
@@ -11702,7 +12366,7 @@
     "name": "DPT_Colour_RGBW",
     "size": "6 bytes",
     "dataType": "Composite",
-    "range": "R/G/B/W=[0…255]; B4=component valid bits",
+    "range": "Six octets: R, G, B, W percentages, a reserved zero octet, then r4 + R/G/B/W validity. Ignore component values whose validity bit is 0.",
     "format": "U8U8U8U8r8r4B4",
     "overviewPage": 24,
     "detailPages": [
@@ -11712,8 +12376,54 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "RED (%)",
+        "bits": 8,
+        "meaning": "0 to 100"
+      },
+      {
+        "name": "GREEN (%)",
+        "bits": 8,
+        "meaning": "0 to 100"
+      },
+      {
+        "name": "BLUE (%)",
+        "bits": 8,
+        "meaning": "0 to 100"
+      },
+      {
+        "name": "WHITE (%)",
+        "bits": 8,
+        "meaning": "0 to 100"
+      },
+      {
+        "name": "Reserved",
+        "bits": 12,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "Red valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Green valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Blue valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "White valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      }
+    ],
     "layoutNotes": []
   },
   {
@@ -11721,12 +12431,11 @@
     "name": "DPT_Relative_Control_RGBW",
     "size": "5 bytes",
     "dataType": "Composite",
-    "range": "Relative control of Red, Green, Blue, White. Each component occupies one padded control octet. A final validity mask selects the affected components.",
+    "range": "Each component occupies a padded direction/step octet. Step 0 stops; 1–7 specify relative steps. Validity bits use 0 = ignore, 1 = valid.",
     "format": "r4B1U3r4B1U3r4B1U3r4B1U3B8",
     "overviewPage": 24,
     "detailPages": [
-      195,
-      196
+      195
     ],
     "unit": "Not applicable",
     "layoutPending": false,
@@ -11744,69 +12453,89 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Red reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Red direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Red step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Green reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Green direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Green step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Blue reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Blue direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Blue step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "White reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "White direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "White step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Validity mask",
-        "bits": 8,
-        "meaning": "b3 red, b2 green, b1 blue, b0 white valid; b4–b7 = 0. 0 = invalid/leave component unchanged; 1 = valid."
+        "name": "Reserved",
+        "bits": 4,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "Red valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Green valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Blue valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "White valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
       }
     ],
     "layoutNotes": [
@@ -11818,12 +12547,11 @@
     "name": "DPT_Relative_Control_xyY",
     "size": "4 bytes",
     "dataType": "Composite",
-    "range": "Relative control of Saturation, Colour wavelength, Brightness. Each component occupies one padded control octet. A final validity mask selects the affected components.",
+    "range": "Each component occupies a padded direction/step octet. Step 0 stops; 1–7 specify relative steps. Validity bits use 0 = ignore, 1 = valid.",
     "format": "r4B1U3r4B1U3r4B1U3B8",
     "overviewPage": 24,
     "detailPages": [
-      196,
-      197
+      196
     ],
     "unit": "Not applicable",
     "layoutPending": false,
@@ -11841,54 +12569,69 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Saturation reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Saturation direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase. Saturation is distance from the white point."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Saturation step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Colour wavelength reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Colour wavelength direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Colour wavelength step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Brightness reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Brightness direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Brightness step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Validity mask",
-        "bits": 8,
-        "meaning": "b2 saturation, b1 colour, b0 brightness valid; b3–b7 = 0. 0 = invalid/leave component unchanged; 1 = valid."
+        "name": "Reserved",
+        "bits": 5,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "Saturation valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Colour wavelength valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
+      },
+      {
+        "name": "Brightness valid",
+        "bits": 1,
+        "meaning": "0 = Invalid / ignore; 1 = Valid"
       }
     ],
     "layoutNotes": [
@@ -11900,12 +12643,11 @@
     "name": "DPT_Relative_Control_RGB",
     "size": "3 bytes",
     "dataType": "Composite",
-    "range": "Relative control of Red, Green, Blue. Each component occupies one padded control octet. No validity-mask octet.",
+    "range": "Each component occupies a padded direction/step octet. Step 0 stops; 1–7 specify relative steps. No validity-mask octet is present.",
     "format": "r4B1U3r4B1U3r4B1U3",
     "overviewPage": 24,
     "detailPages": [
-      197,
-      198
+      197
     ],
     "unit": "Not applicable",
     "layoutPending": false,
@@ -11923,49 +12665,49 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Red reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Red direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Red step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Green reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Green direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Green step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       },
       {
-        "name": "Blue reserved",
+        "name": "Reserved",
         "bits": 4,
         "meaning": "Set to 0."
       },
       {
         "name": "Blue direction",
         "bits": 1,
-        "meaning": "0 decrease; 1 increase."
+        "meaning": "0 = Decrease; 1 = Increase"
       },
       {
         "name": "Blue step code",
         "bits": 3,
-        "meaning": "0 stops/breaks the change; 1–7 specify a step."
+        "meaning": "0 = Stop; 1 = 100%; 2 = 50%; 3 = 25%; 4 = 12.5%; 5 = 6.25%; 6 = 3.125%; 7 = 1.5625%"
       }
     ],
     "layoutNotes": [
@@ -12024,7 +12766,7 @@
     "name": "DPT_Value_Electric_Current_3",
     "size": "12 bytes",
     "dataType": "Composite",
-    "range": "Three phase values in phase 1, phase 2, phase 3 order; each is a four-byte IEEE 754 value.",
+    "range": "Three IEEE 754 binary32 values in phase 1, 2, 3 order. This codec supports finite values only; special IEEE encodings are not measurements.",
     "format": "F32F32F32",
     "overviewPage": 24,
     "detailPages": [
@@ -12046,19 +12788,19 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Phase 1",
+        "name": "Phase 1 (A)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 electric current in A."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       },
       {
-        "name": "Phase 2",
+        "name": "Phase 2 (A)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 electric current in A."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       },
       {
-        "name": "Phase 3",
+        "name": "Phase 3 (A)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 electric current in A."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       }
     ],
     "layoutNotes": [
@@ -12070,7 +12812,7 @@
     "name": "DPT_Value_Electric_Potential_3",
     "size": "12 bytes",
     "dataType": "Composite",
-    "range": "Three phase values in phase 1, phase 2, phase 3 order; each is a four-byte IEEE 754 value.",
+    "range": "Three IEEE 754 binary32 values in phase 1, 2, 3 order. This codec supports finite values only; special IEEE encodings are not measurements.",
     "format": "F32F32F32",
     "overviewPage": 24,
     "detailPages": [
@@ -12092,19 +12834,19 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Phase 1",
+        "name": "Phase 1 (V)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 electric potential in V."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       },
       {
-        "name": "Phase 2",
+        "name": "Phase 2 (V)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 electric potential in V."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       },
       {
-        "name": "Phase 3",
+        "name": "Phase 3 (V)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 electric potential in V."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       }
     ],
     "layoutNotes": [
@@ -12116,7 +12858,7 @@
     "name": "DPT_Value_ApparentPower_3",
     "size": "12 bytes",
     "dataType": "Composite",
-    "range": "Three phase values in phase 1, phase 2, phase 3 order; each is a four-byte IEEE 754 value.",
+    "range": "Three IEEE 754 binary32 values in phase 1, 2, 3 order. This codec supports finite values only; special IEEE encodings are not measurements.",
     "format": "F32F32F32",
     "overviewPage": 24,
     "detailPages": [
@@ -12138,19 +12880,19 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Phase 1",
+        "name": "Phase 1 (VA)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 apparent power in VA."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       },
       {
-        "name": "Phase 2",
+        "name": "Phase 2 (VA)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 apparent power in VA."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       },
       {
-        "name": "Phase 3",
+        "name": "Phase 3 (VA)",
         "bits": 32,
-        "meaning": "IEEE 754 binary32 apparent power in VA."
+        "meaning": "-3.4028234663852886e+38 to 3.4028234663852886e+38"
       }
     ],
     "layoutNotes": [
@@ -12746,7 +13488,7 @@
     "name": "DPT_Converter_Info",
     "size": "7 bytes",
     "dataType": "Composite",
-    "range": "Converter information with accumulated emergency/total lamp operating times, emergency level and DALI address.",
+    "range": "Seven octets: information validity, emergency and total lamp hours, emergency level and DALI short address. Information validity 0 or 2 means the remaining values are not current valid information. Level 255 means unknown.",
     "format": "N8U16U16U8U8",
     "overviewPage": 25,
     "detailPages": [
@@ -12770,27 +13512,27 @@
       {
         "name": "Information validity",
         "bits": 8,
-        "meaning": "0 converter missing/no information; 1 information valid; 2 invalid; 3–255 reserved."
+        "meaning": "0 = Missing / no information; 1 = Valid; 2 = Invalid"
       },
       {
-        "name": "Emergency lamp time",
+        "name": "Emergency lamp time (h)",
         "bits": 16,
-        "meaning": "U16 hours, 0–65535."
+        "meaning": "0 to 65535"
       },
       {
-        "name": "Total lamp time",
+        "name": "Total lamp time (h)",
         "bits": 16,
-        "meaning": "U16 hours, 0–65535."
+        "meaning": "0 to 65535"
       },
       {
-        "name": "Emergency level",
+        "name": "Emergency level (raw; 255 unknown)",
         "bits": 8,
-        "meaning": "0–254 level; 255 unknown."
+        "meaning": "0 to 255"
       },
       {
         "name": "DALI short address",
         "bits": 8,
-        "meaning": "0–63; 64–255 not allowed."
+        "meaning": "0 to 63"
       }
     ],
     "layoutNotes": []
@@ -13015,7 +13757,7 @@
     "name": "DPT_ERL_Status",
     "size": "4 bytes",
     "dataType": "Composite",
-    "range": "Three U8 duty cycles using DPT 5.001 scaling, followed by r3B5 status. Final-octet bits: b0 TIC alarm, b1 software update, b2 channel F1 duty-cycle alarm, b3 F2 alarm, b4 F3 alarm; b5–b7 = 0. Duty-cycle alarms indicate the 98% threshold. Total 4 bytes.",
+    "range": "Three scaled duty cycles followed by five status bits. Duty-cycle alarms indicate the 98% threshold; upper three status bits are reserved.",
     "format": "U8U8U8r3B5",
     "overviewPage": 25,
     "detailPages": [
@@ -13035,7 +13777,53 @@
     ],
     "sourceNotes": [],
     "descriptionReviewed": true,
-    "fields": [],
+    "fields": [
+      {
+        "name": "F1 duty cycle (%)",
+        "bits": 8,
+        "meaning": "0 to 100"
+      },
+      {
+        "name": "F2 duty cycle (%)",
+        "bits": 8,
+        "meaning": "0 to 100"
+      },
+      {
+        "name": "F3 duty cycle (%)",
+        "bits": 8,
+        "meaning": "0 to 100"
+      },
+      {
+        "name": "Reserved",
+        "bits": 3,
+        "meaning": "Set to 0."
+      },
+      {
+        "name": "F3 duty-cycle alarm",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "F2 duty-cycle alarm",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "F1 duty-cycle alarm",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "Software update",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      },
+      {
+        "name": "TIC alarm",
+        "bits": 1,
+        "meaning": "0 = False; 1 = True"
+      }
+    ],
     "layoutNotes": []
   },
   {

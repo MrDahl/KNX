@@ -1,6 +1,6 @@
 # Example KNX CAD Symbols
 
-Student page: sixth navigation item, CAD symbols. Full-width reference with search, category filtering, desktop table and narrow-container cards. Columns: Symbol, English name, What it represents. No product-reference column or manufacturer branding.
+Reference page: CAD symbols navigation item, CAD symbols. Full-width reference with search, category filtering, desktop table and narrow-container cards. Columns: Symbol, English name, What it represents. No product-reference column or manufacturer branding.
 
 ## Supplying the drawings
 
@@ -25,7 +25,7 @@ Use a distinct symbol name for each variant. Preserve channel counts in names wh
 3. Save each asset under public/symbols and map its path in src/symbols/catalogue.ts. Match existing slots where appropriate; otherwise add an English name, category and description for the actual drawing.
 4. Check the image at normal and enlarged sizes. Search uses name, description, category and keywords.
 
-There is no student-facing upload or raw-code editor. The owner's text file will be integrated into the repository after review. The page contains thirteen original SVGs created by Marc Sonne Dahl, including the supplied Generic Sensor. The earlier eight drawings have been removed. No symbols from the product-specific PDF or the earlier MEPcontent-derived set remain in the current asset directory.
+There is no user-facing upload or raw-code editor. The owner's text file will be integrated into the repository after review. The page contains thirteen original SVGs created by Marc Sonne Dahl, including the supplied Generic Sensor. The earlier eight drawings have been removed. No symbols from the product-specific PDF or the earlier MEPcontent-derived set remain in the current asset directory.
 
 ## Original artwork
 
