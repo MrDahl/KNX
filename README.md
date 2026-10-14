@@ -1,5 +1,9 @@
 # KNX TP Explorer
 
+<p align="left">
+  <img src="assets/marc_dahl_logo.svg" alt="Marc Sonne Dahl" width="200">
+</p>
+
 An educational simulation and reference for KNX TP1 telegrams, group objects, topology and datapoint types. Built by **Marc Sonne Dahl · KNX++ Tutor**.
 
 **[Open the app](https://mrdahl.github.io/KNX/)**
@@ -106,5 +110,5 @@ The GitHub Pages workflow runs `npm test` and `npm run lint` before building and
 ---
 
 <p align="center">
-  <img src="assets/made_in_dk.svg" alt="Made in Denmark" width="160">
+  <img src="assets/made_in_dk.svg" alt="Made in Denmark" width="250">
 </p>
