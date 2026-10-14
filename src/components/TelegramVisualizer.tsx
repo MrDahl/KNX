@@ -81,7 +81,7 @@ export function buildStandardGroupTelegram(params: TelegramParams, payload: stri
 
 export { telegramTiming } from "../knx/tp1Timing";
 
-export function TelegramVisualizer({scenario,showControls=true,children,onConfigure}:{scenario?:{id:string;values:Values;generate?:boolean;destination?:string;origin?:string}|null;showControls?:boolean;children?:React.ReactNode;onConfigure?:()=>void} = {}) {
+export function TelegramVisualizer({scenario,showControls=true,children,onConfigure}:{scenario?:{id:string;values:Values;generate?:boolean;destination?:string;origin?:string;captureParams?:TelegramParams}|null;showControls?:boolean;children?:React.ReactNode;onConfigure?:()=>void} = {}) {
   const [params, setParams] = useState<TelegramParams>({repeatFlag: "1", targetType: "1", command: APCICode.GroupValueWrite,
     source: {area: 1, line: 1, device: 10}, destination: {main: 1, middle: 0, sub: 1}, hopCount: 6, priority: "11", dptType: "1.001", ackType: "CC"});
   // The editor and encoder share one source of truth, including while Read hides the editor.
@@ -100,8 +100,9 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
   useEffect(() => {
     if (!scenario || !DPT_INPUTS[scenario.id] || DPT_INPUTS[scenario.id].telegramAllowed===false) return;
     const [main,middle,sub]=(scenario.destination||'1/0/1').split('/').map(Number);
-    const next:TelegramParams=scenario.generate?{repeatFlag:'1',targetType:'1',command:APCICode.GroupValueWrite,source:{area:1,line:1,device:scenario.destination?1:10},destination:{main,middle,sub},hopCount:6,priority:'11',dptType:scenario.id,ackType:'CC'}:{...params,dptType:scenario.id,command:APCICode.GroupValueWrite};
+    const next:TelegramParams=scenario.captureParams??(scenario.generate?{repeatFlag:'1',targetType:'1',command:APCICode.GroupValueWrite,source:{area:1,line:1,device:scenario.destination?1:10},destination:{main,middle,sub},hopCount:6,priority:'11',dptType:scenario.id,ackType:'CC'}:{...params,dptType:scenario.id,command:APCICode.GroupValueWrite});
     setParams(next);
+    if(scenario.captureParams)setResponse('NONE');
     setDptValues({...scenario.values});setCurrentPreset(-1);setCompiled(null);setLogicalBytes([]);setError('');
     setFrameOrigin(scenario.generate?scenario.origin:undefined);
     if(scenario.generate){
@@ -227,7 +228,7 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
             </select>
           </label>
           <p className="text-xs text-slate-600">Changes apply immediately to the response illustration. They do not change the generated telegram bytes. This is a selected teaching scenario, not a simulated receiver.</p>
-          <p className="text-sm text-slate-800">{response==='CC'?'ACK confirms link-layer reception. It does not prove that an actuator performed an action or that an application response will follow.':response==='0C'?'NAK reports a reception error. A sender can repeat the telegram according to its retry behaviour.':response==='C0'?'BUSY reports that the receiving link layer cannot process the telegram because its buffers are full. Retry handling is device-dependent.':'No acknowledgement means no response was observed. The waveform shows a silent nominal response slot, not a specified timeout or complete failed transaction. Retry timing is not calculated.'}</p>
+          <p className="text-sm text-slate-800">{response==='CC'?'ACK confirms link-layer reception. It does not prove that an actuator performed an action or that an application response will follow.':response==='0C'?'NAK reports a reception error. A sender can repeat the telegram according to its retry behaviour.':response==='C0'?'BUSY reports that the receiving link layer cannot process the telegram because its buffers are full. Retry handling is device-dependent.':'The selected demonstration shows no acknowledgement and a silent nominal response slot. This is not evidence of silence in an imported capture, a specified timeout or a complete failed transaction. Retry timing is not calculated.'}</p>
           <p className="text-xs text-slate-600">For simultaneous group acknowledgements, the Tutor course gives BUSY → NAK → ACK priority. A group ACK cannot identify which individual receivers acknowledged. Negative or absent responses can cause repetitions; these are not included in the displayed frame and acknowledgement. Reference: Tutor §3.6.4.</p>
         </aside>;
   return <MonitorDock controls={controls} openRevision={openRevision} actions={showControls?<button className="primary-button generate-mobile" onClick={handleGenerateClick}><Play size={17}/>Generate Telegram</button>:<button className="lesson-button configure-mobile" onClick={onConfigure}>Build telegram</button>}>
