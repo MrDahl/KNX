@@ -60,5 +60,5 @@ export function captureScenario(row:CaptureRecord,id:string):CaptureScenario{
  if(decoded&&encodeDpt(id,values)!==decoded.bits)throw Error('This interpretation cannot round-trip the captured payload exactly.');
  const [area,line,device]=row.source!.split('.').map(Number),[main,middle,sub]=row.destination!.split('/').map(Number);
  const params:TelegramParams={source:{area,line,device},destination:{main,middle,sub},hopCount:row.hopCount!,priority:row.priority!.toString(2).padStart(2,'0') as TelegramParams['priority'],repeatFlag:row.control!&32?'1':'0',targetType:'1',command:[APCICode.GroupValueRead,APCICode.GroupValueResponse,APCICode.GroupValueWrite][row.apci!],dptType:id,ackType:'CC'};
- return {id,values,generate:true,destination:row.destination!,captureParams:params,origin:`Capture record ${row.index} · reconstructed TP1 frame; check byte, serial timing and waveform are generated. ACK is not captured. ${read?'Read request has no value.':`DPT ${id} is a student-selected interpretation.`}`};
+ return {id,values,generate:true,destination:row.destination!,captureParams:params,origin:`Capture record ${row.index} · reconstructed TP1 frame; check byte, serial timing and waveform are generated. ACK is not captured. ${read?'Read request has no value.':`DPT ${id} is a selected interpretation.`}`};
 }

@@ -1,6 +1,6 @@
 # DPT codec coverage
 
-The workbench implements **290 exact subtypes** from KNX Interworking Datapoint Types v02.02.01 (2021), up from 24. The initial expansion added 264 codecs; owner review adds a complete-timestamp subset for 247.600 and a raw-value codec for 248.600. Coverage is not a claim of KNX certification or support for later editions.
+The workbench implements **316 exact subtypes** from KNX Interworking Datapoint Types v02.02.01 (2021), up from 24. The initial expansion added 264 codecs; owner review adds a complete-timestamp subset for 247.600 and a raw-value codec for 248.600. Coverage is not a claim of KNX certification or support for later editions.
 
 ## Scope
 
@@ -326,3 +326,36 @@ PDF page images were inspected for 185, 190 and 191. The owner’s examples are 
 | --- | --- | --- |
 | 247.600 | Complete timestamp subset, interval hours, duration seconds | 190 |
 | 248.600 | Raw emergency levels, raw rated duration, named feature flags | 191 |
+
+## Capture-analysis expansion (26 additional codecs)
+
+The catalogue now includes the previously absent 249.600 (six-byte brightness/colour-temperature transition), bringing it to 454 entries. The 26 additions bring codec coverage to 316 subtypes. Layouts, reserved bits, sparse enumeration codes, validity masks and system/LTE transfer restrictions were checked against the source pages below. Fixed ISO 8859-1 text uses a conservative NULL-padding rule; three-phase floats support finite values only. Unresolved 243.600 remains reference-only.
+
+| DPT | Codec | Printed source pages | Group transfer |
+| --- | --- | --- | --- |
+| 6.020 | Status_Mode3 | 34 | Enabled |
+| 7.010 | PropDataType | 35 | Disabled: system/property/LTE scope |
+| 16.001 | String_8859_1 | 48 | Enabled |
+| 20.1001 | AddInfoTypes | 202 | Disabled: system/property/LTE scope |
+| 20.1002 | RF_ModeSelect | 202 | Disabled: system/property/LTE scope |
+| 20.1004 | Medium | 203 | Disabled: system/property/LTE scope |
+| 21.001 | StatusGen | 58 | Enabled |
+| 21.1000 | RF_ModeInfo | 205 | Disabled: system/property/LTE scope |
+| 21.1010 | Channel_Activation_8 | 207 | Disabled: system/property/LTE scope |
+| 22.1010 | Channel_Activation_16 | 208 | Disabled: system/property/LTE scope |
+| 30.1010 | Channel_Activation_24 | 209 | Disabled: system/property/LTE scope |
+| 22.100 | StatusDHWC | 126 | Disabled: system/property/LTE scope |
+| 22.101 | StatusRHCC | 127, 128 | Enabled |
+| 25.1000 | DoubleNibble | 209 | Disabled: system/property/LTE scope |
+| 27.001 | CombinedInfoOnOff | 62, 63, 64 | Enabled |
+| 249.600 | Brightness_Colour_Temperature_Transition | 192 | Enabled |
+| 250.600 | Brightness_Colour_Temperature_Control | 193 | Enabled |
+| 252.600 | Relative_Control_RGBW | 195 | Enabled |
+| 253.600 | Relative_Control_xyY | 196 | Enabled |
+| 254.600 | Relative_Control_RGB | 197 | Enabled |
+| 251.600 | Colour_RGBW | 194 | Enabled |
+| 257.1200 | Value_Electric_Current_3 | 216 | Enabled |
+| 257.1201 | Value_Electric_Potential_3 | 216 | Enabled |
+| 257.1202 | Value_ApparentPower_3 | 216 | Enabled |
+| 272.600 | Converter_Info | 198 | Enabled |
+| 276.1200 | ERL_Status | 222 | Enabled |

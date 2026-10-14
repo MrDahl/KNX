@@ -28,6 +28,7 @@ export function encodeExpanded(id:string,v:Values):string{
  const spec=EXPANDED_DPTS[id];validateFields(spec,v);
  return spec.parts.map(p=>{
   if(p.kind==='reserved')return '0'.repeat(p.bits);
+  if(p.kind==='latin1text'){const s=v[p.key]??'';if(s.length>p.bits/8||[...s].some(c=>c.charCodeAt(0)>255||c.charCodeAt(0)===0))throw Error('Enter up to 14 ISO 8859-1 characters without embedded NULL.');return Array.from({length:p.bits/8},(_,i)=>binary(BigInt(s.charCodeAt(i)||0),8)).join('');}
   if(p.kind==='latin1'){const s=v[p.key]??'';if(s.length!==1||s.charCodeAt(0)>255)throw Error('Enter exactly one ISO 8859-1 character.');return binary(BigInt(s.charCodeAt(0)),8);}
   if(p.kind==='int64'){
    if(!/^-?\d+$/.test(v[p.key]??''))throw Error('Enter an exact decimal integer.');
@@ -47,7 +48,8 @@ export function decodeExpanded(id:string,bits:string):Values{
  for(const p of spec.parts){
   const chunk=bits.slice(offset,offset+p.bits);offset+=p.bits;const raw=BigInt('0b'+chunk),n=Number(raw);
   if(p.kind==='reserved'){if(raw!==0n)throw Error('Reserved bits must be zero.');continue;}
-  if(p.kind==='latin1')values[p.key]=String.fromCharCode(n);
+  if(p.kind==='latin1text'){const a=chunk.match(/.{8}/g)!.map(x=>parseInt(x,2)),end=a.indexOf(0);if(end>=0&&a.slice(end).some(x=>x!==0))throw Error('Text must be NULL padded.');values[p.key]=String.fromCharCode(...(end<0?a:a.slice(0,end)));}
+  else if(p.kind==='latin1')values[p.key]=String.fromCharCode(n);
   else if(p.kind==='int64')values[p.key]=BigInt.asIntN(64,raw).toString();
   else if(p.kind==='f16'){
    if(n===0x7fff)throw Error('7F FF is invalid data, not a measurement.');

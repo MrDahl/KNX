@@ -21,7 +21,7 @@ test('Search, decoding and handoff preserve the selected DPT and value',async()=
  assert.equal(r.root.findByProps({'aria-label':'Datapoint type'}).props.value,'9.001');assert.equal(r.root.findByProps({'aria-label':'Temperature (°C)'}).props.value,'-30');
  await act(()=>r.unmount());
 });
-test('Student explanation and reviewed layouts are visible without level tabs',async()=>{
+test('Explanation and reviewed layouts are visible without level tabs',async()=>{
  let r:any;await act(()=>{r=create(<DatapointTypesList/>);});
  assert.equal(r.root.findAllByProps({'aria-label':'Explanation level'}).length,0);
  assert.match(text(r.toJSON()),/least-significant bit first/);

@@ -9947,5 +9947,4015 @@
     "note": "Rated duration is a raw 0–255 byte: its unit is unresolved in the supplied standard. No minutes/hours conversion is made. Emergency levels are raw DALI codes, not percentages; 255 means unknown (Mask). Gear-feature bits indicate support, not the current operating state.",
     "unit": "Raw codes; rated-duration unit pending",
     "telegramAllowed": true
+  },
+  "6.020": {
+    "name": "Status_Mode3",
+    "size": 8,
+    "fields": [
+      {
+        "key": "a",
+        "label": "A",
+        "initial": "0",
+        "options": [
+          "Set",
+          "Clear"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b",
+        "label": "B",
+        "initial": "0",
+        "options": [
+          "Set",
+          "Clear"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "c",
+        "label": "C",
+        "initial": "0",
+        "options": [
+          "Set",
+          "Clear"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "d",
+        "label": "D",
+        "initial": "0",
+        "options": [
+          "Set",
+          "Clear"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "e",
+        "label": "E",
+        "initial": "0",
+        "options": [
+          "Set",
+          "Clear"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "mode",
+        "label": "Active mode",
+        "initial": "1",
+        "options": [
+          "Mode 0",
+          "Mode 1",
+          "Mode 2"
+        ],
+        "optionValues": [
+          1,
+          2,
+          4
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "a",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "c",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "d",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "e",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "mode",
+        "bits": 3,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      34
+    ],
+    "unit": "",
+    "note": "Five status bits use 0 = set, 1 = clear. The final three bits select mode 0 (001), mode 1 (010) or mode 2 (100). Other mode codes are reserved.",
+    "telegramAllowed": true
+  },
+  "7.010": {
+    "name": "PropDataType",
+    "size": 16,
+    "fields": [
+      {
+        "key": "value",
+        "label": "Property datatype identifier (raw)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      35
+    ],
+    "unit": "",
+    "note": "Unsigned property datatype identifier. A numeric value does not establish an assigned property datatype.",
+    "telegramAllowed": false
+  },
+  "16.001": {
+    "name": "String_8859_1",
+    "size": 112,
+    "fields": [
+      {
+        "key": "text",
+        "label": "ISO 8859-1 text (up to 14 characters)",
+        "initial": ""
+      }
+    ],
+    "parts": [
+      {
+        "key": "text",
+        "bits": 112,
+        "kind": "latin1text"
+      }
+    ],
+    "sourcePages": [
+      48
+    ],
+    "unit": "",
+    "note": "Fixed 14-byte ISO 8859-1 string. Shorter strings are NULL padded; embedded NULLs are not accepted.",
+    "telegramAllowed": true
+  },
+  "20.1001": {
+    "name": "AddInfoTypes",
+    "size": 8,
+    "fields": [
+      {
+        "key": "value",
+        "label": "Value",
+        "initial": "1",
+        "options": [
+          "PL domain address",
+          "RF control and serial/domain address",
+          "Bus-monitor error flags",
+          "Relative timestamp",
+          "Time delay",
+          "Extended relative timestamp",
+          "BiBat information"
+        ],
+        "optionValues": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      202
+    ],
+    "unit": "Not applicable",
+    "note": "Only explicitly defined enumeration codes are accepted. System/property type; ordinary group-value transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "20.1002": {
+    "name": "RF_ModeSelect",
+    "size": 8,
+    "fields": [
+      {
+        "key": "value",
+        "label": "Value",
+        "initial": "0",
+        "options": [
+          "Asynchronous",
+          "Asynchronous with BiBat master",
+          "Asynchronous with BiBat slave"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      202
+    ],
+    "unit": "Not applicable",
+    "note": "Only explicitly defined enumeration codes are accepted. System/property type; ordinary group-value transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "20.1004": {
+    "name": "Medium",
+    "size": 8,
+    "fields": [
+      {
+        "key": "value",
+        "label": "Value",
+        "initial": "0",
+        "options": [
+          "KNX TP1",
+          "KNX PL110",
+          "KNX RF",
+          "KNX IP"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          5
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      203
+    ],
+    "unit": "Not applicable",
+    "note": "Only explicitly defined enumeration codes are accepted. System/property type; ordinary group-value transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "21.001": {
+    "name": "StatusGen",
+    "size": 8,
+    "fields": [
+      {
+        "key": "unack",
+        "label": "Alarm unacknowledged",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "alarm",
+        "label": "In alarm",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "override",
+        "label": "Overridden",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "fault",
+        "label": "Fault",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "out",
+        "label": "Out of service",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "reserved",
+        "bits": 3,
+        "kind": "reserved"
+      },
+      {
+        "key": "unack",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "alarm",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "override",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "fault",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "out",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      58
+    ],
+    "unit": "",
+    "note": "General status: b0 out of service, b1 fault, b2 overridden, b3 in alarm, b4 alarm unacknowledged. b5–b7 reserved. This is status information, not the LTE command interpretation.",
+    "telegramAllowed": true
+  },
+  "21.1000": {
+    "name": "RF_ModeInfo",
+    "size": 8,
+    "fields": [
+      {
+        "key": "slave",
+        "label": "BiBat slave supported",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "master",
+        "label": "BiBat master supported",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "async",
+        "label": "Asynchronous support (required)",
+        "initial": "1",
+        "options": [
+          "Supported"
+        ],
+        "optionValues": [
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "reserved",
+        "bits": 5,
+        "kind": "reserved"
+      },
+      {
+        "key": "slave",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "master",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "async",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      205
+    ],
+    "unit": "Not applicable",
+    "note": "Asynchronous support must be 1. The upper five bits are reserved. System type; ordinary group transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "21.1010": {
+    "name": "Channel_Activation_8",
+    "size": 8,
+    "fields": [
+      {
+        "key": "channel8",
+        "label": "Channel 8 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel7",
+        "label": "Channel 7 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel6",
+        "label": "Channel 6 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel5",
+        "label": "Channel 5 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel4",
+        "label": "Channel 4 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel3",
+        "label": "Channel 3 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel2",
+        "label": "Channel 2 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel1",
+        "label": "Channel 1 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "channel8",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel7",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel6",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel5",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel4",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel1",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      207
+    ],
+    "unit": "",
+    "note": "Bit n indicates the visual-effect activation state of channel n+1. System type; ordinary group transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "22.1010": {
+    "name": "Channel_Activation_16",
+    "size": 16,
+    "fields": [
+      {
+        "key": "channel16",
+        "label": "Channel 16 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel15",
+        "label": "Channel 15 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel14",
+        "label": "Channel 14 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel13",
+        "label": "Channel 13 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel12",
+        "label": "Channel 12 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel11",
+        "label": "Channel 11 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel10",
+        "label": "Channel 10 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel9",
+        "label": "Channel 9 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel8",
+        "label": "Channel 8 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel7",
+        "label": "Channel 7 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel6",
+        "label": "Channel 6 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel5",
+        "label": "Channel 5 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel4",
+        "label": "Channel 4 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel3",
+        "label": "Channel 3 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel2",
+        "label": "Channel 2 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel1",
+        "label": "Channel 1 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "channel16",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel15",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel14",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel13",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel12",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel11",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel10",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel9",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel8",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel7",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel6",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel5",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel4",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel1",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      208
+    ],
+    "unit": "",
+    "note": "Bit n indicates the visual-effect activation state of channel n+1. System type; ordinary group transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "30.1010": {
+    "name": "Channel_Activation_24",
+    "size": 24,
+    "fields": [
+      {
+        "key": "channel24",
+        "label": "Channel 24 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel23",
+        "label": "Channel 23 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel22",
+        "label": "Channel 22 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel21",
+        "label": "Channel 21 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel20",
+        "label": "Channel 20 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel19",
+        "label": "Channel 19 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel18",
+        "label": "Channel 18 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel17",
+        "label": "Channel 17 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel16",
+        "label": "Channel 16 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel15",
+        "label": "Channel 15 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel14",
+        "label": "Channel 14 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel13",
+        "label": "Channel 13 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel12",
+        "label": "Channel 12 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel11",
+        "label": "Channel 11 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel10",
+        "label": "Channel 10 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel9",
+        "label": "Channel 9 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel8",
+        "label": "Channel 8 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel7",
+        "label": "Channel 7 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel6",
+        "label": "Channel 6 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel5",
+        "label": "Channel 5 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel4",
+        "label": "Channel 4 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel3",
+        "label": "Channel 3 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel2",
+        "label": "Channel 2 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "channel1",
+        "label": "Channel 1 visual effect",
+        "initial": "0",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "channel24",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel23",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel22",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel21",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel20",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel19",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel18",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel17",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel16",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel15",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel14",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel13",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel12",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel11",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel10",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel9",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel8",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel7",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel6",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel5",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel4",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "channel1",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      209
+    ],
+    "unit": "",
+    "note": "Bit n indicates the visual-effect activation state of channel n+1. System type; ordinary group transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "22.100": {
+    "name": "StatusDHWC",
+    "size": 16,
+    "fields": [
+      {
+        "key": "b7",
+        "label": "Temperature optimisation shift active",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b6",
+        "label": "Solar energy support",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b5",
+        "label": "Solar energy only",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b4",
+        "label": "Other energy source active",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b3",
+        "label": "DHW push active",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b2",
+        "label": "Legionella protection active",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b1",
+        "label": "DHW load active",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b0",
+        "label": "Fault",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "reserved",
+        "bits": 8,
+        "kind": "reserved"
+      },
+      {
+        "key": "b7",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b6",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b5",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b4",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b0",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      126
+    ],
+    "unit": "",
+    "note": "DHW controller LTE status. Bits 8–15 are reserved. Standard mode uses separate Boolean datapoints; ordinary group transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "22.101": {
+    "name": "StatusRHCC",
+    "size": 16,
+    "fields": [
+      {
+        "key": "b14",
+        "label": "Overheat alarm",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b13",
+        "label": "Frost alarm",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b12",
+        "label": "Dew point alarm",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b11",
+        "label": "Cooling disabled",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b10",
+        "label": "Pre-cooling active",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b9",
+        "label": "Cooling ECO status",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b8",
+        "label": "Heat/cool mode",
+        "initial": "0",
+        "options": [
+          "Cooling",
+          "Heating"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b7",
+        "label": "Heating disabled",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b6",
+        "label": "Optimum stop",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b5",
+        "label": "Optimum start",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b4",
+        "label": "Heating morning boost",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b3",
+        "label": "Return temperature limitation",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b2",
+        "label": "Flow temperature limitation",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b1",
+        "label": "Heating ECO status",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "b0",
+        "label": "Fault",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "reserved",
+        "bits": 1,
+        "kind": "reserved"
+      },
+      {
+        "key": "b14",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b13",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b12",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b11",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b10",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b9",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b8",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b7",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b6",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b5",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b4",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "b0",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      127,
+      128
+    ],
+    "unit": "",
+    "note": "Room HVAC controller status. Bit 8 is 0 cooling / 1 heating; bit 15 is reserved. Other named bits indicate their respective states.",
+    "telegramAllowed": true
+  },
+  "25.1000": {
+    "name": "DoubleNibble",
+    "size": 8,
+    "fields": [
+      {
+        "key": "busy",
+        "label": "Busy repetitions",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 3,
+        "step": "1"
+      },
+      {
+        "key": "nak",
+        "label": "Inack repetitions",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 3,
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "busy",
+        "bits": 4,
+        "kind": "uint"
+      },
+      {
+        "key": "nak",
+        "bits": 4,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      209
+    ],
+    "unit": "",
+    "note": "Two nibbles: Busy repetitions followed by Inack repetitions, each restricted to 0–3. System type; ordinary group transfer is disabled.",
+    "telegramAllowed": false
+  },
+  "27.001": {
+    "name": "CombinedInfoOnOff",
+    "size": 32,
+    "fields": [
+      {
+        "key": "valid16",
+        "label": "Output 16 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid15",
+        "label": "Output 15 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid14",
+        "label": "Output 14 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid13",
+        "label": "Output 13 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid12",
+        "label": "Output 12 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid11",
+        "label": "Output 11 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid10",
+        "label": "Output 10 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid9",
+        "label": "Output 9 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid8",
+        "label": "Output 8 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid7",
+        "label": "Output 7 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid6",
+        "label": "Output 6 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid5",
+        "label": "Output 5 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid4",
+        "label": "Output 4 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid3",
+        "label": "Output 3 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid2",
+        "label": "Output 2 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid1",
+        "label": "Output 1 validity",
+        "initial": "0",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state16",
+        "label": "Output 16 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state15",
+        "label": "Output 15 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state14",
+        "label": "Output 14 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state13",
+        "label": "Output 13 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state12",
+        "label": "Output 12 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state11",
+        "label": "Output 11 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state10",
+        "label": "Output 10 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state9",
+        "label": "Output 9 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state8",
+        "label": "Output 8 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state7",
+        "label": "Output 7 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state6",
+        "label": "Output 6 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state5",
+        "label": "Output 5 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state4",
+        "label": "Output 4 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state3",
+        "label": "Output 3 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state2",
+        "label": "Output 2 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "state1",
+        "label": "Output 1 stored state",
+        "initial": "0",
+        "options": [
+          "Off",
+          "On"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "valid16",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid15",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid14",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid13",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid12",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid11",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid10",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid9",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid8",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid7",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid6",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid5",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid4",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state16",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state15",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state14",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state13",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state12",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state11",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state10",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state9",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state8",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state7",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state6",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state5",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state4",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "state1",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      62,
+      63,
+      64
+    ],
+    "unit": "",
+    "note": "Combined binary output status only. High 16 bits are validity masks; low 16 bits are output states. Ignore a stored state when its corresponding validity bit is 0.",
+    "telegramAllowed": true
+  },
+  "249.600": {
+    "name": "Brightness_Colour_Temperature_Transition",
+    "size": 48,
+    "fields": [
+      {
+        "key": "time",
+        "label": "Transition time (s)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 6553.5,
+        "step": "any"
+      },
+      {
+        "key": "temperature",
+        "label": "Colour temperature (K)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "step": "1"
+      },
+      {
+        "key": "brightness",
+        "label": "Brightness (%)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "step": "any"
+      },
+      {
+        "key": "timeValid",
+        "label": "Time valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "temperatureValid",
+        "label": "Colour temperature valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "brightnessValid",
+        "label": "Brightness valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "time",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.1
+      },
+      {
+        "key": "temperature",
+        "bits": 16,
+        "kind": "uint"
+      },
+      {
+        "key": "brightness",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "reserved",
+        "bits": 5,
+        "kind": "reserved"
+      },
+      {
+        "key": "timeValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "temperatureValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "brightnessValid",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      192
+    ],
+    "unit": "mixed",
+    "note": "Six-byte value: time in 100 ms steps, colour temperature in K, scaled brightness and three validity bits. Ignore fields whose validity bit is 0. The printed format line says four octets, but diagram, widths and PDT_GENERIC_06 establish six.",
+    "telegramAllowed": true
+  },
+  "250.600": {
+    "name": "Brightness_Colour_Temperature_Control",
+    "size": 24,
+    "fields": [
+      {
+        "key": "direction0",
+        "label": "Colour temperature direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step0",
+        "label": "Colour temperature step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "direction1",
+        "label": "Brightness direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step1",
+        "label": "Brightness step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "valid0",
+        "label": "Colour temperature valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid1",
+        "label": "Brightness valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction0",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step0",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step1",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 6,
+        "kind": "reserved"
+      },
+      {
+        "key": "valid0",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid1",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      193
+    ],
+    "unit": "Not applicable",
+    "note": "Each component occupies a padded direction/step octet. Step 0 stops; 1–7 specify relative steps. Validity bits use 0 = ignore, 1 = valid.",
+    "telegramAllowed": true
+  },
+  "252.600": {
+    "name": "Relative_Control_RGBW",
+    "size": 40,
+    "fields": [
+      {
+        "key": "direction0",
+        "label": "Red direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step0",
+        "label": "Red step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "direction1",
+        "label": "Green direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step1",
+        "label": "Green step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "direction2",
+        "label": "Blue direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step2",
+        "label": "Blue step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "direction3",
+        "label": "White direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step3",
+        "label": "White step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "valid0",
+        "label": "Red valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid1",
+        "label": "Green valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid2",
+        "label": "Blue valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid3",
+        "label": "White valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction0",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step0",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step1",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step2",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction3",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step3",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "valid0",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid3",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      195
+    ],
+    "unit": "Not applicable",
+    "note": "Each component occupies a padded direction/step octet. Step 0 stops; 1–7 specify relative steps. Validity bits use 0 = ignore, 1 = valid.",
+    "telegramAllowed": true
+  },
+  "253.600": {
+    "name": "Relative_Control_xyY",
+    "size": 32,
+    "fields": [
+      {
+        "key": "direction0",
+        "label": "Saturation direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step0",
+        "label": "Saturation step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "direction1",
+        "label": "Colour wavelength direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step1",
+        "label": "Colour wavelength step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "direction2",
+        "label": "Brightness direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step2",
+        "label": "Brightness step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "valid0",
+        "label": "Saturation valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid1",
+        "label": "Colour wavelength valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "valid2",
+        "label": "Brightness valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction0",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step0",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step1",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step2",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 5,
+        "kind": "reserved"
+      },
+      {
+        "key": "valid0",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "valid2",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      196
+    ],
+    "unit": "Not applicable",
+    "note": "Each component occupies a padded direction/step octet. Step 0 stops; 1–7 specify relative steps. Validity bits use 0 = ignore, 1 = valid.",
+    "telegramAllowed": true
+  },
+  "254.600": {
+    "name": "Relative_Control_RGB",
+    "size": 24,
+    "fields": [
+      {
+        "key": "direction0",
+        "label": "Red direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step0",
+        "label": "Red step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "direction1",
+        "label": "Green direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step1",
+        "label": "Green step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "key": "direction2",
+        "label": "Blue direction",
+        "initial": "0",
+        "options": [
+          "Decrease",
+          "Increase"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "step2",
+        "label": "Blue step code",
+        "initial": "0",
+        "options": [
+          "Stop",
+          "100%",
+          "50%",
+          "25%",
+          "12.5%",
+          "6.25%",
+          "3.125%",
+          "1.5625%"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction0",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step0",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction1",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step1",
+        "bits": 3,
+        "kind": "uint"
+      },
+      {
+        "key": "reserved",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "direction2",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "step2",
+        "bits": 3,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      197
+    ],
+    "unit": "Not applicable",
+    "note": "Each component occupies a padded direction/step octet. Step 0 stops; 1–7 specify relative steps. No validity-mask octet is present.",
+    "telegramAllowed": true
+  },
+  "251.600": {
+    "name": "Colour_RGBW",
+    "size": 48,
+    "fields": [
+      {
+        "key": "red",
+        "label": "RED (%)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "step": "any"
+      },
+      {
+        "key": "green",
+        "label": "GREEN (%)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "step": "any"
+      },
+      {
+        "key": "blue",
+        "label": "BLUE (%)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "step": "any"
+      },
+      {
+        "key": "white",
+        "label": "WHITE (%)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "step": "any"
+      },
+      {
+        "key": "redValid",
+        "label": "Red valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "greenValid",
+        "label": "Green valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "blueValid",
+        "label": "Blue valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "whiteValid",
+        "label": "White valid",
+        "initial": "0",
+        "options": [
+          "Invalid / ignore",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "red",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "green",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "blue",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "white",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "reserved",
+        "bits": 12,
+        "kind": "reserved"
+      },
+      {
+        "key": "redValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "greenValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "blueValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "whiteValid",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      194
+    ],
+    "unit": "",
+    "note": "Six octets: R, G, B, W percentages, a reserved zero octet, then r4 + R/G/B/W validity. Ignore component values whose validity bit is 0.",
+    "telegramAllowed": true
+  },
+  "257.1200": {
+    "name": "Value_Electric_Current_3",
+    "size": 96,
+    "fields": [
+      {
+        "key": "phase1",
+        "label": "Phase 1 (A)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      },
+      {
+        "key": "phase2",
+        "label": "Phase 2 (A)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      },
+      {
+        "key": "phase3",
+        "label": "Phase 3 (A)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      }
+    ],
+    "parts": [
+      {
+        "key": "phase1",
+        "bits": 32,
+        "kind": "f32"
+      },
+      {
+        "key": "phase2",
+        "bits": 32,
+        "kind": "f32"
+      },
+      {
+        "key": "phase3",
+        "bits": 32,
+        "kind": "f32"
+      }
+    ],
+    "sourcePages": [
+      216
+    ],
+    "unit": "A",
+    "note": "Three IEEE 754 binary32 values in phase 1, 2, 3 order. This codec supports finite values only; special IEEE encodings are not measurements.",
+    "telegramAllowed": true
+  },
+  "257.1201": {
+    "name": "Value_Electric_Potential_3",
+    "size": 96,
+    "fields": [
+      {
+        "key": "phase1",
+        "label": "Phase 1 (V)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      },
+      {
+        "key": "phase2",
+        "label": "Phase 2 (V)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      },
+      {
+        "key": "phase3",
+        "label": "Phase 3 (V)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      }
+    ],
+    "parts": [
+      {
+        "key": "phase1",
+        "bits": 32,
+        "kind": "f32"
+      },
+      {
+        "key": "phase2",
+        "bits": 32,
+        "kind": "f32"
+      },
+      {
+        "key": "phase3",
+        "bits": 32,
+        "kind": "f32"
+      }
+    ],
+    "sourcePages": [
+      216
+    ],
+    "unit": "V",
+    "note": "Three IEEE 754 binary32 values in phase 1, 2, 3 order. This codec supports finite values only; special IEEE encodings are not measurements.",
+    "telegramAllowed": true
+  },
+  "257.1202": {
+    "name": "Value_ApparentPower_3",
+    "size": 96,
+    "fields": [
+      {
+        "key": "phase1",
+        "label": "Phase 1 (VA)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      },
+      {
+        "key": "phase2",
+        "label": "Phase 2 (VA)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      },
+      {
+        "key": "phase3",
+        "label": "Phase 3 (VA)",
+        "initial": "-3.4028234663852886e+38",
+        "type": "number",
+        "min": -3.4028234663852886e+38,
+        "max": 3.4028234663852886e+38,
+        "step": "any"
+      }
+    ],
+    "parts": [
+      {
+        "key": "phase1",
+        "bits": 32,
+        "kind": "f32"
+      },
+      {
+        "key": "phase2",
+        "bits": 32,
+        "kind": "f32"
+      },
+      {
+        "key": "phase3",
+        "bits": 32,
+        "kind": "f32"
+      }
+    ],
+    "sourcePages": [
+      216
+    ],
+    "unit": "VA",
+    "note": "Three IEEE 754 binary32 values in phase 1, 2, 3 order. This codec supports finite values only; special IEEE encodings are not measurements.",
+    "telegramAllowed": true
+  },
+  "272.600": {
+    "name": "Converter_Info",
+    "size": 56,
+    "fields": [
+      {
+        "key": "valid",
+        "label": "Information validity",
+        "initial": "0",
+        "options": [
+          "Missing / no information",
+          "Valid",
+          "Invalid"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "key": "emergency",
+        "label": "Emergency lamp time (h)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "step": "1"
+      },
+      {
+        "key": "total",
+        "label": "Total lamp time (h)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "step": "1"
+      },
+      {
+        "key": "level",
+        "label": "Emergency level (raw; 255 unknown)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "step": "1"
+      },
+      {
+        "key": "address",
+        "label": "DALI short address",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 63,
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "valid",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "emergency",
+        "bits": 16,
+        "kind": "uint"
+      },
+      {
+        "key": "total",
+        "bits": 16,
+        "kind": "uint"
+      },
+      {
+        "key": "level",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "address",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      198
+    ],
+    "unit": "h / level / address",
+    "note": "Seven octets: information validity, emergency and total lamp hours, emergency level and DALI short address. Information validity 0 or 2 means the remaining values are not current valid information. Level 255 means unknown.",
+    "telegramAllowed": true
+  },
+  "276.1200": {
+    "name": "ERL_Status",
+    "size": 32,
+    "fields": [
+      {
+        "key": "f1",
+        "label": "F1 duty cycle (%)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "step": "any"
+      },
+      {
+        "key": "f2",
+        "label": "F2 duty cycle (%)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "step": "any"
+      },
+      {
+        "key": "f3",
+        "label": "F3 duty cycle (%)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "step": "any"
+      },
+      {
+        "key": "f3alarm",
+        "label": "F3 duty-cycle alarm",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "f2alarm",
+        "label": "F2 duty-cycle alarm",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "f1alarm",
+        "label": "F1 duty-cycle alarm",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "update",
+        "label": "Software update",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      },
+      {
+        "key": "tic",
+        "label": "TIC alarm",
+        "initial": "0",
+        "options": [
+          "False",
+          "True"
+        ],
+        "optionValues": [
+          0,
+          1
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "f1",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "f2",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "f3",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "reserved",
+        "bits": 3,
+        "kind": "reserved"
+      },
+      {
+        "key": "f3alarm",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "f2alarm",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "f1alarm",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "update",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "tic",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      222
+    ],
+    "unit": "",
+    "note": "Three scaled duty cycles followed by five status bits. Duty-cycle alarms indicate the 98% threshold; upper three status bits are reserved.",
+    "telegramAllowed": true
   }
 }
