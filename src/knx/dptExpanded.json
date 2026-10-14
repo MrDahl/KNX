@@ -2040,7 +2040,7 @@
     "sourcePages": [
       37
     ],
-    "note": "Resolution 0.01%; 7F FF is invalid data.",
+    "note": "The standard table lists -327.68 to 327.67%, but footnote b reserves 7F FF (the encoding of 327.67%) for invalid data. Highest valid numeric value: 327.66%; resolution 0.01%.",
     "unit": "%",
     "telegramAllowed": true
   },
@@ -9767,7 +9767,7 @@
       },
       {
         "key": "durationRaw",
-        "label": "Rated duration (raw byte; unit pending)",
+        "label": "Rated duration (raw byte; KNX scaling unconfirmed)",
         "type": "number",
         "min": 0,
         "max": 255,
@@ -9789,7 +9789,7 @@
       },
       {
         "key": "feature1",
-        "label": "Maintained gear",
+        "label": "Maintained gear (KNX); Ed. 2: maintained non-controllable, type C",
         "options": [
           "Not supported",
           "Supported"
@@ -9802,7 +9802,7 @@
       },
       {
         "key": "feature2",
-        "label": "Switched maintained gear",
+        "label": "Switched maintained gear (KNX); Ed. 2: maintained controllable, type A/B",
         "options": [
           "Not supported",
           "Supported"
@@ -9944,7 +9944,7 @@
     "sourcePages": [
       191
     ],
-    "note": "Rated duration is a raw 0–255 byte: its unit is unresolved in the supplied standard. No minutes/hours conversion is made. Emergency levels are raw DALI codes, not percentages; 255 means unknown (Mask). Gear-feature bits indicate support, not the current operating state.",
+    "note": "RatedDur is preserved as a raw byte. DALI interpretation per IEC 62386-202:2022: raw × 2 min; 255 = 510 min or longer. Applying this interpretation to KNX assumes the gateway passes the DALI byte unchanged; KNX-level scaling remains unconfirmed. GearFeat uses KNX names: bit 1 maintained gear differs from Edition 2 maintained non-controllable (type C); bit 2 switched maintained differs from Edition 2 maintained controllable (type A/B). Edition 2 fixes bits 3 and 7 to 1 and bit 6 to 0; these constraints are not imposed on this KNX codec.",
     "unit": "Raw codes; rated-duration unit pending",
     "telegramAllowed": true
   },

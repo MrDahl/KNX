@@ -59,6 +59,14 @@ export function captureScenario(row:CaptureRecord,id:string):CaptureScenario{
  const read=row.apci===0, decoded=read?null:decodeCapture(row,id),values=read?defaults(id):decoded!.values;
  if(decoded&&encodeDpt(id,values)!==decoded.bits)throw Error('This interpretation cannot round-trip the captured payload exactly.');
  const [area,line,device]=row.source!.split('.').map(Number),[main,middle,sub]=row.destination!.split('/').map(Number);
- const params:TelegramParams={source:{area,line,device},destination:{main,middle,sub},hopCount:row.hopCount!,priority:row.priority!.toString(2).padStart(2,'0') as TelegramParams['priority'],repeatFlag:row.control!&32?'1':'0',targetType:'1',command:[APCICode.GroupValueRead,APCICode.GroupValueResponse,APCICode.GroupValueWrite][row.apci!],dptType:id,ackType:'CC'};
- return {id,values,generate:true,destination:row.destination!,captureParams:params,origin:`Capture record ${row.index} · reconstructed TP1 frame; check byte, serial timing and waveform are generated. ACK is not captured. ${read?'Read request has no value.':`DPT ${id} is a selected interpretation.`}`};
+ const params:TelegramParams={source:{area,line,device},destination:{main,middle,sub},hopCount:row.hopCount!,priority:row.priority!.toString(2).padStart(2,'0') as TelegramParams['priority'],repeatFlag:row.service==='L_Data.ind'?(row.control!&32?'1':'0'):'1',targetType:'1',command:[APCICode.GroupValueRead,APCICode.GroupValueResponse,APCICode.GroupValueWrite][row.apci!],dptType:id,ackType:'CC'};
+ return {id,values,generate:true,destination:row.destination!,captureParams:params,origin:`Capture record ${row.index} · reconstructed TP1 frame; check byte, serial timing and waveform are generated. ACK is not captured. ${row.service!=='L_Data.ind'?'Request/confirmation repeat control is not an observed TP repetition; reconstruction uses an original frame. ':''}${read?'Read request has no value.':`DPT ${id} is a selected interpretation.`}`};
+}
+
+export function captureRepeatDescription(row:CaptureRecord):string {
+ if(row.control===undefined)return 'Repeat control unavailable';
+ const bit=(row.control>>5)&1;
+ if(row.service==='L_Data.req')return `Repeat control (bit 5 = ${bit}): ${bit?'do not repeat':'repeat permitted on medium error'}; not an observed repetition`;
+ if(row.service==='L_Data.ind')return `Repetition flag (bit 5 = ${bit}): ${bit?'original':'repeated'}`;
+ return `Repeat control bit 5 = ${bit}; confirmation does not establish an observed original/repeated frame`;
 }

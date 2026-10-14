@@ -33,3 +33,15 @@ test('XML parser rejects entities and oversized uploads before constructing DOM'
  assert.throws(()=>parseCaptureXml('<!DOCTYPE x>',Never as any),/entities/);
  assert.throws(()=>parseCaptureXml(' '.repeat(5000001),Never as any),/5 MB/);
 });
+
+test('repeat control is service-specific and requests reconstruct as original frames',async()=>{
+ const {captureRepeatDescription}=await import('./capture');
+ for(const bit of [0,1]){
+  const raw=frame().replace('BCE0',bit?'BCE0':'9CE0');
+  const ind=parseCaptureRecord(raw);assert.match(captureRepeatDescription(ind),bit?/original/:/repeated/);
+  const req=parseCaptureRecord('11'+raw.slice(2));assert.match(captureRepeatDescription(req),bit?/do not repeat/:/repeat permitted/);
+  assert.equal(captureScenario(req,'9.001').captureParams.repeatFlag,'1');
+  assert.match(captureScenario(req,'9.001').origin,/not an observed TP repetition/);
+  const con=parseCaptureRecord('2E'+raw.slice(2));assert.match(captureRepeatDescription(con),/does not establish/);
+ }
+});
