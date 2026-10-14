@@ -1824,7 +1824,7 @@
     "name": "DPT_Percent_V16",
     "size": "2 bytes",
     "dataType": "Signed",
-    "range": "Value (%): -327.68 to 327.66. Resolution 0.01%; 7F FF is invalid data.",
+    "range": "The standard table lists -327.68 to 327.67%, but footnote b reserves 7F FF (the encoding of 327.67%) for invalid data. Highest valid numeric value: 327.66%; resolution 0.01%.",
     "format": "V16",
     "overviewPage": 18,
     "detailPages": [
@@ -12140,7 +12140,9 @@
         "oldName": ""
       }
     ],
-    "sourceNotes": [],
+    "sourceNotes": [
+      "KNX defines TimePeriod1 as U16 hours (DPT 7.007; 0 disables automatic testing) and TimePeriod2 as U16 seconds (DPT 7.005). Raw field values are preserved in those KNX units. DALI Edition 1 command 242 selects a variable via DTR0: 0x00–0x03 are test delays in 15-minute units, 0x04 is a function-test interval in days, and 0x05 is a duration-test interval in weeks (maximum 97). The KNX interval wording and 15-minute note do not establish which variable the gateway uses. DALI duration-test results use 2-minute units (255 = 510 min or longer); conversion to the KNX seconds field is gateway-dependent and is not inferred here."
+    ],
     "descriptionReviewed": true,
     "fields": [
       {
@@ -12151,7 +12153,7 @@
       {
         "name": "Automatic-test interval",
         "bits": 16,
-        "meaning": "DPT 7.007, hours; 0 disables automatic testing. Converter timing may be rounded from 15-minute resolution."
+        "meaning": "U16 raw count in KNX hours (DPT 7.007); 0 disables automatic testing. DALI variable selection and gateway conversion remain unconfirmed."
       },
       {
         "name": "Previous test duration",
@@ -12162,8 +12164,9 @@
     "layoutNotes": [
       "Visual review of p. 190 confirms the format and field names agree on reserved high bits for month/day. The diagram’s encoding labels conflict with those names; implementation follows the format and DPT 19.001 reference.",
       "The subtype-specific final timestamp byte is B1r7: CLQ at bit 7, bits 6–0 reserved. This editor emits CLQ=0 and all reserved bits zero. It rejects nonzero SRC/reserved bits; automatic tolerance of SRC is not asserted as a standard requirement.",
-      "DPT 19.001 permits additional flag combinations and end-of-day 24:00:00. Those valid states are outside this complete-timestamp editor, not described as invalid KNX data. Interval is hours, duration is seconds; the 15-minute converter resolution explains possible interval rounding.",
-      "Example: Monday 2026-10-12 15:20:00, working day and summer time, interval 168 h, duration 10 800 s: 7E 0A 0C 2F 14 00 41 00 00 A8 2A 30."
+      "Other valid DPT 19.001 timestamp states, including 24:00:00, remain outside this conservative editor subset.",
+      "Example: Monday 2026-10-12 15:20:00, working day and summer time, interval 168 h, duration 10 800 s: 7E 0A 0C 2F 14 00 41 00 00 A8 2A 30.",
+      "KNX defines TimePeriod1 as U16 hours (DPT 7.007; 0 disables automatic testing) and TimePeriod2 as U16 seconds (DPT 7.005). Raw field values are preserved in those KNX units. DALI Edition 1 command 242 selects a variable via DTR0: 0x00–0x03 are test delays in 15-minute units, 0x04 is a function-test interval in days, and 0x05 is a duration-test interval in weeks (maximum 97). The KNX interval wording and 15-minute note do not establish which variable the gateway uses. DALI duration-test results use 2-minute units (255 = 510 min or longer); conversion to the KNX seconds field is gateway-dependent and is not inferred here."
     ]
   },
   {
@@ -12171,13 +12174,13 @@
     "name": "DPT_Converter_Info_Fix",
     "size": "5 bytes",
     "dataType": "Composite",
-    "range": "Five-byte fixed converter information: InfoValid, EmMinLevel, EmMaxLevel, RatedDur and GearFeat. Interactive encoding preserves raw bytes. Rated duration is a raw 0–255 byte: its unit is unresolved in the supplied standard. No minutes/hours conversion is made. Emergency levels are raw DALI codes, not percentages; 255 means unknown (Mask). Gear-feature bits indicate support, not the current operating state.",
+    "range": "Five-byte fixed converter information: InfoValid, EmMinLevel, EmMaxLevel, RatedDur and GearFeat. Emergency levels are raw DALI codes (255 = unknown), not percentages. RatedDur is preserved as a raw byte. DALI interpretation per IEC 62386-202:2022: raw × 2 min; 255 = 510 min or longer. Applying this interpretation to KNX assumes the gateway passes the DALI byte unchanged; KNX-level scaling remains unconfirmed. GearFeat uses KNX names: bit 1 maintained gear differs from Edition 2 maintained non-controllable (type C); bit 2 switched maintained differs from Edition 2 maintained controllable (type A/B). Edition 2 fixes bits 3 and 7 to 1 and bit 6 to 0; these constraints are not imposed on this KNX codec.",
     "format": "N8U8U8U8B8",
     "overviewPage": 24,
     "detailPages": [
       191
     ],
-    "unit": "Raw codes; rated-duration unit pending",
+    "unit": "Raw byte; DALI 2 min interpretation, KNX mapping unconfirmed",
     "layoutPending": true,
     "changes": [
       {
@@ -12194,7 +12197,7 @@
       }
     ],
     "sourceNotes": [
-      "Rated duration: byte layout confirmed, physical unit still pending. The editor preserves the raw byte without converting it to minutes or hours."
+      "RatedDur is preserved as a raw byte. DALI interpretation per IEC 62386-202:2022: raw × 2 min; 255 = 510 min or longer. Applying this interpretation to KNX assumes the gateway passes the DALI byte unchanged; KNX-level scaling remains unconfirmed. GearFeat uses KNX names: bit 1 maintained gear differs from Edition 2 maintained non-controllable (type C); bit 2 switched maintained differs from Edition 2 maintained controllable (type A/B). Edition 2 fixes bits 3 and 7 to 1 and bit 6 to 0; these constraints are not imposed on this KNX codec."
     ],
     "descriptionReviewed": true,
     "fields": [
@@ -12216,18 +12219,18 @@
       {
         "name": "Rated duration",
         "bits": 8,
-        "meaning": "One unsigned octet, raw 0–255. Unit and conversion unresolved; no invalid marker inferred."
+        "meaning": "Raw unsigned byte 0–255. Conditional DALI interpretation: raw × 2 min, with 255 meaning 510 min or longer. KNX gateway scaling unconfirmed."
       },
       {
         "name": "Gear features",
         "bits": 8,
-        "meaning": "Bits 0–7: integral emergency gear, maintained, switched maintained, auto test, adjustable emergency level, hardwired inhibit, physical selection, re-light in rest mode. 1 = supported."
+        "meaning": "Bits 0–7: integral emergency gear, maintained, switched maintained, auto test, adjustable emergency level, hardwired inhibit, physical selection, re-light in rest mode. 1 = supported. KNX names are retained; see edition differences below."
       }
     ],
     "layoutNotes": [
-      "Visual review of p. 191 confirms five one-octet fields, including RatedDur. Its reference to DPT 7.006 does not provide an unambiguous conversion for this U8 field. A duration-test-result conversion from other DALI documentation is not applied to rated duration.",
-      "InfoValid accepts only 0, 1 and 2. Emergency levels accept 0–254 plus 255 (unknown/Mask). Every GearFeat bit is defined; 1 means the named capability is supported.",
-      "Example: 01 55 FE 5A 29 represents valid information, minimum 85, maximum 254, rated duration raw 90 and features bits 0, 3 and 5. Raw 90 is not converted to minutes or hours."
+      "RatedDur is preserved as a raw byte. DALI interpretation per IEC 62386-202:2022: raw × 2 min; 255 = 510 min or longer. Applying this interpretation to KNX assumes the gateway passes the DALI byte unchanged; KNX-level scaling remains unconfirmed. GearFeat uses KNX names: bit 1 maintained gear differs from Edition 2 maintained non-controllable (type C); bit 2 switched maintained differs from Edition 2 maintained controllable (type A/B). Edition 2 fixes bits 3 and 7 to 1 and bit 6 to 0; these constraints are not imposed on this KNX codec.",
+      "Example: 01 55 FE 5A 29 has raw rated duration 90. If passed through unchanged from DALI, it represents 180 min. This is a conditional interpretation, not a confirmed KNX conversion.",
+      "Source: owner-supplied review of IEC 62386-202:2022 Tables 12, 15, 21 and 23. KNX v02.02.01 p. 191 cites Edition 1 command numbers 247, 248, 249 and 251."
     ]
   },
   {
