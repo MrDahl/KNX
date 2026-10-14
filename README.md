@@ -1,4 +1,4 @@
-# KNX TP Explorer
+# KNX TP Explorer <p> <img src="assets/KNX_explorer_logo.svg" alt="KNX TP Explorer Logo" width="160"></p> 
 
 <p align="left">
   <img src="assets/marc_dahl_logo.svg" alt="Marc Sonne Dahl" width="200">
