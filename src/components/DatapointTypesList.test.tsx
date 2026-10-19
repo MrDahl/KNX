@@ -15,8 +15,8 @@ test('Search, decoding and handoff preserve the selected DPT and value',async()=
  assert.deepEqual(scenario,{id:'9.001',values:{value:'-30'}});
  await act(()=>r.root.findByProps({'aria-label':'Search DPT catalogue'}).props.onChange({target:{value:'243.600'}}));
  await act(()=>r.root.findByProps({'aria-label':'Inspect DPT 243.600'}).props.onClick());
- assert.match(text(r.toJSON()),/Source clarification pending/);assert.match(text(r.toJSON()),/8 bytes/);
- assert.equal(r.root.findAllByProps({'aria-label':'DPT hexadecimal value'}).length,0);
+ assert.match(text(r.toJSON()),/Coordinate order confirmed/);assert.match(text(r.toJSON()),/8 bytes/);
+ assert.equal(r.root.findAllByProps({'aria-label':'DPT hexadecimal value'}).length,1);
  await act(()=>r.unmount());await act(()=>{r=create(<TelegramVisualizer scenario={scenario}/>);});
  assert.equal(r.root.findByProps({'aria-label':'Datapoint type'}).props.value,'9.001');assert.equal(r.root.findByProps({'aria-label':'Temperature (°C)'}).props.value,'-30');
  await act(()=>r.unmount());

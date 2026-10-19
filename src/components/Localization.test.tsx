@@ -123,3 +123,13 @@ test('all registered dynamic translations preserve their interpolation slots',as
   assert.deepEqual(source.match(/\{\{\d+\}\}/g)?.sort(),da[key as keyof typeof da].match(/\{\{\d+\}\}/g)?.sort());
  }
 });
+test('243.600 confirmation and field descriptions are translated',async()=>{
+ const {DPT_BY_ID}=await import('./dptDatabase');
+ const {DPT_INPUTS}=await import('../knx/dptCodec');
+ try{
+  await setLanguage('da');
+  const row=DPT_BY_ID['243.600'];
+  for(const s of [row.range,...row.sourceNotes,...row.layoutNotes,DPT_INPUTS['243.600'].note!])assert.notEqual(tr(s),s);
+  assert.match(tr(row.sourceNotes[0]),/bekræftet/);
+ }finally{await setLanguage('en');}
+});

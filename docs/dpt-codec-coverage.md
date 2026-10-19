@@ -1,6 +1,6 @@
 # DPT codec coverage
 
-The workbench implements **316 exact subtypes** from KNX Interworking Datapoint Types v02.02.01 (2021), up from 24. The initial expansion added 264 codecs; owner review adds a complete-timestamp subset for 247.600 and a raw-value codec for 248.600. Coverage is not a claim of KNX certification or support for later editions.
+The workbench implements **317 exact subtypes** from KNX Interworking Datapoint Types v02.02.01 (2021), up from 24. The initial expansion added 264 codecs; owner review adds a complete-timestamp subset for 247.600 and a raw-value codec for 248.600. Coverage is not a claim of KNX certification or support for later editions.
 
 ## Scope
 
@@ -9,7 +9,7 @@ The workbench implements **316 exact subtypes** from KNX Interworking Datapoint 
 - F32 editors handle finite values only. Signed 64-bit energy values use decimal strings and BigInt, preserving values beyond JavaScript's safe integer range.
 - Parameter-only and LTE structures can be inspected but cannot be handed off to ordinary group-value telegrams. Companion-DPT requirements are explained; this simulator does not verify a physical device's implementation.
 - The existing DPT 19.001 editor remains a complete, fault-free, unsynchronised timestamp subset. DPT 16.000 remains NULL-padded ASCII without embedded NULL.
-- **243.600 remains reference-only**: coordinate order is unresolved. **247.600** supports complete, fault-free, unsynchronised timestamps, hours 0–23, with CLQ and all seven reserved bits zero; other valid timestamp states are outside this editor. **248.600** supports raw-byte encoding; its KNX mapping remains pending. A conditional DALI interpretation displays raw × 2 min, with 255 meaning 510 min or longer; encoded bytes remain unchanged. Other reference-only rows still require codec implementation and service-specific validation.
+- **243.600 is enabled** with time → x → y → brightness → flags, confirmed by KNX Association support. The application note is pending. **247.600** supports complete, fault-free, unsynchronised timestamps, hours 0–23, with CLQ and all seven reserved bits zero; other valid timestamp states are outside this editor. **248.600** supports raw-byte encoding; its KNX mapping remains pending. A conditional DALI interpretation displays raw × 2 min, with 255 meaning 510 min or longer; encoded bytes remain unchanged. Other reference-only rows still require codec implementation and service-specific validation.
 
 ## Implemented counts by family
 
@@ -320,7 +320,7 @@ Printed page numbers refer to the supplied standard. The JSON manifest contains 
 
 ## Owner review follow-up
 
-PDF page images were inspected for 185, 190 and 191. The owner’s examples are regression vectors. 243.600 still has no codec. 247.600 follows the format and DPT 19.001 field reference, with the subtype-specific B1r7 final timestamp byte; no permissive SRC interpretation is assumed. 248.600 retains a source-clarification flag for the KNX gateway mapping, independently of its working raw-byte codec.
+PDF page images were inspected for 185, 190 and 191. The owner’s examples are regression vectors. 243.600 was subsequently enabled following KNX Association support clarification on 2026-10-19. 247.600 follows the format and DPT 19.001 field reference, with the subtype-specific B1r7 final timestamp byte; no permissive SRC interpretation is assumed. 248.600 retains a source-clarification flag for the KNX gateway mapping, independently of its working raw-byte codec.
 
 | DPT | Implementation | Printed page |
 | --- | --- | --- |
@@ -329,7 +329,7 @@ PDF page images were inspected for 185, 190 and 191. The owner’s examples are 
 
 ## Capture-analysis expansion (26 additional codecs)
 
-The catalogue now includes the previously absent 249.600 (six-byte brightness/colour-temperature transition), bringing it to 454 entries. The 26 additions bring codec coverage to 316 subtypes. Layouts, reserved bits, sparse enumeration codes, validity masks and system/LTE transfer restrictions were checked against the source pages below. Fixed ISO 8859-1 text uses a conservative NULL-padding rule; three-phase floats support finite values only. Unresolved 243.600 remains reference-only.
+The catalogue now includes the previously absent 249.600 (six-byte brightness/colour-temperature transition), bringing it to 454 entries. The 26 additions bring codec coverage to 316 subtypes. Layouts, reserved bits, sparse enumeration codes, validity masks and system/LTE transfer restrictions were checked against the source pages below. Fixed ISO 8859-1 text uses a conservative NULL-padding rule; three-phase floats support finite values only. 243.600 was subsequently enabled; current coverage is 317 subtypes.
 
 | DPT | Codec | Printed source pages | Group transfer |
 | --- | --- | --- | --- |
