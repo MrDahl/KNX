@@ -2713,5 +2713,14 @@
   "ref_40cf0096eda708f2": "Coordinate order confirmed by KNX Association support: time, x, y, brightness, reserved bits, C and B. Application note pending.",
   "ref_209078aa8528e9c0": "Payload bytes 0–1: time; 2–3: x; 4–5: y; 6: brightness; 7: reserved bits 7–2, C at bit 1, B at bit 0. Multi-byte fields are transmitted most significant byte first. The printed diagram will be corrected to x then y and octet 3 to unsigned coordinate bits.",
   "ref_c5030d9efbc3a0c4": "Example: 2.5 s, x=0.3127, y=0.3290, 75% brightness, both valid: 00 19 50 0D 54 39 BF 03.",
-  "ref_07634e71a3c4887f": "Coordinate 0–1, encoded as U16 0–65535."
+  "ref_07634e71a3c4887f": "Coordinate 0–1, encoded as U16 0–65535.",
+  "ui_ce58ac1fe0fc81d5": "Browse datapoint types, inspect their fields, and encode or decode supported values.",
+  "ui_b4ab65ed20c56929": "Codec availability",
+  "ui_3d92578d5fbedae9": "Reference entries",
+  "ui_d33220a09693502b": "Show details · sources",
+  "ui_6043a5fa22cbd983": "This catalogue covers the stated KNX DPT edition; later editions may contain additional or revised types.",
+  "ui_92e337c1c2d2c1fa": "Range and layout · unverified",
+  "ui_e7c175ff960ead18": "Reference only · no encoder or decoder",
+  "ui_c728f91c8be91ad0": "See the description and field layout above. Encoding and decoding are not available for this subtype.",
+  "ui_3e6b3414be4db838": "Encoding and decoding are not available for this subtype. Its range and field layout are unverified."
 }

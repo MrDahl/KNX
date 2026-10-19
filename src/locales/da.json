@@ -2713,5 +2713,14 @@
   "ref_40cf0096eda708f2": "Koordinatrækkefølgen er bekræftet af KNX Associations support: tid, x, y, lysstyrke, reserverede bit, C og B. En applikationsnote er under udarbejdelse.",
   "ref_209078aa8528e9c0": "Payloadbyte 0–1: tid; 2–3: x; 4–5: y; 6: lysstyrke; 7: reserverede bit 7–2, C i bit 1 og B i bit 0. Felter med flere byte sendes med den mest betydende byte først. Det trykte diagram rettes til x efterfulgt af y og oktet 3 til koordinatbit uden fortegn.",
   "ref_c5030d9efbc3a0c4": "Eksempel: 2,5 s, x=0,3127, y=0,3290, 75 % lysstyrke, begge gyldige: 00 19 50 0D 54 39 BF 03.",
-  "ref_07634e71a3c4887f": "Koordinat 0–1, kodet som U16 0–65535."
+  "ref_07634e71a3c4887f": "Koordinat 0–1, kodet som U16 0–65535.",
+  "ui_ce58ac1fe0fc81d5": "Find datapunkttyper, undersøg deres felter, og kod eller afkod understøttede værdier.",
+  "ui_b4ab65ed20c56929": "Kodning og afkodning",
+  "ui_3d92578d5fbedae9": "Referenceposter",
+  "ui_d33220a09693502b": "Vis detaljer · kilder",
+  "ui_6043a5fa22cbd983": "Kataloget dækker den angivne KNX DPT-udgave; senere udgaver kan indeholde yderligere eller ændrede typer.",
+  "ui_92e337c1c2d2c1fa": "Værdiområde og feltlayout · ikke verificeret",
+  "ui_e7c175ff960ead18": "Kun reference · ingen kodning eller afkodning",
+  "ui_c728f91c8be91ad0": "Se beskrivelsen og feltlayoutet ovenfor. Kodning og afkodning er ikke tilgængelig for denne undertype.",
+  "ui_3e6b3414be4db838": "Kodning og afkodning er ikke tilgængelig for denne undertype. Værdiområdet og feltlayoutet er ikke verificeret."
 }
