@@ -333,8 +333,8 @@ export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,v
             {receiverFlags.map((flags, index) => <div className="flex gap-4 items-center" key={index}>
               <strong>{tr("Lamp")} {index === 0 ? 'A' : 'B'}</strong>
               {(['communication', 'write'] as const).map(flag => <label key={flag} className="flex gap-2 items-center">
-                <input type="checkbox" aria-label={`Lamp ${index === 0 ? 'A' : 'B'} ${flag}`} checked={flags[flag]} onChange={e => setReceiverFlags(prev => prev.map((f,i) => i === index ? {...f,[flag]:e.target.checked} : f))}/>
-                {flag === 'communication' ? 'Communication (C)' : 'Write (W)'}
+                <input type="checkbox" aria-label={tr(`Lamp ${index === 0 ? 'A' : 'B'} ${flag}`)} checked={flags[flag]} onChange={e => setReceiverFlags(prev => prev.map((f,i) => i === index ? {...f,[flag]:e.target.checked} : f))}/>
+                {tr(flag === 'communication' ? 'Communication (C)' : 'Write (W)')}
               </label>)}
             </div>)}
           </div>
@@ -445,21 +445,21 @@ export function SendingSimulator({onTransmit}:{onTransmit?:(destination:string,v
                       <div>
                         <div className="flex justify-between text-[11px] font-bold text-slate-800 border-b border-dashed border-slate-200/60 pb-1 mb-1">
                           <span>{log.time}</span>
-                          <span className="text-knx-blue font-extrabold">{log.type}</span>
+                          <span className="text-knx-blue font-extrabold">{tr(log.type)}</span>
                         </div>
                         <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[10px]">
-                          <div><span className="text-slate-400">{tr("Source PA:")}</span> <span className="font-bold">{log.source}</span></div>
+                          <div><span className="text-slate-400">{tr("Source PA:")}</span> <span className="font-bold">{tr(log.source)}</span></div>
                           <div><span className="text-slate-400">{tr("Dest GA:")}</span> <span className="font-bold text-knx-blue">{log.destination}</span></div>
                           <div className="col-span-2"><span className="text-slate-400">{tr("Payload:")}</span> <span className="font-bold text-slate-800">{log.value}</span></div>
                         </div>
-                        <p className="text-[9px] text-slate-500 font-sans mt-1 bg-white/70 px-1.5 py-0.5 rounded border border-slate-100">{log.details}</p>
+                        <p className="text-[9px] text-slate-500 font-sans mt-1 bg-white/70 px-1.5 py-0.5 rounded border border-slate-100">{tr(log.details)}</p>
                       </div>
                     ) : (
                       <div className="flex items-start gap-2">
                         <AlertTriangle className="h-4.5 w-4.5 text-red-500 shrink-0 mt-0.5" />
                         <div>
                           <span className="font-bold block text-red-800 text-[11px]">{log.time} {tr("— Bus Error")}</span>
-                          <p className="text-[10px] text-red-700 leading-normal">{log.details}</p>
+                          <p className="text-[10px] text-red-700 leading-normal">{tr(log.details)}</p>
                         </div>
                       </div>
                     )}

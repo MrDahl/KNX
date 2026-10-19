@@ -75,3 +75,51 @@ test('Danish CAD search and categories use translated labels with stable underly
   assert.equal(option.props.value,'System devices');
  }finally{if(r)await act(()=>r.unmount());await setLanguage('en');}
 });
+
+test('Danish reference search and data-type filters keep their original machine values',async()=>{
+ const {filterDpts}=await import('./dptDatabase');
+ const {DatapointTypesList}=await import('./DatapointTypesList');
+ let r:any;
+ try{
+  await setLanguage('da');
+  assert.ok(filterDpts('bygningsbeskyttelse').some(d=>d.id==='20.102'));
+  assert.ok(filterDpts('9.001').some(d=>d.id==='9.001'));
+  await act(()=>{r=create(<DatapointTypesList/>);});
+  const types=label(r,tr('DPT data type'));
+  const booleanOption=types.findAllByType('option').find((o:any)=>o.props.value==='Boolean');
+  assert.equal(text(booleanOption),'Boolesk');
+  await act(()=>types.props.onChange({target:{value:'Boolean'}}));
+  await act(()=>setLanguage('en'));
+  assert.equal(label(r,'DPT data type').props.value,'Boolean');
+ }finally{if(r)await act(()=>r.unmount());await setLanguage('en');}
+});
+
+test('stored errors and composite summaries translate while literal text and bytes stay intact',async()=>{
+ const {dptSummary}=await import('../dptPresentation');
+ const {decodeDptHex,payloadHex}=await import('../knx/dptDecode');
+ let message='';
+ try{decodeDptHex('9.001','00');}catch(e){message=(e as Error).message;}
+ try{
+  await setLanguage('da');
+  assert.equal(tr(message),'Indtast præcis 2 hexadecimale oktetter.');
+  assert.equal(tr('Repetition flag (bit 5 = 0): repeated'),'Gentagelsesflag (bit 5 = 0): gentaget');
+  assert.equal(tr('Source 1.2.3'),'Afsender 1.2.3');
+  const textBits=encodeDpt('16.001',{text:'Monday'});
+  assert.match(dptSummary('16.001',textBits),/Monday/);
+  assert.doesNotMatch(dptSummary('16.001',textBits),/Mandag/);
+  const colour=decodeDptHex('251.600','FF 00 00 00 00 0F');
+  const hex=payloadHex(encodeDpt('251.600',colour.values));
+  assert.match(dptSummary('251.600',colour.bits),/Rød/);
+  await setLanguage('en');
+  assert.equal(tr(message),message);
+  assert.equal(payloadHex(encodeDpt('251.600',colour.values)),hex);
+ }finally{await setLanguage('en');}
+});
+
+test('all registered dynamic translations preserve their interpolation slots',async()=>{
+ const {default:templates}=await import('../locales/templates.json');
+ for(const [source,key]of Object.entries(templates)){
+  assert.equal(en[key as keyof typeof en],source);
+  assert.deepEqual(source.match(/\{\{\d+\}\}/g)?.sort(),da[key as keyof typeof da].match(/\{\{\d+\}\}/g)?.sort());
+ }
+});

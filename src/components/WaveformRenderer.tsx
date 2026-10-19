@@ -96,7 +96,7 @@ export function WaveformRenderer({compact=false,bitStream, ackBits = "", ackType
     </div> : <p className="text-xs text-slate-600">{tr("Last generated telegram. All intervals share the same time scale; scroll horizontally to reach the response. Click a byte below to inspect its character.")}</p>}
     {generated && !compact && <TelegramFieldDetails byte={bytes[selectedByte]} count={bytes.length}/> }
     {generated && !compact && <div className="flex flex-wrap gap-2" aria-label={tr("Jump to telegram byte")}>{bytes.map((b,i) => <button key={i} className={buttonStyle} title={b.name} aria-pressed={selectedByte===i} onClick={() => jump(i)}>{i+1}: {b.hex}</button>)}</div>}
-    {!stream ? <p className="rounded-xl bg-slate-50 p-5 text-sm text-slate-600">{mode === "raw" ? "Enter bits to draw a waveform." : "Generate a telegram above to inspect its complete transmission."}</p> : <>
+    {!stream ? <p className="rounded-xl bg-slate-50 p-5 text-sm text-slate-600">{tr(mode === "raw" ? "Enter bits to draw a waveform." : "Generate a telegram above to inspect its complete transmission.")}</p> : <>
       <div ref={scroller} tabIndex={0} role="region" aria-label={tr("Scrollable TP1 timeline")} className="overflow-x-auto border border-slate-200 rounded-xl bg-slate-50">
         <svg width={width} height="330" role="img" aria-label={`${mode === "raw" ? "Raw bits" : tr("Generated telegram")}: ${stream.length} bit periods${generated ? `, then 15-bit pause, ${responseNames[ackType]}, ${hasResponse ? `and ${timing.idleBits}-bit idle interval` : "in a silent observation slot"}` : ""}`}>
           {[22,29,36].map(v => <g key={v}><line x1={left} x2={end} y1={y(v)} y2={y(v)} stroke="#cbd5e1" strokeDasharray="3 4"/><text x="65" y={y(v)+4} textAnchor="end" fill="#475569" fontSize="11">{v} V</text></g>)}
@@ -108,15 +108,15 @@ export function WaveformRenderer({compact=false,bitStream, ackBits = "", ackType
             <text x={left+(i+.5)*zoom} y="225" textAnchor="middle" fontSize="10" fill="#334155">{bit}</text>
             {zoom >= 24 && <text x={left+(i+.5)*zoom} y="246" textAnchor="middle" fontSize="9" fill="#475569">{generated ? bitNames[i%13] : i+1}</text>}
           </g>)}
-          {generated && bytes.map((b,i) => <g key={i} role="button" tabIndex={0} aria-label={`Inspect waveform byte ${i+1}`} onClick={()=>jump(i)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();jump(i);}}}>
+          {generated && bytes.map((b,i) => <g key={i} role="button" tabIndex={0} aria-label={tr(`Inspect waveform byte ${i+1}`)} onClick={()=>jump(i)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();jump(i);}}}>
             <rect x={left+i*13*zoom} y="20" width={11*zoom} height="26" rx="4" fill={TELEGRAM_FIELDS[telegramField(i,bytes.length)].background} stroke={selectedByte===i?TELEGRAM_FIELDS[telegramField(i,bytes.length)].color:'none'}/>
             <text x={left+(i*13+5.5)*zoom} y="38" textAnchor="middle" fontSize="11" fill={TELEGRAM_FIELDS[telegramField(i,bytes.length)].color}>Byte {i+1} · {b.hex}</text>
           </g>)}
           {generated && <>
             <text x={left+(stream.length+7.5)*zoom} y="38" textAnchor="middle" fontSize="11" fill="#475569">{tr("Pause · 15 bits")}</text>
-            <text x={left+(ackStart+5.5)*zoom} y="38" textAnchor="middle" fontSize="11" fill="#92400e">{hasResponse ? `${responseNames[ackType]} · ${ackType}` : "Silent slot"}</text>
+            <text x={left+(ackStart+5.5)*zoom} y="38" textAnchor="middle" fontSize="11" fill="#92400e">{tr(hasResponse ? `${responseNames[ackType]} · ${ackType}` : "Silent slot")}</text>
             {hasResponse && <text x={left+(ackStart+11+timing.idleBits/2)*zoom} y="38" textAnchor="middle" fontSize="11" fill="#475569">{tr("Next-access idle ·")} {timing.idleBits} bits</text>}
-            {ackBits.split("").map((b,i) => <g key={i}><text x={left+(ackStart+i+.5)*zoom} y="225" textAnchor="middle" fontSize="10" fill="#92400e">{b}</text>{zoom>=24 && <text x={left+(ackStart+i+.5)*zoom} y="246" textAnchor="middle" fontSize="9" fill="#475569">{bitNames[i]}</text>}</g>)}
+            {ackBits.split("").map((b,i) => <g key={i}><text x={left+(ackStart+i+.5)*zoom} y="225" textAnchor="middle" fontSize="10" fill="#92400e">{b}</text>{zoom>=24 && <text x={left+(ackStart+i+.5)*zoom} y="246" textAnchor="middle" fontSize="9" fill="#475569">{tr(bitNames[i])}</text>}</g>)}
           </>}
           {(generated ? [0,stream.length,ackStart,...(hasResponse?[ackStart+11]:[]),totalBits] : [0,totalBits]).map((n,i) => <g key={i}><line x1={left+n*zoom} x2={left+n*zoom} y1="50" y2="275" stroke="#64748b" strokeDasharray="3 4"/><text x={left+n*zoom} y={i%2 ? 310 : 290} textAnchor="middle" fontSize="11" fill="#475569">{(n*BIT_US/1000).toFixed(3)} ms</text></g>)}
         </svg>

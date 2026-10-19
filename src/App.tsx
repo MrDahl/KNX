@@ -1,4 +1,4 @@
-import {tr,msg,i18n,setLanguage,type Language} from './i18n';
+import {tr,i18n,setLanguage,type Language} from './i18n';
 import {useTranslation} from 'react-i18next';
 import {CaptureAnalyser} from './components/CaptureAnalyser';
 import type {CaptureScenario} from './knx/capture';
@@ -39,7 +39,6 @@ export default function App() {
    <div className="app-main min-w-0">
     <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{tr(active.label)}</h1></div><label className="language-selector"><span>{i18n.language==='da'?'Sprog':'Language'}</span><select aria-label={i18n.language==='da'?'Sprog':'Language'} value={i18n.language} onChange={e=>void setLanguage(e.target.value as Language)}><option value="en" lang="en">English</option><option value="da" lang="da">Dansk</option></select></label></header>
     <main id="lesson-content">
-     {i18n.language==='da'&&<p className="px-4 py-2 text-xs text-slate-500" role="note">{msg('locale.partial')}</p>}
      {page==='symbols'&&<CadSymbols/>}
      <div hidden={page!=='capture'}><CaptureAnalyser onUseTelegram={value=>{setScenario(value);navigate('telegram');}}/></div>
      <div hidden={page==='symbols'||page==='capture'}>

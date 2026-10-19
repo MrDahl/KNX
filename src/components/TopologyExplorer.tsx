@@ -89,7 +89,7 @@ export function TopologyExplorer() {
   };
 
   // Helper renderers
-  const renderPsu = (segment: string) => <div className="border border-rose-200 bg-rose-50 text-rose-700 px-2 py-1 rounded text-center text-[10px] font-bold" title={tr("Illustrative unaddressed KNX power supply with choke. Not an individual-address position.")}>PSU · {segment} {tr("· no IA")}</div>;
+  const renderPsu = (segment: string) => <div className="border border-rose-200 bg-rose-50 text-rose-700 px-2 py-1 rounded text-center text-[10px] font-bold" title={tr("Illustrative unaddressed KNX power supply with choke. Not an individual-address position.")}>PSU · {tr(segment)} {tr("· no IA")}</div>;
 
   return (
     <div className="space-y-8 font-sans text-slate-705 bg-transparent">
@@ -125,14 +125,14 @@ export function TopologyExplorer() {
           {searchError && (
             <div className="bg-rose-50 border border-rose-150 rounded-xl p-3 flex gap-2 text-xs text-rose-800 animate-fade-in font-medium max-w-4xl">
               <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 mt-0.5" />
-              <span>{searchError}</span>
+              <span>{tr(searchError)}</span>
             </div>
           )}
 
           {searchSuccess && (
             <div className="bg-knx-blue/5 border border-knx-blue/10 rounded-xl p-3 flex gap-2 text-xs text-knx-blue animate-fade-in font-medium max-w-4xl">
               <CheckCircle className="h-4 w-4 shrink-0 text-knx-blue mt-0.5" />
-              <span>{searchSuccess}</span>
+              <span>{tr(searchSuccess)}</span>
             </div>
           )}
         </div>
@@ -147,7 +147,7 @@ export function TopologyExplorer() {
             ['915', 'Allocated addressed devices', '15 BC + 225 LC + 675 SC; counted once each'],
             ['60,780', 'Unallocated positions', '61,695 − 915; not an electrical capacity'],
             ['916', 'Unaddressed supplies', 'One per illustrated electrical segment'],
-          ].map(([value,title,detail]) => <div key={title} className="bg-slate-50 rounded-xl p-4 border border-slate-200"><strong className="block text-2xl text-knx-blue">{value}</strong><span className="block font-bold text-sm">{title}</span><span className="text-xs text-slate-600">{detail}</span></div>)}
+          ].map(([value,title,detail]) => <div key={title} className="bg-slate-50 rounded-xl p-4 border border-slate-200"><strong className="block text-2xl text-knx-blue">{value}</strong><span className="block font-bold text-sm">{tr(title)}</span><span className="text-xs text-slate-600">{tr(detail)}</span></div>)}
         </div>
         <details className="detail-box"><summary>{tr("Show details · address allocation and electrical loading")}</summary><div className="overflow-x-auto"><table className="w-full text-sm min-w-[600px]">
           <thead><tr className="text-left border-b"><th className="py-2">{tr("Address allocation")}</th><th>{tr("Positions")}</th><th>{tr("Allocated couplers")}</th><th>{tr("Unallocated")}</th></tr></thead>
@@ -155,7 +155,7 @@ export function TopologyExplorer() {
             ['Backbone: 0.0.1–0.0.255', '255', '0', '255'],
             ['15 main lines: A.0.0–A.0.255', '15 × 256 = 3,840', '15 BC', '3,825'],
             ['225 lines: A.L.0–A.L.255', '225 × 256 = 57,600', '225 LC + 675 SC = 900', '56,700'],
-          ].map(row => <tr key={row[0]} className="border-b border-slate-100">{row.map((cell,i) => <td key={i} className="py-3 pr-4">{cell}</td>)}</tr>)}</tbody>
+          ].map(row => <tr key={row[0]} className="border-b border-slate-100">{row.map((cell,i) => <td key={i} className="py-3 pr-4">{tr(cell)}</td>)}</tr>)}</tbody>
         </table></div>
         <p className="text-sm text-slate-600">{tr("Positions: 255 + 15 × 256 + 225 × 256 = 61,695. Supplies: 1 backbone + 15 main lines + 225 × 4 line segments = 916. Unaddressed supplies add no individual addresses. A supply with its own KNX diagnostic interface does need an address and must be budgeted as a bus device.")}</p>
         <p className="text-sm text-slate-600">{tr("A coupler has one individual address but a bus interface on each connected segment. For example, the 15 backbone-coupler interfaces also load the backbone, and the 15 line-coupler interfaces load each main line. Thus not every available address slot can be populated simultaneously on one TP segment. Electrical loading, PSU current, cable constraints and product specifications must all be checked separately.")}</p>

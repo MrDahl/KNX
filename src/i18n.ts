@@ -3,6 +3,7 @@ import {initReactI18next} from 'react-i18next';
 import en from './locales/en.json';
 import da from './locales/da.json';
 import lookup from './locales/lookup.json';
+import templates from './locales/templates.json';
 export type Language = 'en' | 'da';
 export const LANGUAGE_STORAGE_KEY = 'knx-explorer-language';
 function storedLanguage(): Language {
@@ -13,10 +14,26 @@ void i18next.use(initReactI18next).init({
  supportedLngs:['en','da'],initAsync:false,interpolation:{escapeValue:false},returnNull:false,
 });
 export const i18n=i18next;
-/** Only presentation text is translated. Unmigrated technical descriptions fall back to English. */
-export function tr(english:string):string {
+/** Match only registered messages; never replace words in arbitrary text or protocol values. */
+const templateMatchers = Object.entries(templates).map(([source,key])=>{
+ const slots=[...source.matchAll(/\{\{(\d+)\}\}/g)].map(m=>m[1]);
+ const parts=source.split(/\{\{\d+\}\}/).map(part=>part.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+ return {key,slots,pattern:new RegExp('^'+parts.join('([\\s\\S]*?)')+'$')};
+});
+/** Translation is applied at render time so stored diagnostics also follow language changes. */
+export function tr(english:string|null|undefined,depth=0):string {
+ if(english==null)return '';
+ if(i18n.language!=='da')return english;
  const key=(lookup as Record<string,string>)[english];
- return key?String(i18n.t(key,{defaultValue:english})):english;
+ if(key)return String(i18n.t(key,{defaultValue:english}));
+ if(depth<4)for(const {key,slots,pattern} of templateMatchers){
+  const match=pattern.exec(english);
+  if(match){
+   const values=Object.fromEntries(slots.map((slot,i)=>[slot,tr(match[i+1],depth+1)]));
+   return String(i18n.t(key,{...values,defaultValue:english}));
+  }
+ }
+ return english;
 }
 function applyDocumentLanguage(language:string) {
  if(typeof document!=='undefined'&&document.documentElement)document.documentElement.lang=language;
