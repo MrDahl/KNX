@@ -74,10 +74,10 @@ test('LTE mode delay, DALI diagnostics and colour validity have independent fiel
  for(const h of ['A0 00','04 00','00 C0','00 03'])assert.throws(()=>decodeDptHex('244.600',h));
 });
 test('Additional codecs expose source pages and keep parameter/LTE data out of telegram choices',()=>{
- assert.equal(Object.keys(EXPANDED_DPTS).length,291);
+ assert.equal(Object.keys(EXPANDED_DPTS).length,292);
  for(const spec of Object.values(EXPANDED_DPTS))assert.ok(spec.sourcePages.length>0);
  for(const id of ['7.003','7.013','8.012','20.004','20.022','21.100','206.100','206.102','206.104','206.105'])assert.equal(DPT_INPUTS[id].telegramAllowed,false,id);
- assert.equal(DPT_INPUTS['243.600'],undefined);assert.ok(DPT_INPUTS['247.600']);assert.ok(DPT_INPUTS['248.600']);
+ assert.ok(DPT_INPUTS['243.600']);assert.ok(DPT_INPUTS['247.600']);assert.ok(DPT_INPUTS['248.600']);
 });
 test('Owner-reviewed converter examples encode and decode without inferred units',()=>{
  const testInfo={date:'2026-10-12',time:'15:20:00',working:'2',summer:'1',interval:'168',duration:'10800'};

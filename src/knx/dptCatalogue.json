@@ -11837,14 +11837,14 @@
     "name": "DPT_Colour_Transition_xyY",
     "size": "8 bytes",
     "dataType": "Composite",
-    "range": "Eight-byte xyY colour transition: time period (U16 × 100 ms), two U16 coordinates, brightness (DPT 5.001), then r6CB validity flags. Coordinate order remains unresolved; no interactive codec is offered.",
+    "range": "Eight-byte xyY colour transition: time period (U16 × 100 ms), x coordinate (U16), y coordinate (U16), brightness (DPT 5.001), then r6CB validity flags.",
     "format": "U16U16U16U8r6B2",
     "overviewPage": 24,
     "detailPages": [
       185
     ],
     "unit": "100 ms / colour / %",
-    "layoutPending": true,
+    "layoutPending": false,
     "changes": [
       {
         "action": "renamed+columns reset",
@@ -11857,10 +11857,14 @@
       {
         "action": "Owner review reconciled with PDF page images (2026-10-12)",
         "oldName": ""
+      },
+      {
+        "action": "Coordinate order confirmed by KNX Association support (2026-10-19)",
+        "oldName": ""
       }
     ],
     "sourceNotes": [
-      "Coordinate order unresolved: the diagram is y-first, the field table lists x first. Encoding remains disabled."
+      "Coordinate order confirmed by KNX Association support: time, x, y, brightness, reserved bits, C and B. Application note pending."
     ],
     "descriptionReviewed": true,
     "fields": [
@@ -11870,14 +11874,14 @@
         "meaning": "U16 × 100 ms; 0–6553.5 s."
       },
       {
-        "name": "First coordinate (x/y order unresolved)",
+        "name": "x coordinate",
         "bits": 16,
-        "meaning": "Raw U16 0–65535. See source discrepancy below."
+        "meaning": "Coordinate 0–1, encoded as U16 0–65535."
       },
       {
-        "name": "Second coordinate (x/y order unresolved)",
+        "name": "y coordinate",
         "bits": 16,
-        "meaning": "Raw U16 0–65535. See source discrepancy below."
+        "meaning": "Coordinate 0–1, encoded as U16 0–65535."
       },
       {
         "name": "Brightness",
@@ -11901,8 +11905,8 @@
       }
     ],
     "layoutNotes": [
-      "Visual check of printed p. 185 confirms y before x in the diagram, while the field table lists x before y. The diagram also mislabels the low coordinate octet as 000000BB. The format and 64-bit width require a full U16 coordinate there. Neither coordinate order is treated as confirmed.",
-      "Illustrative alternatives only, assuming the 242.600 coordinate scaling: 2.5 s, x=0.3127, y=0.3290, 75% brightness, both valid gives x-first 00 19 50 0D 54 39 BF 03 or y-first 00 19 54 39 50 0D BF 03. A device trace can establish that device’s behaviour; a normative clarification is needed to settle the standard."
+      "Payload bytes 0–1: time; 2–3: x; 4–5: y; 6: brightness; 7: reserved bits 7–2, C at bit 1, B at bit 0. Multi-byte fields are transmitted most significant byte first. The printed diagram will be corrected to x then y and octet 3 to unsigned coordinate bits.",
+      "Example: 2.5 s, x=0.3127, y=0.3290, 75% brightness, both valid: 00 19 50 0D 54 39 BF 03."
     ]
   },
   {

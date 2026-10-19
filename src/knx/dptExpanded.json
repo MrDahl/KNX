@@ -13957,5 +13957,120 @@
     "unit": "",
     "note": "Three scaled duty cycles followed by five status bits. Duty-cycle alarms indicate the 98% threshold; upper three status bits are reserved.",
     "telegramAllowed": true
+  },
+  "243.600": {
+    "name": "Colour_Transition_xyY",
+    "size": 64,
+    "fields": [
+      {
+        "key": "time",
+        "label": "Transition time (s)",
+        "initial": "0",
+        "type": "number",
+        "min": 0,
+        "max": 6553.5,
+        "step": "any"
+      },
+      {
+        "key": "x",
+        "label": "x coordinate",
+        "type": "number",
+        "min": 0,
+        "max": 1,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "y",
+        "label": "y coordinate",
+        "type": "number",
+        "min": 0,
+        "max": 1,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "brightness",
+        "label": "Brightness (%)",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "colourValid",
+        "label": "Colour validity",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "brightnessValid",
+        "label": "Brightness validity",
+        "options": [
+          "Invalid",
+          "Valid"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      }
+    ],
+    "parts": [
+      {
+        "key": "time",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.1
+      },
+      {
+        "key": "x",
+        "bits": 16,
+        "kind": "scaled",
+        "scale": 1.5259021896696422e-05
+      },
+      {
+        "key": "y",
+        "bits": 16,
+        "kind": "scaled",
+        "scale": 1.5259021896696422e-05
+      },
+      {
+        "key": "brightness",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "",
+        "bits": 6,
+        "kind": "reserved"
+      },
+      {
+        "key": "colourValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "brightnessValid",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      185
+    ],
+    "note": "Coordinate order confirmed by KNX Association support: time, x, y, brightness, reserved bits, C and B. Application note pending.",
+    "unit": "s / colour / %",
+    "telegramAllowed": true
   }
 }

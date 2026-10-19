@@ -19,7 +19,7 @@ The app runs in the browser without installation or a bus interface.
 | **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
 | **Hop Count** | Follow a defined path through the backbone/area/line/segment hierarchy and inspect each forwarding decision. |
 | **Topology Capacity Explorer** | Explore address allocations and budget current and interface loading for one TP segment. |
-| **DPT workbench** | Search 454 edition-specific catalogue entries, inspect provenance, and encode/decode 316 implemented subtypes. Transfer eligible group values to the telegram builder. |
+| **DPT workbench** | Search 454 edition-specific catalogue entries, inspect provenance, and encode/decode 317 implemented subtypes. Transfer eligible group values to the telegram builder. |
 
 **CAD symbols** adds a full-width “Example KNX CAD Symbols” reference with English descriptions, search and categories. Thirteen original SVG drawings by Marc Sonne Dahl illustrate generic device functions, with enlarged views; see [SVG delivery format](docs/cad-symbols.md).
 
@@ -60,11 +60,11 @@ Supported standard group frames can be reconstructed in the visualiser with orig
 
 The teaching content was developed against the supplied **KNX Basic, Advanced and Tutor course documentation**, the TP1 document **v01.02.02** used for the timing model, and **KNX Interworking Datapoint Types v02.02.01 (2021)**. Relevant chapters and per-type printed page references appear in the app. These documents and current manufacturer instructions remain the authority for design and commissioning; the repository does not grant rights to redistribute course or standard PDFs.
 
-The DPT catalogue is edition-specific, not a claim to cover every later KNX release. All 454 identities and overview formats were checked. The previously missing descriptions and size-corrected rows were researched, while **two entries still explicitly require source clarification** (243.600 coordinate order and 248.600 KNX rated-duration mapping). Other inherited descriptions are marked as such. Identity verification, description review and implemented codec coverage are deliberately separate.
+The DPT catalogue is edition-specific, not a claim to cover every later KNX release. All 454 identities and overview formats were checked. The previously missing descriptions and size-corrected rows were researched, while **one entry still explicitly requires source clarification** (248.600 KNX rated-duration mapping). Other inherited descriptions are marked as such. Identity verification, description review and implemented codec coverage are deliberately separate.
 
-The workbench implements **316 subtypes**. Parameter-only and LTE structures remain inspectable but are excluded from ordinary group-value transfer. See [codec coverage and source pages](docs/dpt-codec-coverage.md) for exact subtype coverage, restrictions and remaining work.
+The workbench implements **317 subtypes**. Parameter-only and LTE structures remain inspectable but are excluded from ordinary group-value transfer. See [codec coverage and source pages](docs/dpt-codec-coverage.md) for exact subtype coverage, restrictions and remaining work.
 
-DPT 247.600 now supports a conservative complete-timestamp subset. DPT 248.600 supports raw-byte encoding while its KNX rated-duration scaling remains unconfirmed; a separate conditional DALI display uses raw × 2 min (255 = 510 min or longer). DPT 243.600 remains reference-only.
+DPT 247.600 now supports a conservative complete-timestamp subset. DPT 248.600 supports raw-byte encoding while its KNX rated-duration scaling remains unconfirmed; a separate conditional DALI display uses raw × 2 min (255 = 510 min or longer). DPT 243.600 uses the x → y order confirmed by KNX Association support; an application note is pending.
 
 Report a technical discrepancy through [GitHub Issues](https://github.com/MrDahl/KNX/issues), ideally with the example settings, expected/actual result, and document edition and page. Please distinguish a reference correction from a request for another simulated service or DPT codec.
 
