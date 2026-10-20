@@ -2998,5 +2998,19 @@
   "ref_e8e688959bd87166": "Raw signed count: -2147483648 to 2147483647; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
   "ref_145977758b419d92": "Raw signed count: -2147483648 to 2147483647; resolution 1.",
   "ref_e825128301c65614": "Status / command (Z8)",
-  "ref_697a0b91e38aa069": "Integer + Z"
+  "ref_697a0b91e38aa069": "Integer + Z",
+  "ref_300db6525155eaf2": "DPT value inspection",
+  "ref_da13360869ee0336": "Inspect octet",
+  "ref_869360a6f4f26896": "Bit",
+  "ref_0083a23c2ae42b61": "Display padding",
+  "ref_f17424416ebeb110": "Raw unsigned value",
+  "ref_cea4d2e010b8fd52": "Clear selection",
+  "ref_4d824042da867965": "Select a byte, bit or field to inspect it. Bit numbers run from 7 to 0 within each octet.",
+  "ref_b359a36537acae28": "Negative sign",
+  "ref_2c1ccb5e8a40bbe4": "Non-negative sign",
+  "ref_53c0a63232652f00": "KNX F16 stores 11 mantissa bits plus a separate sign bit; value = 0.01 × signed mantissa × 2^exponent.",
+  "ref_de7e8d190295d4b2": "Ignored by this command; raw main field is preserved.",
+  "ref_c3702a596ae5c4b7": "Out of service: this is not a measurement. Raw main field is preserved.",
+  "ref_e1b1f30db89ce7f2": "Overridden value is valid, including when Fault is also set.",
+  "ref_c43b64ac3e1fd70f": "Normal status"
 }
