@@ -1,13 +1,13 @@
 import { EXPANDED_DPTS, decodeExpanded } from './dptExpandedCodec';
 import { DPT_INPUTS, decodeFloat, encodeDpt, type Values } from './dptCodec';
-export function decodeDptHex(id:string,text:string):{values:Values;bits:string} {
+export function decodeDptHex(id:string,text:string,context:Values={}):{values:Values;bits:string} {
  const spec=DPT_INPUTS[id];if(!spec)throw Error('No validated decoder is implemented for this subtype.');
  const hex=text.trim().replace(/^0x/i,'').replace(/\s/g,'');
  if(!/^[\da-f]+$/i.test(hex)||hex.length!==Math.ceil(spec.size/8)*2)throw Error(`Enter exactly ${Math.ceil(spec.size/8)} hexadecimal octet(s).`);
  const a=hex.match(/../g)!.map(x=>parseInt(x,16));
  const bits=a.map(x=>x.toString(2).padStart(8,'0')).join('').slice(-spec.size);
  if(spec.size<8&&a[0]>=2**spec.size)throw Error('Unused high bits must be zero in this value-only view.');
- if(EXPANDED_DPTS[id])return {values:decodeExpanded(id,bits),bits};
+ if(EXPANDED_DPTS[id])return {values:decodeExpanded(id,bits,context),bits};
  const n=parseInt(bits,2),signed=n>=2**(spec.size-1)?n-2**spec.size:n;
  let v:Values={};const str=(n:number)=>String(n);const pad=(n:number)=>str(n).padStart(2,'0');
  switch(id){

@@ -9077,32 +9077,55 @@
     "id": "200.100",
     "name": "DPT_Heat/Cool_Z",
     "size": "2 bytes",
-    "dataType": "Boolean + Z",
-    "range": "B1=[0=cool/1=heat]; Z8=validity [{0,1}]",
+    "dataType": "Enum + Z",
+    "range": "Value codes: Cooling, Heating. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "B1Z8",
     "overviewPage": 22,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
       131
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value",
+        "bits": 8,
+        "meaning": "Value"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value codes: Cooling, Heating.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "200.101",
     "name": "DPT_BinaryValue_Z",
     "size": "2 bytes",
-    "dataType": "Composite",
-    "range": "Binary value followed by one Z8 status/command octet. 0 = low; 1 = high. The value is padded to one octet.",
+    "dataType": "Enum + Z",
+    "range": "0 = low; 1 = high. Value codes: Low, High. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "B1Z8",
     "overviewPage": 22,
     "detailPages": [
-      131,
-      132
+      106,
+      107,
+      108,
+      109,
+      110,
+      131
     ],
     "unit": "Not applicable",
     "layoutPending": false,
@@ -9120,110 +9143,192 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Reserved padding",
-        "bits": 7,
-        "meaning": "Set to 0"
-      },
-      {
-        "name": "Binary value",
-        "bits": 1,
-        "meaning": "0 = low; 1 = high. The value is padded to one octet."
-      },
-      {
-        "name": "Status / command",
+        "name": "Value",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Value"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value codes: Low, High.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "201.100",
     "name": "DPT_HVACMode_Z",
     "size": "2 bytes",
     "dataType": "Enum + Z",
-    "range": "N8=[0…4] HVAC mode; Z8=validity status",
+    "range": "Value codes: Auto, Comfort, Standby, Economy, Building protection. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "N8Z8",
     "overviewPage": 22,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      115,
       132
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value",
+        "bits": 8,
+        "meaning": "Value"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value codes: Auto, Comfort, Standby, Economy, Building protection.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "201.102",
     "name": "DPT_DHWMode_Z",
     "size": "2 bytes",
     "dataType": "Enum + Z",
-    "range": "N8 DHW Mode; Z8 validity status",
+    "range": "Value codes: Auto, Legionella protection, Normal, Reduced, Off / frost protection. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "N8Z8",
     "overviewPage": 22,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      115,
       133
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value",
+        "bits": 8,
+        "meaning": "Value"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value codes: Auto, Legionella protection, Normal, Reduced, Off / frost protection.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "201.104",
     "name": "DPT_HVACContrMode_Z",
     "size": "2 bytes",
     "dataType": "Enum + Z",
-    "range": "N8 HVAC Contr Mode; Z8 validity status",
+    "range": "Value codes: Auto, Heat, Morning warmup, Cool, Night purge, Precool, Off, Test, Emergency heat, Fan only, Free cool, Ice, Maximum heating, Economic heat/cool, Dehumidification, Calibration, Emergency cool, Emergency steam, No demand. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "N8Z8",
     "overviewPage": 22,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      116,
       134
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value",
+        "bits": 8,
+        "meaning": "Value"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value codes: Auto, Heat, Morning warmup, Cool, Night purge, Precool, Off, Test, Emergency heat, Fan only, Free cool, Ice, Maximum heating, Economic heat/cool, Dehumidification, Calibration, Emergency cool, Emergency steam, No demand.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "201.105",
     "name": "DPT_EnablH/Cstage_Z",
     "size": "2 bytes",
     "dataType": "Enum + Z",
-    "range": "N8 Heat/Cool Stage Enable; Z8 validity status",
+    "range": "Value codes: Disabled, Stage A, Stage B, Both stages. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "N8Z8",
     "overviewPage": 22,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
       135
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value",
+        "bits": 8,
+        "meaning": "Value"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value codes: Disabled, Stage A, Stage B, Both stages.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "201.107",
     "name": "DPT_BuildingMode_Z",
     "size": "2 bytes",
-    "dataType": "Composite",
-    "range": "Building mode followed by one Z8 status/command octet. 0 = building in use; 1 = not used; 2 = building protection. Other modes are not defined here.",
+    "dataType": "Enum + Z",
+    "range": "Value codes: Building in use, Building not used, Building protection. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "N8Z8",
     "overviewPage": 22,
     "detailPages": [
-      135,
-      136
+      53,
+      106,
+      107,
+      108,
+      109,
+      110,
+      135
     ],
     "unit": "Not applicable",
     "layoutPending": false,
@@ -9241,27 +9346,36 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Building mode",
+        "name": "Value",
         "bits": 8,
-        "meaning": "0 = building in use; 1 = not used; 2 = building protection. Other modes are not defined here."
+        "meaning": "Value"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value codes: Building in use, Building not used, Building protection.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "201.108",
     "name": "DPT_OccMode_Z",
     "size": "2 bytes",
-    "dataType": "Composite",
-    "range": "Occupancy mode followed by one Z8 status/command octet. 0 = occupied; 1 = standby; 2 = not occupied. Other modes are not defined here.",
+    "dataType": "Enum + Z",
+    "range": "Value codes: Occupied, Standby, Not occupied. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "N8Z8",
     "overviewPage": 22,
     "detailPages": [
+      53,
+      106,
+      107,
+      108,
+      109,
+      110,
       136
     ],
     "unit": "Not applicable",
@@ -9280,27 +9394,36 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Occupancy mode",
+        "name": "Value",
         "bits": 8,
-        "meaning": "0 = occupied; 1 = standby; 2 = not occupied. Other modes are not defined here."
+        "meaning": "Value"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value codes: Occupied, Standby, Not occupied.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "201.109",
     "name": "DPT_HVACEmergMode_Z",
     "size": "2 bytes",
-    "dataType": "Composite",
-    "range": "HVAC emergency mode followed by one Z8 status/command octet. 0 = normal; 1 = emergency pressure; 2 = emergency depressure; 3 = emergency purge; 4 = emergency shutdown; 5 = emergency fire. 6–255 reserved.",
+    "dataType": "Enum + Z",
+    "range": "Value codes: Normal, Emergency pressure, Emergency depressure, Emergency purge, Emergency shutdown, Emergency fire. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "N8Z8",
     "overviewPage": 22,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      116,
       137
     ],
     "unit": "Not applicable",
@@ -9319,85 +9442,151 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "HVAC emergency mode",
+        "name": "Value",
         "bits": 8,
-        "meaning": "0 = normal; 1 = emergency pressure; 2 = emergency depressure; 3 = emergency purge; 4 = emergency shutdown; 5 = emergency fire. 6–255 reserved."
+        "meaning": "Value"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value codes: Normal, Emergency pressure, Emergency depressure, Emergency purge, Emergency shutdown, Emergency fire.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "202.001",
     "name": "DPT_RelValue_Z",
     "size": "2 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U8=[0…255]; Z8=validity flag",
+    "dataType": "Integer + Z",
+    "range": "Value (%): 0 to 255; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U8Z8",
     "overviewPage": 22,
     "detailPages": [
-      71
+      71,
+      72,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (%)",
+        "bits": 8,
+        "meaning": "Value (%)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (%): 0 to 255; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "202.002",
     "name": "DPT_UCountValue8_Z",
     "size": "2 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U8 value; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (counter): 0 to 255; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U8Z8",
     "overviewPage": 22,
     "detailPages": [
-      72
+      72,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (counter)",
+        "bits": 8,
+        "meaning": "Value (counter)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (counter): 0 to 255; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.002",
     "name": "DPT_TimePeriodMsec_Z",
     "size": "3 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U16=[0…65535] ms; Z8=validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (ms): 0 to 65535; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 22,
     "detailPages": [
-      73
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (ms)",
+        "bits": 16,
+        "meaning": "Value (ms)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (ms): 0 to 65535; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.003",
     "name": "DPT_TimePeriod10Msec_Z",
     "size": "3 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U16=0…65535 (10ms); Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (ms): 0 to 655350; resolution 10. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 22,
     "detailPages": [
-      73
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
@@ -9408,20 +9597,39 @@
       }
     ],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (ms)",
+        "bits": 16,
+        "meaning": "Value (ms)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (ms): 0 to 655350; resolution 10.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.004",
     "name": "DPT_TimePeriod100Msec_Z",
     "size": "3 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U16=0…65535 (100ms); Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (ms): 0 to 6553500; resolution 100. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 22,
     "detailPages": [
-      73
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
@@ -9432,78 +9640,153 @@
       }
     ],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (ms)",
+        "bits": 16,
+        "meaning": "Value (ms)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (ms): 0 to 6553500; resolution 100.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.005",
     "name": "DPT_TimePeriodSec_Z",
     "size": "3 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U16=0…65535 (seconds); Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (s): 0 to 65535; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 22,
     "detailPages": [
-      73
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (s)",
+        "bits": 16,
+        "meaning": "Value (s)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (s): 0 to 65535; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.006",
     "name": "DPT_TimePeriodMin_Z",
     "size": "3 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U16=0…65535 (minutes); Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (min): 0 to 65535; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 22,
     "detailPages": [
-      73
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (min)",
+        "bits": 16,
+        "meaning": "Value (min)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (min): 0 to 65535; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.007",
     "name": "DPT_TimePeriodHrs_Z",
     "size": "3 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U16=0…65535 (hours); Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (h): 0 to 65535; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 22,
     "detailPages": [
-      73
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (h)",
+        "bits": 16,
+        "meaning": "Value (h)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (h): 0 to 65535; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.011",
     "name": "DPT_UFlowRateLiter/h_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Flow rate followed by one Z8 status/command octet. Unsigned raw value × 0.01 l/h; 0–655.35 l/h.",
+    "dataType": "Integer + Z",
+    "range": "Value (l/h): 0 to 655.35; resolution 0.01. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
       73,
-      74
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "l/h",
     "layoutPending": false,
@@ -9521,30 +9804,36 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Flow rate",
+        "name": "Value (l/h)",
         "bits": 16,
-        "meaning": "Unsigned raw value × 0.01 l/h; 0–655.35 l/h."
+        "meaning": "Value (l/h)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
     "layoutNotes": [
-      "A detected sensor failure must set the Z8 Fault flag; the value may then carry failure information instead of a measurement."
+      "Value (l/h): 0 to 655.35; resolution 0.01.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
     ]
   },
   {
     "id": "203.012",
     "name": "DPT_UCountValue16_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Counter value followed by one Z8 status/command octet. Unsigned 0–65535; resolution 1.",
+    "dataType": "Integer + Z",
+    "range": "Value (counter): 0 to 65535; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
-      74
+      74,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "Dimensionless",
     "layoutPending": false,
@@ -9562,29 +9851,36 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Counter value",
+        "name": "Value (counter)",
         "bits": 16,
-        "meaning": "Unsigned 0–65535; resolution 1."
+        "meaning": "Value (counter)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value (counter): 0 to 65535; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.013",
     "name": "DPT_UElCurrentμA_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Electric current followed by one Z8 status/command octet. Unsigned raw value × 0.01 µA; 0–655.35 µA.",
+    "dataType": "Integer + Z",
+    "range": "Value (µA): 0 to 655.35; resolution 0.01. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
       74,
-      75
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "µA",
     "layoutPending": false,
@@ -9602,49 +9898,74 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Electric current",
+        "name": "Value (µA)",
         "bits": 16,
-        "meaning": "Unsigned raw value × 0.01 µA; 0–655.35 µA."
+        "meaning": "Value (µA)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
     "layoutNotes": [
-      "A detected sensor failure must set the Z8 Fault flag; the value may then carry failure information instead of a measurement."
+      "Value (µA): 0 to 655.35; resolution 0.01.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
     ]
   },
   {
     "id": "203.014",
     "name": "DPT_PowerKW_Z",
     "size": "3 bytes",
-    "dataType": "Float + Z",
-    "range": "F16 power in kW; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (kW): 0 to 65535; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
-      75
+      75,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (kW)",
+        "bits": 16,
+        "meaning": "Value (kW)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (kW): 0 to 65535; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.015",
     "name": "DPT_AtmPressureAbs_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Atmospheric pressure followed by one Z8 status/command octet. Unsigned raw value × 0.05 mbar. The table states 0–1200 mbar and more; U16 represents up to 3276.75 mbar.",
+    "dataType": "Integer + Z",
+    "range": "Value (mbar): 0 to 3276.75; resolution 0.05. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
-      76
+      76,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "mbar",
     "layoutPending": false,
@@ -9662,48 +9983,73 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Atmospheric pressure",
+        "name": "Value (mbar)",
         "bits": 16,
-        "meaning": "Unsigned raw value × 0.05 mbar. The table states 0–1200 mbar and more; U16 represents up to 3276.75 mbar."
+        "meaning": "Value (mbar)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
     "layoutNotes": [
-      "A detected sensor failure must set the Z8 Fault flag; the value may then carry failure information instead of a measurement."
+      "Value (mbar): 0 to 3276.75; resolution 0.05.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
     ]
   },
   {
     "id": "203.017",
     "name": "DPT_PercentU16_Z",
     "size": "3 bytes",
-    "dataType": "Unsigned + Z",
-    "range": "U16 percent; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (%): 0 to 655.35; resolution 0.01. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
-      76
+      76,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (%)",
+        "bits": 16,
+        "meaning": "Value (%)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (%): 0 to 655.35; resolution 0.01.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.100",
     "name": "DPT_HVACAirQual_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Air quality followed by one Z8 status/command octet. Unsigned 0–65535 ppm; resolution 1 ppm.",
+    "dataType": "Integer + Z",
+    "range": "Value (ppm): 0 to 65535; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
       138
     ],
     "unit": "ppm",
@@ -9722,67 +10068,111 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Air quality",
+        "name": "Value (ppm)",
         "bits": 16,
-        "meaning": "Unsigned 0–65535 ppm; resolution 1 ppm."
+        "meaning": "Value (ppm)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
     "layoutNotes": [
-      "A detected sensor failure must set the Z8 Fault flag; the value may then carry failure information instead of a measurement."
+      "Value (ppm): 0 to 65535; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
     ]
   },
   {
     "id": "203.101",
     "name": "DPT_WindSpeed_Z",
     "size": "3 bytes",
-    "dataType": "Float + Z",
-    "range": "F16 wind speed; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (m/s): 0 to 655.35; resolution 0.01. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
       139
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (m/s)",
+        "bits": 16,
+        "meaning": "Value (m/s)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (m/s): 0 to 655.35; resolution 0.01.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.102",
     "name": "DPT_SunIntensity_Z",
     "size": "3 bytes",
-    "dataType": "Float + Z",
-    "range": "F16 sun intensity; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (W/m²): 0 to 1400; resolution 0.05. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
       139
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (W/m²)",
+        "bits": 16,
+        "meaning": "Value (W/m²)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (W/m²): 0 to 1400; resolution 0.05.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "203.104",
     "name": "DPT_HVACAirFlowAbs_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Absolute air flow followed by one Z8 status/command octet. Unsigned 0–65535 m³/h; resolution 1 m³/h.",
+    "dataType": "Integer + Z",
+    "range": "Value (m³/h): 0 to 65535; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "U16Z8",
     "overviewPage": 23,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
       140
     ],
     "unit": "m³/h",
@@ -9801,28 +10191,36 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Absolute air flow",
+        "name": "Value (m³/h)",
         "bits": 16,
-        "meaning": "Unsigned 0–65535 m³/h; resolution 1 m³/h."
+        "meaning": "Value (m³/h)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value (m³/h): 0 to 65535; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "204.001",
     "name": "DPT_RelSignedValue_Z",
     "size": "2 bytes",
-    "dataType": "Composite",
-    "range": "Relative signed value followed by one Z8 status/command octet. Two’s-complement V8, −100 to +100%; resolution 1%. Other numeric codes are outside the defined range.",
+    "dataType": "Integer + Z",
+    "range": "Signed percentage (%): -100 to 100; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V8Z8",
     "overviewPage": 23,
     "detailPages": [
-      77
+      77,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "%",
     "layoutPending": false,
@@ -9840,47 +10238,74 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Relative signed value",
+        "name": "Signed percentage (%)",
         "bits": 8,
-        "meaning": "Two’s-complement V8, −100 to +100%; resolution 1%. Other numeric codes are outside the defined range."
+        "meaning": "Signed percentage (%)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Signed percentage (%): -100 to 100; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.002",
     "name": "DPT_DeltaTimeMsec_Z",
     "size": "3 bytes",
-    "dataType": "Signed + Z",
-    "range": "V16=-32768..32767 ms; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (ms): -32768 to 32767; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
-      78
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (ms)",
+        "bits": 16,
+        "meaning": "Value (ms)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (ms): -32768 to 32767; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.003",
     "name": "DPT_DeltaTime10Msec_Z",
     "size": "3 bytes",
-    "dataType": "Signed + Z",
-    "range": "V16 delta time 10ms; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (ms): -327680 to 327670; resolution 10. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
-      78
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
@@ -9891,20 +10316,39 @@
       }
     ],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (ms)",
+        "bits": 16,
+        "meaning": "Value (ms)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (ms): -327680 to 327670; resolution 10.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.004",
     "name": "DPT_DeltaTime100Msec_Z",
     "size": "3 bytes",
-    "dataType": "Signed + Z",
-    "range": "V16 delta time 100ms; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (ms): -3276800 to 3276700; resolution 100. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
-      78
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
@@ -9915,78 +10359,153 @@
       }
     ],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (ms)",
+        "bits": 16,
+        "meaning": "Value (ms)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (ms): -3276800 to 3276700; resolution 100.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.005",
     "name": "DPT_DeltaTimeSec_Z",
     "size": "3 bytes",
-    "dataType": "Signed + Z",
-    "range": "V16 delta time seconds; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (s): -32768 to 32767; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
-      78
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (s)",
+        "bits": 16,
+        "meaning": "Value (s)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (s): -32768 to 32767; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.006",
     "name": "DPT_DeltaTimeMin_Z",
     "size": "3 bytes",
-    "dataType": "Signed + Z",
-    "range": "V16 delta time minutes; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (min): -32768 to 32767; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
-      78
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (min)",
+        "bits": 16,
+        "meaning": "Value (min)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (min): -32768 to 32767; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.007",
     "name": "DPT_DeltaTimeHrs_Z",
     "size": "3 bytes",
-    "dataType": "Signed + Z",
-    "range": "V16 delta time hours; Z8 validity status",
+    "dataType": "Integer + Z",
+    "range": "Value (h): -32768 to 32767; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
-      78
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (h)",
+        "bits": 16,
+        "meaning": "Value (h)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (h): -32768 to 32767; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.017",
     "name": "DPT_Percent_V16_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Relative signed value followed by one Z8 status/command octet. Two’s-complement V16 × 0.01%; −327.68 to +327.67%.",
+    "dataType": "Integer + Z",
+    "range": "Value (%): -327.68 to 327.67; resolution 0.01. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
       78,
-      79
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "%",
     "layoutPending": false,
@@ -10004,46 +10523,73 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Relative signed value",
+        "name": "Value (%)",
         "bits": 16,
-        "meaning": "Two’s-complement V16 × 0.01%; −327.68 to +327.67%."
+        "meaning": "Value (%)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value (%): -327.68 to 327.67; resolution 0.01.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.100",
     "name": "DPT_TempHVACAbs_Z",
     "size": "3 bytes",
-    "dataType": "Signed + Z",
-    "range": "V16=[-273…655.34] °C; Z8=validity",
+    "dataType": "Integer + Z",
+    "range": "Value (°C): -273 to 655.34; resolution 0.02. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
       141
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (°C)",
+        "bits": 16,
+        "meaning": "Value (°C)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (°C): -273 to 655.34; resolution 0.02.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.101",
     "name": "DPT_TempHVACRel_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Relative temperature followed by one Z8 status/command octet. Two’s-complement V16 × 0.02 K; specified range −273 to +655.34 K.",
+    "dataType": "Integer + Z",
+    "range": "Value (K): -273 to 655.34; resolution 0.02. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
+      106,
+      107,
+      108,
+      109,
+      110,
       142
     ],
     "unit": "K",
@@ -10062,29 +10608,36 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Relative temperature",
+        "name": "Value (K)",
         "bits": 16,
-        "meaning": "Two’s-complement V16 × 0.02 K; specified range −273 to +655.34 K."
+        "meaning": "Value (K)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value (K): -273 to 655.34; resolution 0.02.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.102",
     "name": "DPT_HVACAirFlowRel_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Relative air flow followed by one Z8 status/command octet. Two’s-complement V16; −32768 to +32767 m³/h; resolution 1 m³/h.",
+    "dataType": "Integer + Z",
+    "range": "Value (m³/h): -32768 to 32767; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
-      142,
-      143
+      106,
+      107,
+      108,
+      109,
+      110,
+      142
     ],
     "unit": "m³/h",
     "layoutPending": false,
@@ -10102,28 +10655,37 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Relative air flow",
+        "name": "Value (m³/h)",
         "bits": 16,
-        "meaning": "Two’s-complement V16; −32768 to +32767 m³/h; resolution 1 m³/h."
+        "meaning": "Value (m³/h)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value (m³/h): -32768 to 32767; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "205.103",
     "name": "DPT_HVACAirQualiRel_Z",
     "size": "3 bytes",
-    "dataType": "Composite",
-    "range": "Relative air quality followed by one Z8 status/command octet. Two’s-complement V16; −32768 to +32767 ppm; resolution 1 ppm.",
+    "dataType": "Integer + Z",
+    "range": "Value (ppm): -32768 to 32767; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V16Z8",
     "overviewPage": 23,
     "detailPages": [
-      143
+      106,
+      107,
+      108,
+      109,
+      110,
+      143,
+      251
     ],
     "unit": "ppm",
     "layoutPending": false,
@@ -10141,17 +10703,20 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Relative air quality",
+        "name": "Value (ppm)",
         "bits": 16,
-        "meaning": "Two’s-complement V16; −32768 to +32767 ppm; resolution 1 ppm."
+        "meaning": "Value (ppm)"
       },
       {
-        "name": "Status / command",
+        "name": "Status / command (Z8)",
         "bits": 8,
-        "meaning": "Z8: meaning depends on the property service; see the status/command explanation below."
+        "meaning": "Status / command (Z8)"
       }
     ],
-    "layoutNotes": []
+    "layoutNotes": [
+      "Value (ppm): -32768 to 32767; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "206.100",
@@ -10999,8 +11564,8 @@
     "id": "217.001",
     "name": "DPT_Version",
     "size": "2 bytes",
-    "dataType": "Version",
-    "range": "Major=[0…31]; Minor=[0…31]; Sub=[0…63]",
+    "dataType": "Composite",
+    "range": "Magic number: 5 bits; version: 5 bits; revision: 6 bits. FF FF denotes invalid, void or undefined version information.",
     "format": "U5U5U6",
     "overviewPage": 23,
     "detailPages": [
@@ -11010,39 +11575,81 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Magic number",
+        "bits": 5,
+        "meaning": "Magic number"
+      },
+      {
+        "name": "Version number",
+        "bits": 5,
+        "meaning": "Version number"
+      },
+      {
+        "name": "Revision number",
+        "bits": 6,
+        "meaning": "Revision number"
+      }
+    ],
+    "layoutNotes": [
+      "Magic number: 5 bits; version: 5 bits; revision: 6 bits. FF FF denotes invalid, void or undefined version information."
+    ]
   },
   {
     "id": "218.001",
     "name": "DPT_VolumeLiter_Z",
     "size": "5 bytes",
-    "dataType": "Composite",
-    "range": "U32 Volume in Liters; Z8 validitystatus",
+    "dataType": "Integer + Z",
+    "range": "Value (l): -2147483648 to 2147483647; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V32Z8",
     "overviewPage": 23,
     "detailPages": [
-      80
+      80,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (l)",
+        "bits": 32,
+        "meaning": "Value (l)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (l): -2147483648 to 2147483647; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "218.002",
     "name": "DPT_FlowRate_m3/h_Z",
     "size": "5 bytes",
-    "dataType": "Composite",
-    "range": "V32 flow rate; Z8 validitystatus",
+    "dataType": "Integer + Z",
+    "range": "Value (m³/h): -214748.3648 to 214748.3647; resolution 0.0001. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V32Z8",
     "overviewPage": 23,
     "detailPages": [
-      81
+      81,
+      106,
+      107,
+      108,
+      109,
+      110
     ],
     "unit": "",
     "layoutPending": false,
@@ -11053,16 +11660,30 @@
       }
     ],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Value (m³/h)",
+        "bits": 32,
+        "meaning": "Value (m³/h)"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Value (m³/h): -214748.3648 to 214748.3647; resolution 0.0001.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "219.001",
     "name": "DPT_AlarmInfo",
     "size": "6 bytes",
     "dataType": "Composite",
-    "range": "U8 alarm index, U8 alarm level, 4 bytes status details",
+    "range": "Error class depends on the application area; it is shown as a raw code. The field table defines four attribute bits (0–3), despite the six drawn in the header. Bits 4–7 are reserved. Unacknowledged requires acknowledgement support.",
     "format": "U8N8N8N8B8B8",
     "overviewPage": 23,
     "detailPages": [
@@ -11072,9 +11693,77 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Log number",
+        "bits": 8,
+        "meaning": "Log number"
+      },
+      {
+        "name": "Alarm priority",
+        "bits": 8,
+        "meaning": "Alarm priority"
+      },
+      {
+        "name": "Application area",
+        "bits": 8,
+        "meaning": "Application area"
+      },
+      {
+        "name": "Application-specific error class",
+        "bits": 8,
+        "meaning": "Application-specific error class"
+      },
+      {
+        "name": "Reserved",
+        "bits": 4,
+        "meaning": "Must be zero."
+      },
+      {
+        "name": "Error code supported",
+        "bits": 1,
+        "meaning": "Error code supported"
+      },
+      {
+        "name": "Alarm text supported",
+        "bits": 1,
+        "meaning": "Alarm text supported"
+      },
+      {
+        "name": "Timestamp supported",
+        "bits": 1,
+        "meaning": "Timestamp supported"
+      },
+      {
+        "name": "Acknowledgement supported",
+        "bits": 1,
+        "meaning": "Acknowledgement supported"
+      },
+      {
+        "name": "Reserved",
+        "bits": 5,
+        "meaning": "Must be zero."
+      },
+      {
+        "name": "Locked",
+        "bits": 1,
+        "meaning": "Locked"
+      },
+      {
+        "name": "Unacknowledged alarm",
+        "bits": 1,
+        "meaning": "Unacknowledged alarm"
+      },
+      {
+        "name": "In alarm",
+        "bits": 1,
+        "meaning": "In alarm"
+      }
+    ],
+    "layoutNotes": [
+      "Error class depends on the application area; it is shown as a raw code. The field table defines four attribute bits (0–3), despite the six drawn in the header. Bits 4–7 are reserved. Unacknowledged requires acknowledgement support."
+    ]
   },
   {
     "id": "220.100",
@@ -11309,12 +11998,11 @@
     "name": "DPT_ScalingSpeed",
     "size": "3 bytes",
     "dataType": "Composite",
-    "range": "Lighting scaling speed expressed as a percentage change and its time interval.",
+    "range": "Time and percentage must both be nonzero. Percentage is rounded to the nearest 1/255 of full scale.",
     "format": "U16U8",
     "overviewPage": 24,
     "detailPages": [
-      82,
-      83
+      82
     ],
     "unit": "% / time",
     "layoutPending": false,
@@ -11332,18 +12020,18 @@
     "descriptionReviewed": true,
     "fields": [
       {
-        "name": "Time period",
+        "name": "Time (s)",
         "bits": 16,
-        "meaning": "U16 raw 1–65535, each unit 100 ms (0.1–6553.5 s); zero is outside the range."
+        "meaning": "Time (s)"
       },
       {
-        "name": "Percent",
+        "name": "Percentage",
         "bits": 8,
-        "meaning": "DPT 5.001 scaling, approximately 0.4–100% (raw 1–255); zero is outside the declared range."
+        "meaning": "Percentage"
       }
     ],
     "layoutNotes": [
-      "Use only for lighting and the function-block functionality specified by KNX. For one range, speed = percent / time; multiple ranges use the difference between adjacent percentage endpoints. Example 00 28 FF = 100% in 4 s = 25%/s."
+      "Time and percentage must both be nonzero. Percentage is rounded to the nearest 1/255 of full scale."
     ]
   },
   {
@@ -11351,7 +12039,7 @@
     "name": "DPT_Scaling_Step_Time",
     "size": "3 bytes",
     "dataType": "Composite",
-    "range": "U8 percent speed, U16 step duration in ms",
+    "range": "Time and percentage must both be nonzero. Percentage is rounded to the nearest 1/255 of full scale. Parameter and diagnostic encoding only.",
     "format": "U16U8",
     "overviewPage": 24,
     "detailPages": [
@@ -11366,16 +12054,29 @@
       }
     ],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Time (ms)",
+        "bits": 16,
+        "meaning": "Time (ms)"
+      },
+      {
+        "name": "Percentage",
+        "bits": 8,
+        "meaning": "Percentage"
+      }
+    ],
+    "layoutNotes": [
+      "Time and percentage must both be nonzero. Percentage is rounded to the nearest 1/255 of full scale. Parameter and diagnostic encoding only."
+    ]
   },
   {
     "id": "225.003",
     "name": "DPT_TariffNext",
     "size": "3 bytes",
     "dataType": "Composite",
-    "range": "U16 delay to the next tariff change, 1–65535 minutes (0 = undefined), followed by U8 next tariff, 0–254. Both fields zero means the next tariff is unspecified.",
+    "range": "Delay is in minutes. Zero delay is undefined; delay and tariff both zero mean unspecified.",
     "format": "U16U8",
     "overviewPage": 24,
     "detailPages": [
@@ -11395,27 +12096,65 @@
     ],
     "sourceNotes": [],
     "descriptionReviewed": true,
-    "fields": [],
-    "layoutNotes": []
+    "fields": [
+      {
+        "name": "Delay (minutes; 0 = undefined)",
+        "bits": 16,
+        "meaning": "Delay (minutes; 0 = undefined)"
+      },
+      {
+        "name": "Tariff (0–254)",
+        "bits": 8,
+        "meaning": "Tariff (0–254)"
+      }
+    ],
+    "layoutNotes": [
+      "Delay is in minutes. Zero delay is undefined; delay and tariff both zero mean unspecified."
+    ]
   },
   {
     "id": "229.001",
     "name": "DPT_MeteringValue",
     "size": "6 bytes",
-    "dataType": "Composite",
-    "range": "V32 pulse count + U8 channel identity + U8 status mask",
+    "dataType": "Integer + Z",
+    "range": "Raw signed count: -2147483648 to 2147483647; resolution 1. Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
     "format": "V32N8Z8",
     "overviewPage": 24,
     "detailPages": [
-      85
+      85,
+      106,
+      107,
+      108,
+      109,
+      110,
+      249
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Raw signed count",
+        "bits": 32,
+        "meaning": "Raw signed count"
+      },
+      {
+        "name": "Value information field",
+        "bits": 8,
+        "meaning": "Value information field"
+      },
+      {
+        "name": "Status / command (Z8)",
+        "bits": 8,
+        "meaning": "Status / command (Z8)"
+      }
+    ],
+    "layoutNotes": [
+      "Raw signed count: -2147483648 to 2147483647; resolution 1.",
+      "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams."
+    ]
   },
   {
     "id": "230.1000",
@@ -11624,26 +12363,65 @@
     "name": "DPT_DALI_Control_Gear_Diagnostic",
     "size": "2 bytes",
     "dataType": "Composite",
-    "range": "B16 diagnostic flags (fault, lamp, driver, ballast status)",
+    "range": "Device addresses: 0–63; group addresses: 0–15. Converter error applies to emergency lighting. AI=0 device and AI=1 group follow the encoding and address-range table; one description sentence in this edition reverses those labels.",
     "format": "B10U6",
     "overviewPage": 24,
     "detailPages": [
-      182
+      182,
+      234
     ],
     "unit": "",
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Reserved",
+        "bits": 5,
+        "meaning": "Must be zero."
+      },
+      {
+        "name": "Converter error",
+        "bits": 1,
+        "meaning": "Converter error"
+      },
+      {
+        "name": "Control gear failure",
+        "bits": 1,
+        "meaning": "Control gear failure"
+      },
+      {
+        "name": "Lamp failure",
+        "bits": 1,
+        "meaning": "Lamp failure"
+      },
+      {
+        "name": "Request / response",
+        "bits": 1,
+        "meaning": "Request / response"
+      },
+      {
+        "name": "Address type",
+        "bits": 1,
+        "meaning": "Address type"
+      },
+      {
+        "name": "DALI address",
+        "bits": 6,
+        "meaning": "DALI address"
+      }
+    ],
+    "layoutNotes": [
+      "Device addresses: 0–63; group addresses: 0–15. Converter error applies to emergency lighting. AI=0 device and AI=1 group follow the encoding and address-range table; one description sentence in this edition reverses those labels."
+    ]
   },
   {
     "id": "238.001",
     "name": "DPT_SceneConfig",
     "size": "1 byte",
     "dataType": "Composite",
-    "range": "One octet: b5–b0 scene number 0–63; b6 scene activation (0 = active, 1 = inactive); b7 storage function (0 = enabled, 1 = disabled). These flags use inverted enable/state polarity.",
+    "range": "Scene 1 is encoded as 0; scene 64 as 63. The high bits disable storage and activation respectively.",
     "format": "B2U6",
     "overviewPage": 24,
     "detailPages": [
@@ -11663,8 +12441,26 @@
     ],
     "sourceNotes": [],
     "descriptionReviewed": true,
-    "fields": [],
-    "layoutNotes": []
+    "fields": [
+      {
+        "name": "Scene storage",
+        "bits": 1,
+        "meaning": "Scene storage"
+      },
+      {
+        "name": "Scene activation",
+        "bits": 1,
+        "meaning": "Scene activation"
+      },
+      {
+        "name": "Scene number (1–64)",
+        "bits": 6,
+        "meaning": "Scene number (1–64)"
+      }
+    ],
+    "layoutNotes": [
+      "Scene 1 is encoded as 0; scene 64 as 63. The high bits disable storage and activation respectively."
+    ]
   },
   {
     "id": "238.600",
@@ -11717,7 +12513,7 @@
     "name": "DPT_FlaggedScaling",
     "size": "2 bytes",
     "dataType": "Composite",
-    "range": "U8 percentage output [0..100]%, B8 status flags",
+    "range": "Scaling value followed by seven reserved zero bits and the cyclic-activation flag.",
     "format": "U8r7B1",
     "overviewPage": 24,
     "detailPages": [
@@ -11727,16 +12523,34 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Percentage",
+        "bits": 8,
+        "meaning": "Percentage"
+      },
+      {
+        "name": "Reserved",
+        "bits": 7,
+        "meaning": "Must be zero."
+      },
+      {
+        "name": "Cyclic activation",
+        "bits": 1,
+        "meaning": "Cyclic activation"
+      }
+    ],
+    "layoutNotes": [
+      "Scaling value followed by seven reserved zero bits and the cyclic-activation flag."
+    ]
   },
   {
     "id": "240.800",
     "name": "DPT_CombinedPosition",
     "size": "3 bytes",
     "dataType": "Composite",
-    "range": "U8 blind height and U8 slat position, each scaling 0–255 to 0–100%, followed by B8 validity: b0 height valid, b1 slat position valid; b2–b7 = 0. Three bytes.",
+    "range": "Three octets: height, slat position, then validity flags. The two-byte heading in this edition is a typo; the diagram and format require three. Invalid fields retain their raw encoded value.",
     "format": "U8U8B8",
     "overviewPage": 24,
     "detailPages": [
@@ -11758,15 +12572,43 @@
       "Edition discrepancy: the detail heading on page 200 says 2 octets, but U8U8B8 and the three-octet diagram require 3. This catalogue uses 3 bytes; check KNX errata before implementation."
     ],
     "descriptionReviewed": true,
-    "fields": [],
-    "layoutNotes": []
+    "fields": [
+      {
+        "name": "Height (%)",
+        "bits": 8,
+        "meaning": "Height (%)"
+      },
+      {
+        "name": "Slat position (%)",
+        "bits": 8,
+        "meaning": "Slat position (%)"
+      },
+      {
+        "name": "Reserved",
+        "bits": 6,
+        "meaning": "Must be zero."
+      },
+      {
+        "name": "Slat position valid",
+        "bits": 1,
+        "meaning": "Slat position valid"
+      },
+      {
+        "name": "Height valid",
+        "bits": 1,
+        "meaning": "Height valid"
+      }
+    ],
+    "layoutNotes": [
+      "Three octets: height, slat position, then validity flags. The two-byte heading in this edition is a typo; the diagram and format require three. Invalid fields retain their raw encoded value."
+    ]
   },
   {
     "id": "241.800",
     "name": "DPT_StatusSAB",
     "size": "4 bytes",
     "dataType": "Composite",
-    "range": "U8=[0…100]% position; U8=[0…100]% tilt; B16=status",
+    "range": "Height and slat position followed by 16 status bits. Drive state: 0 moving, 1 target reached. Bits 11–13 are reserved; bits 14 and 15 mark height and slat validity.",
     "format": "U8U8B16",
     "overviewPage": 24,
     "detailPages": [
@@ -11776,9 +12618,92 @@
     "layoutPending": false,
     "changes": [],
     "sourceNotes": [],
-    "descriptionReviewed": false,
-    "fields": [],
-    "layoutNotes": []
+    "descriptionReviewed": true,
+    "fields": [
+      {
+        "name": "Height (%)",
+        "bits": 8,
+        "meaning": "Height (%)"
+      },
+      {
+        "name": "Slat position (%)",
+        "bits": 8,
+        "meaning": "Slat position (%)"
+      },
+      {
+        "name": "Slat position valid",
+        "bits": 1,
+        "meaning": "Slat position valid"
+      },
+      {
+        "name": "Height valid",
+        "bits": 1,
+        "meaning": "Height valid"
+      },
+      {
+        "name": "Reserved",
+        "bits": 3,
+        "meaning": "Must be zero."
+      },
+      {
+        "name": "Failure",
+        "bits": 1,
+        "meaning": "Failure"
+      },
+      {
+        "name": "Local override",
+        "bits": 1,
+        "meaning": "Local override"
+      },
+      {
+        "name": "Locked",
+        "bits": 1,
+        "meaning": "Locked"
+      },
+      {
+        "name": "Forced operation",
+        "bits": 1,
+        "meaning": "Forced operation"
+      },
+      {
+        "name": "Weather alarm",
+        "bits": 1,
+        "meaning": "Weather alarm"
+      },
+      {
+        "name": "Slat restriction",
+        "bits": 1,
+        "meaning": "Slat restriction"
+      },
+      {
+        "name": "Height restriction",
+        "bits": 1,
+        "meaning": "Height restriction"
+      },
+      {
+        "name": "Drive state",
+        "bits": 1,
+        "meaning": "Drive state"
+      },
+      {
+        "name": "Lower predefined position",
+        "bits": 1,
+        "meaning": "Lower predefined position"
+      },
+      {
+        "name": "Lower end position",
+        "bits": 1,
+        "meaning": "Lower end position"
+      },
+      {
+        "name": "Upper end position",
+        "bits": 1,
+        "meaning": "Upper end position"
+      }
+    ],
+    "layoutNotes": [
+      "Height and slat position followed by 16 status bits. Drive state: 0 moving, 1 target reached. Bits 11–13 are reserved; bits 14 and 15 mark height and slat validity."
+    ]
   },
   {
     "id": "242.600",

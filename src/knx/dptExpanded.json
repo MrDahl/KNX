@@ -14350,5 +14350,4999 @@
     "note": "Layout from KNX DPT v02.02.01 clause 6.13. Status bit 0 = battery failure, bit 1 = battery duration failure, bit 2 = battery fully charged; bits 3–7 are reserved and must be 0. Charge level follows DALI command 241.",
     "unit": "raw",
     "telegramAllowed": true
+  },
+  "217.001": {
+    "name": "Version",
+    "size": 16,
+    "fields": [
+      {
+        "key": "magic",
+        "label": "Magic number",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "version",
+        "label": "Version number",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "1",
+        "step": "1"
+      },
+      {
+        "key": "revision",
+        "label": "Revision number",
+        "type": "number",
+        "min": 0,
+        "max": 63,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "magic",
+        "bits": 5,
+        "kind": "uint"
+      },
+      {
+        "key": "version",
+        "bits": 5,
+        "kind": "uint"
+      },
+      {
+        "key": "revision",
+        "bits": 6,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      79
+    ],
+    "note": "Magic number: 5 bits; version: 5 bits; revision: 6 bits. FF FF denotes invalid, void or undefined version information.",
+    "unit": "",
+    "telegramAllowed": true
+  },
+  "219.001": {
+    "name": "AlarmInfo",
+    "size": 48,
+    "fields": [
+      {
+        "key": "log",
+        "label": "Log number",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "priority",
+        "label": "Alarm priority",
+        "options": [
+          "Highest",
+          "Medium",
+          "Lowest",
+          "No priority"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "area",
+        "label": "Application area",
+        "options": [
+          "No fault",
+          "Common system/functions",
+          "General HVAC",
+          "Hot-water heating",
+          "Direct electric heating",
+          "HVAC terminal units",
+          "Ventilation/air conditioning",
+          "Lighting",
+          "Security",
+          "Load management",
+          "Shutters/blinds"
+        ],
+        "optionValues": [
+          0,
+          1,
+          10,
+          11,
+          12,
+          13,
+          14,
+          20,
+          30,
+          40,
+          50
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "errorClass",
+        "label": "Application-specific error class",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "ack",
+        "label": "Acknowledgement supported",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "timestamp",
+        "label": "Timestamp supported",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "text",
+        "label": "Alarm text supported",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "errorCode",
+        "label": "Error code supported",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "alarm",
+        "label": "In alarm",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "unack",
+        "label": "Unacknowledged alarm",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "locked",
+        "label": "Locked",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      }
+    ],
+    "parts": [
+      {
+        "key": "log",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "priority",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "area",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "errorClass",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "errorCode",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "text",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "timestamp",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "ack",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "",
+        "bits": 5,
+        "kind": "reserved"
+      },
+      {
+        "key": "locked",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "unack",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "alarm",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      68
+    ],
+    "note": "Error class depends on the application area; it is shown as a raw code. The field table defines four attribute bits (0–3), despite the six drawn in the header. Bits 4–7 are reserved. Unacknowledged requires acknowledgement support.",
+    "unit": "",
+    "telegramAllowed": true
+  },
+  "225.001": {
+    "name": "ScalingSpeed",
+    "size": 24,
+    "fields": [
+      {
+        "key": "time",
+        "label": "Time (s)",
+        "type": "number",
+        "min": 0.1,
+        "max": 6553.5,
+        "initial": "0.1",
+        "step": "any"
+      },
+      {
+        "key": "value",
+        "label": "Percentage",
+        "type": "number",
+        "min": 0.39215686274509803,
+        "max": 100,
+        "initial": "100",
+        "step": "any"
+      }
+    ],
+    "parts": [
+      {
+        "key": "time",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.1
+      },
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      }
+    ],
+    "sourcePages": [
+      82
+    ],
+    "note": "Time and percentage must both be nonzero. Percentage is rounded to the nearest 1/255 of full scale.",
+    "unit": "% / time",
+    "telegramAllowed": true
+  },
+  "225.002": {
+    "name": "Scaling_Step_Time",
+    "size": 24,
+    "fields": [
+      {
+        "key": "time",
+        "label": "Time (ms)",
+        "type": "number",
+        "min": 1,
+        "max": 65535,
+        "initial": "1",
+        "step": "1"
+      },
+      {
+        "key": "value",
+        "label": "Percentage",
+        "type": "number",
+        "min": 0.39215686274509803,
+        "max": 100,
+        "initial": "100",
+        "step": "any"
+      }
+    ],
+    "parts": [
+      {
+        "key": "time",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      }
+    ],
+    "sourcePages": [
+      83
+    ],
+    "note": "Time and percentage must both be nonzero. Percentage is rounded to the nearest 1/255 of full scale. Parameter and diagnostic encoding only.",
+    "unit": "",
+    "telegramAllowed": false
+  },
+  "225.003": {
+    "name": "TariffNext",
+    "size": 24,
+    "fields": [
+      {
+        "key": "delay",
+        "label": "Delay (minutes; 0 = undefined)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "tariff",
+        "label": "Tariff (0–254)",
+        "type": "number",
+        "min": 0,
+        "max": 254,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "delay",
+        "bits": 16,
+        "kind": "uint"
+      },
+      {
+        "key": "tariff",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      84
+    ],
+    "note": "Delay is in minutes. Zero delay is undefined; delay and tariff both zero mean unspecified.",
+    "unit": "",
+    "telegramAllowed": true
+  },
+  "237.600": {
+    "name": "DALI_Control_Gear_Diagnostic",
+    "size": 16,
+    "fields": [
+      {
+        "key": "converter",
+        "label": "Converter error",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "ballast",
+        "label": "Control gear failure",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "lamp",
+        "label": "Lamp failure",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "read",
+        "label": "Request / response",
+        "options": [
+          "Response / spontaneous",
+          "Read request"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "group",
+        "label": "Address type",
+        "options": [
+          "Device",
+          "Group"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "address",
+        "label": "DALI address",
+        "type": "number",
+        "min": 0,
+        "max": 63,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "",
+        "bits": 5,
+        "kind": "reserved"
+      },
+      {
+        "key": "converter",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "ballast",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "lamp",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "read",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "group",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "address",
+        "bits": 6,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      182,
+      234
+    ],
+    "note": "Device addresses: 0–63; group addresses: 0–15. Converter error applies to emergency lighting. AI=0 device and AI=1 group follow the encoding and address-range table; one description sentence in this edition reverses those labels.",
+    "unit": "",
+    "telegramAllowed": true
+  },
+  "238.001": {
+    "name": "SceneConfig",
+    "size": 8,
+    "fields": [
+      {
+        "key": "storage",
+        "label": "Scene storage",
+        "options": [
+          "Enabled",
+          "Disabled"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "activation",
+        "label": "Scene activation",
+        "options": [
+          "Active",
+          "Inactive"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "scene",
+        "label": "Scene number (1–64)",
+        "type": "number",
+        "min": 1,
+        "max": 64,
+        "initial": "1",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "storage",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "activation",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "scene",
+        "bits": 6,
+        "kind": "uint",
+        "offset": 1
+      }
+    ],
+    "sourcePages": [
+      99
+    ],
+    "note": "Scene 1 is encoded as 0; scene 64 as 63. The high bits disable storage and activation respectively.",
+    "unit": "",
+    "telegramAllowed": true
+  },
+  "239.001": {
+    "name": "FlaggedScaling",
+    "size": 16,
+    "fields": [
+      {
+        "key": "value",
+        "label": "Percentage",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "active",
+        "label": "Cyclic activation",
+        "options": [
+          "Inactive",
+          "Active"
+        ],
+        "initial": "0"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "",
+        "bits": 7,
+        "kind": "reserved"
+      },
+      {
+        "key": "active",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      100
+    ],
+    "note": "Scaling value followed by seven reserved zero bits and the cyclic-activation flag.",
+    "unit": "",
+    "telegramAllowed": true
+  },
+  "240.800": {
+    "name": "CombinedPosition",
+    "size": 24,
+    "fields": [
+      {
+        "key": "height",
+        "label": "Height (%)",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "slats",
+        "label": "Slat position (%)",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "slatsValid",
+        "label": "Slat position valid",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "heightValid",
+        "label": "Height valid",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      }
+    ],
+    "parts": [
+      {
+        "key": "height",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "slats",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "",
+        "bits": 6,
+        "kind": "reserved"
+      },
+      {
+        "key": "slatsValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "heightValid",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      200
+    ],
+    "note": "Three octets: height, slat position, then validity flags. The two-byte heading in this edition is a typo; the diagram and format require three. Invalid fields retain their raw encoded value.",
+    "unit": "",
+    "telegramAllowed": true
+  },
+  "241.800": {
+    "name": "StatusSAB",
+    "size": 32,
+    "fields": [
+      {
+        "key": "height",
+        "label": "Height (%)",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "slats",
+        "label": "Slat position (%)",
+        "type": "number",
+        "min": 0,
+        "max": 100,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "upper",
+        "label": "Upper end position",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "lower",
+        "label": "Lower end position",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "predefined",
+        "label": "Lower predefined position",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "drive",
+        "label": "Drive state",
+        "options": [
+          "Moving",
+          "Target reached"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "heightLimit",
+        "label": "Height restriction",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "slatLimit",
+        "label": "Slat restriction",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "weather",
+        "label": "Weather alarm",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "forced",
+        "label": "Forced operation",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "locked",
+        "label": "Locked",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "local",
+        "label": "Local override",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "failure",
+        "label": "Failure",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "heightValid",
+        "label": "Height valid",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "slatsValid",
+        "label": "Slat position valid",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "initial": "0"
+      }
+    ],
+    "parts": [
+      {
+        "key": "height",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "slats",
+        "bits": 8,
+        "kind": "scaled",
+        "scale": 0.39215686274509803
+      },
+      {
+        "key": "slatsValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "heightValid",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "",
+        "bits": 3,
+        "kind": "reserved"
+      },
+      {
+        "key": "failure",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "local",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "locked",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "forced",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "weather",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "slatLimit",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "heightLimit",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "drive",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "predefined",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "lower",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "upper",
+        "bits": 1,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      201
+    ],
+    "note": "Height and slat position followed by 16 status bits. Drive state: 0 moving, 1 target reached. Bits 11–13 are reserved; bits 14 and 15 mark height and slat validity.",
+    "unit": "",
+    "telegramAllowed": true
+  },
+  "200.100": {
+    "name": "Heat/Cool_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Cooling",
+          "Heating"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      131
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "200.101": {
+    "name": "BinaryValue_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Low",
+          "High"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      131
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "Not applicable",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "201.100": {
+    "name": "HVACMode_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Auto",
+          "Comfort",
+          "Standby",
+          "Economy",
+          "Building protection"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      115,
+      132
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "201.102": {
+    "name": "DHWMode_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Auto",
+          "Legionella protection",
+          "Normal",
+          "Reduced",
+          "Off / frost protection"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      115,
+      133
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "201.104": {
+    "name": "HVACContrMode_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Auto",
+          "Heat",
+          "Morning warmup",
+          "Cool",
+          "Night purge",
+          "Precool",
+          "Off",
+          "Test",
+          "Emergency heat",
+          "Fan only",
+          "Free cool",
+          "Ice",
+          "Maximum heating",
+          "Economic heat/cool",
+          "Dehumidification",
+          "Calibration",
+          "Emergency cool",
+          "Emergency steam",
+          "No demand"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          20
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      116,
+      134
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "201.105": {
+    "name": "EnablH/Cstage_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Disabled",
+          "Stage A",
+          "Stage B",
+          "Both stages"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      135
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "201.107": {
+    "name": "BuildingMode_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Building in use",
+          "Building not used",
+          "Building protection"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      53,
+      106,
+      107,
+      108,
+      109,
+      110,
+      135
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "Not applicable",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "201.108": {
+    "name": "OccMode_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Occupied",
+          "Standby",
+          "Not occupied"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      53,
+      106,
+      107,
+      108,
+      109,
+      110,
+      136
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "Not applicable",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "201.109": {
+    "name": "HVACEmergMode_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value",
+        "options": [
+          "Normal",
+          "Emergency pressure",
+          "Emergency depressure",
+          "Emergency purge",
+          "Emergency shutdown",
+          "Emergency fire"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      116,
+      137
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "Not applicable",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "202.001": {
+    "name": "RelValue_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (%)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      71,
+      72,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "202.002": {
+    "name": "UCountValue8_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (counter)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      72,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.002": {
+    "name": "TimePeriodMsec_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (ms)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.003": {
+    "name": "TimePeriod10Msec_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (ms)",
+        "type": "number",
+        "min": 0,
+        "max": 655350,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 10
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.004": {
+    "name": "TimePeriod100Msec_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (ms)",
+        "type": "number",
+        "min": 0,
+        "max": 6553500,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 100
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.005": {
+    "name": "TimePeriodSec_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (s)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.006": {
+    "name": "TimePeriodMin_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (min)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.007": {
+    "name": "TimePeriodHrs_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (h)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.002": {
+    "name": "DeltaTimeMsec_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (ms)",
+        "type": "number",
+        "min": -32768,
+        "max": 32767,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.003": {
+    "name": "DeltaTime10Msec_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (ms)",
+        "type": "number",
+        "min": -327680,
+        "max": 327670,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 10
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.004": {
+    "name": "DeltaTime100Msec_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (ms)",
+        "type": "number",
+        "min": -3276800,
+        "max": 3276700,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 100
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.005": {
+    "name": "DeltaTimeSec_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (s)",
+        "type": "number",
+        "min": -32768,
+        "max": 32767,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.006": {
+    "name": "DeltaTimeMin_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (min)",
+        "type": "number",
+        "min": -32768,
+        "max": 32767,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.007": {
+    "name": "DeltaTimeHrs_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (h)",
+        "type": "number",
+        "min": -32768,
+        "max": 32767,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.011": {
+    "name": "UFlowRateLiter/h_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (l/h)",
+        "type": "number",
+        "min": 0,
+        "max": 655.35,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.01
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      73,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "l/h",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.012": {
+    "name": "UCountValue16_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (counter)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      74,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "Dimensionless",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.013": {
+    "name": "UElCurrentμA_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (µA)",
+        "type": "number",
+        "min": 0,
+        "max": 655.35,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.01
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      74,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "µA",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.014": {
+    "name": "PowerKW_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (kW)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      75,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.015": {
+    "name": "AtmPressureAbs_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (mbar)",
+        "type": "number",
+        "min": 0,
+        "max": 3276.75,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.05
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      76,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "mbar",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.017": {
+    "name": "PercentU16_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (%)",
+        "type": "number",
+        "min": 0,
+        "max": 655.35,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.01
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      76,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.100": {
+    "name": "HVACAirQual_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (ppm)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      138
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "ppm",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.101": {
+    "name": "WindSpeed_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (m/s)",
+        "type": "number",
+        "min": 0,
+        "max": 655.35,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.01
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      139
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.102": {
+    "name": "SunIntensity_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (W/m²)",
+        "type": "number",
+        "min": 0,
+        "max": 1400,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 0.05
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      139
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "203.104": {
+    "name": "HVACAirFlowAbs_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (m³/h)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "uint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      140
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "m³/h",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "204.001": {
+    "name": "RelSignedValue_Z",
+    "size": 16,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Signed percentage (%)",
+        "type": "number",
+        "min": -100,
+        "max": 100,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 8,
+        "kind": "sint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      77,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "%",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.017": {
+    "name": "Percent_V16_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (%)",
+        "type": "number",
+        "min": -327.68,
+        "max": 327.67,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 0.01
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      78,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "%",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.100": {
+    "name": "TempHVACAbs_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (°C)",
+        "type": "number",
+        "min": -273,
+        "max": 655.34,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 0.02
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      141
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.101": {
+    "name": "TempHVACRel_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (K)",
+        "type": "number",
+        "min": -273,
+        "max": 655.34,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 0.02
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      142
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "K",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.102": {
+    "name": "HVACAirFlowRel_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (m³/h)",
+        "type": "number",
+        "min": -32768,
+        "max": 32767,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      142
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "m³/h",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "205.103": {
+    "name": "HVACAirQualiRel_Z",
+    "size": 24,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (ppm)",
+        "type": "number",
+        "min": -32768,
+        "max": 32767,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 65535,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 16,
+        "kind": "sint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      106,
+      107,
+      108,
+      109,
+      110,
+      143,
+      251
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "ppm",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "218.001": {
+    "name": "VolumeLiter_Z",
+    "size": 40,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (l)",
+        "type": "number",
+        "min": -2147483648,
+        "max": 2147483647,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 4294967295,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 32,
+        "kind": "sint",
+        "scale": 1
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      80,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "218.002": {
+    "name": "FlowRate_m3/h_Z",
+    "size": 40,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Value (m³/h)",
+        "type": "number",
+        "min": -214748.3648,
+        "max": 214748.3647,
+        "initial": "0",
+        "step": "any"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 4294967295,
+        "initial": "0",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 32,
+        "kind": "sint",
+        "scale": 0.0001
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      81,
+      106,
+      107,
+      108,
+      109,
+      110
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
+  },
+  "229.001": {
+    "name": "MeteringValue",
+    "size": 48,
+    "fields": [
+      {
+        "key": "z8Mode",
+        "label": "Z8 service interpretation",
+        "options": [
+          "Status / response",
+          "Command / write"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "z8Status",
+        "label": "Status bits (0–31)",
+        "type": "number",
+        "min": 0,
+        "max": 31,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "z8Command",
+        "label": "Command",
+        "options": [
+          "Normal write",
+          "Override",
+          "Release",
+          "Set out of service",
+          "Reset out of service",
+          "Acknowledge alarm",
+          "Set to default"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "value",
+        "label": "Raw signed count",
+        "type": "number",
+        "min": -2147483648,
+        "max": 2147483647,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "faultCode",
+        "label": "Failure information",
+        "options": [
+          "General failure",
+          "Open circuit",
+          "Short circuit"
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "rawMain",
+        "label": "Raw main field (unsigned)",
+        "type": "number",
+        "min": 0,
+        "max": 4294967295,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "vif",
+        "label": "Value information field",
+        "options": [
+          "00 · 10^-3 Wh / count",
+          "01 · 10^-2 Wh / count",
+          "02 · 10^-1 Wh / count",
+          "03 · 10^0 Wh / count",
+          "04 · 10^1 Wh / count",
+          "05 · 10^2 Wh / count",
+          "06 · 10^3 Wh / count",
+          "07 · 10^4 Wh / count",
+          "08 · 10^0 J / count",
+          "09 · 10^1 J / count",
+          "0A · 10^2 J / count",
+          "0B · 10^3 J / count",
+          "0C · 10^4 J / count",
+          "0D · 10^5 J / count",
+          "0E · 10^6 J / count",
+          "0F · 10^7 J / count",
+          "10 · 10^-6 m³ / count",
+          "11 · 10^-5 m³ / count",
+          "12 · 10^-4 m³ / count",
+          "13 · 10^-3 m³ / count",
+          "14 · 10^-2 m³ / count",
+          "15 · 10^-1 m³ / count",
+          "16 · 10^0 m³ / count",
+          "17 · 10^1 m³ / count",
+          "18 · 10^-3 kg / count",
+          "19 · 10^-2 kg / count",
+          "1A · 10^-1 kg / count",
+          "1B · 10^0 kg / count",
+          "1C · 10^1 kg / count",
+          "1D · 10^2 kg / count",
+          "1E · 10^3 kg / count",
+          "1F · 10^4 kg / count",
+          "28 · 10^-3 W / count",
+          "29 · 10^-2 W / count",
+          "2A · 10^-1 W / count",
+          "2B · 10^0 W / count",
+          "2C · 10^1 W / count",
+          "2D · 10^2 W / count",
+          "2E · 10^3 W / count",
+          "2F · 10^4 W / count",
+          "30 · 10^0 J/h / count",
+          "31 · 10^1 J/h / count",
+          "32 · 10^2 J/h / count",
+          "33 · 10^3 J/h / count",
+          "34 · 10^4 J/h / count",
+          "35 · 10^5 J/h / count",
+          "36 · 10^6 J/h / count",
+          "37 · 10^7 J/h / count",
+          "38 · 10^-6 m³/h / count",
+          "39 · 10^-5 m³/h / count",
+          "3A · 10^-4 m³/h / count",
+          "3B · 10^-3 m³/h / count",
+          "3C · 10^-2 m³/h / count",
+          "3D · 10^-1 m³/h / count",
+          "3E · 10^0 m³/h / count",
+          "3F · 10^1 m³/h / count",
+          "40 · 10^-7 m³/min / count",
+          "41 · 10^-6 m³/min / count",
+          "42 · 10^-5 m³/min / count",
+          "43 · 10^-4 m³/min / count",
+          "44 · 10^-3 m³/min / count",
+          "45 · 10^-2 m³/min / count",
+          "46 · 10^-1 m³/min / count",
+          "47 · 10^0 m³/min / count",
+          "48 · 10^-9 m³/s / count",
+          "49 · 10^-8 m³/s / count",
+          "4A · 10^-7 m³/s / count",
+          "4B · 10^-6 m³/s / count",
+          "4C · 10^-5 m³/s / count",
+          "4D · 10^-4 m³/s / count",
+          "4E · 10^-3 m³/s / count",
+          "4F · 10^-2 m³/s / count",
+          "50 · 10^-3 kg/h / count",
+          "51 · 10^-2 kg/h / count",
+          "52 · 10^-1 kg/h / count",
+          "53 · 10^0 kg/h / count",
+          "54 · 10^1 kg/h / count",
+          "55 · 10^2 kg/h / count",
+          "56 · 10^3 kg/h / count",
+          "57 · 10^4 kg/h / count",
+          "6E · Heat cost allocator units",
+          "80 · 10^5 Wh / count",
+          "81 · 10^6 Wh / count",
+          "88 · 10^8 J / count",
+          "89 · 10^9 J / count",
+          "A8 · 10^5 W / count",
+          "A9 · 10^6 W / count",
+          "B0 · 10^8 J/h / count",
+          "B1 · 10^9 J/h / count",
+          "BA · Dimensionless counter"
+        ],
+        "initial": "0",
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          110,
+          128,
+          129,
+          136,
+          137,
+          168,
+          169,
+          176,
+          177,
+          186
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "key": "value",
+        "bits": 32,
+        "kind": "sint"
+      },
+      {
+        "key": "vif",
+        "bits": 8,
+        "kind": "uint"
+      },
+      {
+        "key": "z8Status",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      85,
+      106,
+      107,
+      108,
+      109,
+      110,
+      249
+    ],
+    "note": "Property/LTE status or command: select the service interpretation explicitly. Status bits: 0 out of service, 1 fault, 2 overridden, 3 in alarm, 4 unacknowledged. Out of service excludes fault and overridden. Fault without override carries a failure code; out-of-service and ignored command values retain the raw main field. This type is not offered for ordinary group telegrams.",
+    "unit": "",
+    "telegramAllowed": false,
+    "z8": true
   }
 }

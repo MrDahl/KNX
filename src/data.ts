@@ -1,4 +1,4 @@
-import { DPT_BY_ID } from "./components/dptDatabase";
+import DPT_NAMES from "./knx/dptNames.json";
 import { DPT_INPUTS, defaults, encodeDpt } from "./knx/dptCodec";
 import { APCICode, APCIDefinition, DPTDefinition, QuizQuestion, KNXAddressIndividual, KNXAddressGroup } from "./types";
 
@@ -103,7 +103,7 @@ export const APCI_DEFS: APCIDefinition[] = [
 
 // Exact-subtype metadata and examples share the catalogue and validated codecs.
 export const DPT_DEFS: DPTDefinition[] = Object.entries(DPT_INPUTS).map(([id,spec])=>({
-  id, name:DPT_BY_ID[id].name, sizeBits:spec.size,
+  id, name:DPT_NAMES[id as keyof typeof DPT_NAMES], sizeBits:spec.size,
   description:spec.note??spec.name,
   exampleValues:[{value:'Default',display:spec.name,binary:encodeDpt(id,defaults(id))}]
 }));

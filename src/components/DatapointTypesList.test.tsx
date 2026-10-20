@@ -29,7 +29,7 @@ test('Explanation and reviewed layouts are visible without level tabs',async()=>
  await act(()=>r.root.findByProps({'aria-label':'Inspect DPT 200.101'}).props.onClick());
  assert.match(text(r.root.findByProps({'aria-label':'Reviewed DPT description'})),/0 = low; 1 = high/);
  assert.match(text(r.root.findByProps({'aria-label':'Z8 status and command'})),/not applicable to ordinary/);
- assert.equal(r.root.findAllByProps({'aria-label':'DPT hexadecimal value'}).length,0);
+ assert.equal(r.root.findAllByProps({'aria-label':'DPT hexadecimal value'}).length,1);
  await act(()=>r.unmount());
 });
 test('Sparse enum values transfer correctly; LTE and parameter editors cannot transfer to telegrams',async()=>{

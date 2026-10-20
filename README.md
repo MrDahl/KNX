@@ -19,7 +19,7 @@ The app runs in the browser without installation or a bus interface.
 | **Objects** | Configure group associations and the sending address; try ON/OFF writes with receiver communication/write flags. Unrelated or disabled receivers retain their previous state. Successful transmissions also update the telegram monitor. |
 | **Hop Count** | Follow a defined path through the backbone/area/line/segment hierarchy and inspect each forwarding decision. |
 | **Topology Capacity Explorer** | Explore address allocations and budget current and interface loading for one TP segment. |
-| **DPT workbench** | Search 454 edition-specific catalogue entries, inspect provenance, and encode/decode 319 implemented subtypes. Transfer eligible group values to the telegram builder. |
+| **DPT workbench** | Search 454 edition-specific catalogue entries, inspect provenance, and encode/decode 371 implemented subtypes. Transfer eligible group values to the telegram builder. |
 
 **CAD symbols** adds a full-width “Example KNX CAD Symbols” reference with English descriptions, search and categories. Thirteen original SVG drawings by Marc Sonne Dahl illustrate generic device functions, with enlarged views; see [SVG delivery format](docs/cad-symbols.md).
 
@@ -120,3 +120,11 @@ The original application code and documentation are available under the [MIT Lic
 Branding SVGs in `assets/` are excluded from this licence. Third-party dependencies, icons, course materials and standard documents remain subject to their owners’ terms; no trademark rights are granted.
 
 KNX is a trademark of KNX Association. KNX Explorer is an independent application and is not affiliated with, endorsed by, or certified by KNX Association.
+
+### Loading and additional codecs
+
+The 14,000-line reference catalogue is loaded with the DPT workbench or capture analyser. Other lessons load on first visit; imported captures remain mounted after their first visit. Danish messages, lookup keys and interpolation templates load only when Danish is selected or restored from a saved preference. English uses source strings and a small semantic-message resource. The synchronous codec definitions remain available for the initial telegram editor.
+
+371 of the 454 catalogue entries have codecs. Coverage includes 237.600, the 200–205 and 218 Z8 families, 217.001, 219.001, 225.001–003, 229.001, 238.001, 239.001, 240.800 and 241.800. Z8 editing requires explicit status/command interpretation and is excluded from ordinary group telegrams and capture candidates. Remaining aggregate/date-time types retain their existing reference-only coverage. Source discrepancies for 219.001, 237.600 and 240.800 are explained alongside their layouts.
+
+Run `npm run test:loading` to verify that the production import graph keeps the catalogue, Danish resources and secondary pages out of the initial bundle. The measured initial JavaScript is about 582 kB (138 kB gzip), compared with 1,627 kB (435 kB gzip) before this change. Vite still flags the initial bundle above 500 kB; the synchronous codecs are retained for the complete telegram selector. These are build sizes, not measured load times.
