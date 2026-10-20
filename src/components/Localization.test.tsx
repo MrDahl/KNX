@@ -133,3 +133,13 @@ test('243.600 confirmation and field descriptions are translated',async()=>{
   assert.match(tr(row.sourceNotes[0]),/bekræftet/);
  }finally{await setLanguage('en');}
 });
+test('245.600 and 246.600 labels, options and notes are translated',async()=>{
+ const {DPT_INPUTS}=await import('../knx/dptCodec');
+ try{
+  await setLanguage('da');
+  for(const id of ['245.600','246.600']){
+   const spec=DPT_INPUTS[id];
+   for(const s of [spec.note!,...spec.fields.flatMap(f=>[f.label,...(f.options??[])])])assert.notEqual(tr(s),s,`${id}: ${s}`);
+  }
+ }finally{await setLanguage('en');}
+});

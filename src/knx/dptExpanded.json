@@ -14072,5 +14072,283 @@
     "note": "Coordinate order confirmed by KNX Association support: time, x, y, brightness, reserved bits, C and B. Application note pending.",
     "unit": "s / colour / %",
     "telegramAllowed": true
+  },
+  "245.600": {
+    "name": "Converter_Test_Result",
+    "size": 48,
+    "fields": [
+      {
+        "key": "ltrf",
+        "label": "Last function test result",
+        "options": [
+          "Unknown",
+          "Passed in time",
+          "Passed, maximum delay exceeded",
+          "Failed, test executed in time",
+          "Failed, maximum delay exceeded",
+          "Test manually stopped"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "ltrd",
+        "label": "Last duration test result",
+        "options": [
+          "Unknown",
+          "Passed in time",
+          "Passed, maximum delay exceeded",
+          "Failed, test executed in time",
+          "Failed, maximum delay exceeded",
+          "Test manually stopped"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "ltrp",
+        "label": "Last partial duration test result",
+        "options": [
+          "Unknown",
+          "Passed in time",
+          "Passed, maximum delay exceeded",
+          "Failed, test executed in time",
+          "Failed, maximum delay exceeded",
+          "Test manually stopped"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "sf",
+        "label": "Start method of last function test",
+        "options": [
+          "Unknown",
+          "Started automatically",
+          "Started by gateway"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "sd",
+        "label": "Start method of last duration test",
+        "options": [
+          "Unknown",
+          "Started automatically",
+          "Started by gateway"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "sp",
+        "label": "Start method of last partial duration test",
+        "options": [
+          "Unknown",
+          "Started automatically",
+          "Started by gateway"
+        ],
+        "optionValues": [
+          0,
+          1,
+          2
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "ldtr",
+        "label": "Last duration test discharge time (min)",
+        "type": "number",
+        "min": 0,
+        "max": 510,
+        "initial": "0",
+        "step": "1"
+      },
+      {
+        "key": "lpdtr",
+        "label": "Remaining charge after last partial duration test (0–254; 255 = unknown)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "255",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "ltrf",
+        "bits": 4,
+        "kind": "uint"
+      },
+      {
+        "key": "ltrd",
+        "bits": 4,
+        "kind": "uint"
+      },
+      {
+        "key": "ltrp",
+        "bits": 4,
+        "kind": "uint"
+      },
+      {
+        "key": "",
+        "bits": 4,
+        "kind": "reserved"
+      },
+      {
+        "key": "sf",
+        "bits": 2,
+        "kind": "uint"
+      },
+      {
+        "key": "sd",
+        "bits": 2,
+        "kind": "uint"
+      },
+      {
+        "key": "sp",
+        "bits": 2,
+        "kind": "uint"
+      },
+      {
+        "key": "",
+        "bits": 2,
+        "kind": "reserved"
+      },
+      {
+        "key": "ldtr",
+        "bits": 16,
+        "kind": "uint"
+      },
+      {
+        "key": "lpdtr",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      187,
+      188
+    ],
+    "note": "Layout from KNX DPT v02.02.01 clause 6.12. LDTR is in minutes at KNX level (DPT 7.006, 0–510; 510 means 510 minutes or longer). No DALI unit conversion is applied. Reserved result codes 6–15, start method 3 and all reserved bits are rejected.",
+    "unit": "min / raw",
+    "telegramAllowed": true
+  },
+  "246.600": {
+    "name": "Battery_Info",
+    "size": 16,
+    "fields": [
+      {
+        "key": "fullyCharged",
+        "label": "Battery fully charged",
+        "options": [
+          "No",
+          "Yes"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "durationFailure",
+        "label": "Battery duration failure",
+        "options": [
+          "No failure",
+          "Failure"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "failure",
+        "label": "Battery failure",
+        "options": [
+          "No failure",
+          "Failure"
+        ],
+        "optionValues": [
+          0,
+          1
+        ],
+        "initial": "0"
+      },
+      {
+        "key": "charge",
+        "label": "Battery charge level (0 = deep discharge, 254 = fully charged, 255 = unknown)",
+        "type": "number",
+        "min": 0,
+        "max": 255,
+        "initial": "255",
+        "step": "1"
+      }
+    ],
+    "parts": [
+      {
+        "key": "",
+        "bits": 5,
+        "kind": "reserved"
+      },
+      {
+        "key": "fullyCharged",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "durationFailure",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "failure",
+        "bits": 1,
+        "kind": "uint"
+      },
+      {
+        "key": "charge",
+        "bits": 8,
+        "kind": "uint"
+      }
+    ],
+    "sourcePages": [
+      189
+    ],
+    "note": "Layout from KNX DPT v02.02.01 clause 6.13. Status bit 0 = battery failure, bit 1 = battery duration failure, bit 2 = battery fully charged; bits 3–7 are reserved and must be 0. Charge level follows DALI command 241.",
+    "unit": "raw",
+    "telegramAllowed": true
   }
 }
