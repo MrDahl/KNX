@@ -1,0 +1,18 @@
+{
+  "route.source": "Source sends a group telegram with HC {{hc}}.",
+  "route.receiver": "Telegram present on this segment with HC {{hc}}. End devices do not forward it; a linked receiver may accept it even at HC 0.",
+  "route.zero": "Not forwarded: incoming HC is 0. Devices on the incoming segment can still receive it.",
+  "route.filter": "Not forwarded: destination group address is absent from this coupler’s filter table.",
+  "route.repeater": "Repeater has no group-address filter; forwarded with HC {{before}} → {{after}}.",
+  "route.forward": "Group-address filter permits this route; forwarded with HC {{before}} → {{after}}.",
+  "power.remaining": "{{value}} mA remaining",
+  "power.overload": "{{value}} mA overload",
+  "power.itemName": "Item {{index}} name",
+  "power.itemQuantity": "Item {{index}} quantity",
+  "power.itemCurrent": "Item {{index}} current",
+  "power.itemType": "Item {{index}} TP type",
+  "power.remove": "Remove item {{index}}",
+  "byte.inspect": "Inspect byte {{index}}: {{name}}",
+  "byte.serial": "Inspect serial character {{index}}",
+  "byte.capture": "Captured byte {{index}}: {{name}}"
+}

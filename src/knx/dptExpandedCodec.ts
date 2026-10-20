@@ -1,7 +1,7 @@
 import manifest from './dptExpanded.json';
 import type { Spec, Values } from './dptCodec';
 type Part={key:string;bits:number;kind:string;scale?:number;offset?:number};
-type ExpandedSpec=Spec & {parts:Part[];unit:string;sourcePages:number[]};
+type ExpandedSpec=Spec & {parts:Part[];unit:string;sourcePages:number[];z8?:boolean};
 export const EXPANDED_DPTS=manifest as Record<string,ExpandedSpec>;
 const binary=(n:bigint,bits:number)=>BigInt.asUintN(bits,n).toString(2).padStart(bits,'0');
 export function encodeFloat16(value:number,min=-671088.64,max=670433.28):string {
@@ -25,7 +25,11 @@ export function validateFields(spec:Spec,v:Values){
  }
 }
 export function encodeExpanded(id:string,v:Values):string{
- const spec=EXPANDED_DPTS[id];validateFields(spec,v);
+ const spec=EXPANDED_DPTS[id];
+ if(spec.z8)return encodeZ8(spec,v);
+ validateFields(spec,v);
+ if(id==='237.600'&&v.group==='1'&&Number(v.address)>15)throw Error('DALI group address must be 0–15.');
+ if(id==='219.001'&&v.ack==='0'&&v.unack==='1')throw Error('Unacknowledged requires acknowledgement support.');
  return spec.parts.map(p=>{
   if(p.kind==='reserved')return '0'.repeat(p.bits);
   if(p.kind==='latin1text'){const s=v[p.key]??'';if(s.length>p.bits/8||[...s].some(c=>c.charCodeAt(0)>255||c.charCodeAt(0)===0))throw Error('Enter up to 14 ISO 8859-1 characters without embedded NULL.');return Array.from({length:p.bits/8},(_,i)=>binary(BigInt(s.charCodeAt(i)||0),8)).join('');}
@@ -43,7 +47,8 @@ export function encodeExpanded(id:string,v:Values):string{
   return binary(BigInt(rounded),p.bits);
  }).join('');
 }
-export function decodeExpanded(id:string,bits:string):Values{
+export function decodeExpanded(id:string,bits:string,context:Values={}):Values{
+ if(EXPANDED_DPTS[id].z8)return decodeZ8(EXPANDED_DPTS[id],bits,context);
  const spec=EXPANDED_DPTS[id],values:Values={};let offset=0;
  for(const p of spec.parts){
   const chunk=bits.slice(offset,offset+p.bits);offset+=p.bits;const raw=BigInt('0b'+chunk),n=Number(raw);
@@ -61,16 +66,54 @@ export function decodeExpanded(id:string,bits:string):Values{
    const integer=p.kind==='sint'?Number(BigInt.asIntN(p.bits,raw)):n;
    // Avoid exposing floating-point multiplication noise in decimal fixed-point values.
    const value=(integer+(p.offset??0))*(p.scale??1);
-   values[p.key]=String(p.kind!=='scaled'&&p.scale&&p.scale<1?Number(value.toFixed(Math.round(-Math.log10(p.scale)))):value);
+   values[p.key]=String(p.kind!=='scaled'&&p.scale&&p.scale<1?Number(value.toFixed(String(p.scale).split('.')[1]?.length??0)):value);
   }
  }
  encodeExpanded(id,values);return values;
 }
 export function expandedSummary(id:string,bits:string):string{
  const spec=EXPANDED_DPTS[id],v=decodeExpanded(id,bits);
- return spec.fields.map(f=>`${f.label}: ${f.options?f.options[(f.optionValues??f.options.map((_,i)=>i)).indexOf(Number(v[f.key]))]:v[f.key]}`).join(' · ');
+ return (expandedFields(id,v)??spec.fields).map(f=>`${f.label}: ${f.options?f.options[(f.optionValues??f.options.map((_,i)=>i)).indexOf(Number(v[f.key]))]:v[f.key]}`).join(' · ');
 }
 export function expandedLayout(id:string){
  const spec=EXPANDED_DPTS[id];if(!spec)return;
- return spec.parts.flatMap(p=>p.kind==='f16'?[{name:'Sign',bits:1},{name:'Exponent',bits:4},{name:'Mantissa bits',bits:11}]:p.kind==='f32'?[{name:'Sign',bits:1},{name:'Exponent',bits:8},{name:'Fraction',bits:23}]:[{name:spec.fields.find(f=>f.key===p.key)?.label??'Reserved',bits:p.bits}]);
+ return spec.parts.flatMap(p=>p.kind==='f16'?[{name:'Sign',bits:1},{name:'Exponent',bits:4},{name:'Mantissa bits',bits:11}]:p.kind==='f32'?[{name:'Sign',bits:1},{name:'Exponent',bits:8},{name:'Fraction',bits:23}]:[{name:p.key==='z8Status'?'Status / command (Z8)':spec.fields.find(f=>f.key===p.key)?.label??'Reserved',bits:p.bits}]);
+}
+
+/** Z8 meanings require the service context; the payload alone cannot select it. */
+function z8State(v:Values) {
+ if(v.z8Mode==='1')return ['0','1','4'].includes(v.z8Command)?'value':'rawMain';
+ const status=Number(v.z8Status);
+ return status&1?'rawMain':(status&2)&&!(status&4)?'faultCode':'value';
+}
+export function expandedFields(id:string,v:Values) {
+ const spec=EXPANDED_DPTS[id];
+ if(!spec?.z8)return spec?.fields;
+ return expandedFieldsFor(spec,v);
+}
+function checkZ8(spec:ExpandedSpec,v:Values) {
+ validateFields({...spec,fields:expandedFieldsFor(spec,v)},v);
+ if(v.z8Mode==='0'&&(Number(v.z8Status)&1)&&(Number(v.z8Status)&6))throw Error('Out of service cannot be combined with fault or overridden.');
+}
+function expandedFieldsFor(spec:ExpandedSpec,v:Values) {
+ const active=new Set(['z8Mode',v.z8Mode==='1'?'z8Command':'z8Status',z8State(v),'vif']);
+ return spec.fields.filter(f=>active.has(f.key));
+}
+function encodeZ8(spec:ExpandedSpec,v:Values):string {
+ checkZ8(spec,v);
+ const p=spec.parts[0],state=z8State(v);
+ const raw=Number(v[state])/(state==='value'?(p.scale??1):1),rounded=Math.round(raw);
+ if(Math.abs(raw-rounded)>Math.max(1,Math.abs(raw))*1e-12)throw Error(`Value must be a multiple of ${p.scale??1}.`);
+ return binary(BigInt(rounded),p.bits)+(spec.parts.length===3?binary(BigInt(v.vif),8):'')+binary(BigInt(v.z8Mode==='1'?v.z8Command:v.z8Status),8);
+}
+function decodeZ8(spec:ExpandedSpec,bits:string,context:Values):Values {
+ const v=Object.fromEntries(spec.fields.map(f=>[f.key,f.initial]));
+ v.z8Mode=context.z8Mode??'0';
+ const status=parseInt(bits.slice(-8),2);v[v.z8Mode==='1'?'z8Command':'z8Status']=String(status);
+ const p=spec.parts[0],raw=BigInt('0b'+bits.slice(0,p.bits)),state=z8State(v);
+ if(spec.parts.length===3)v.vif=String(parseInt(bits.slice(p.bits,p.bits+8),2));
+ const n=state==='value'&&p.kind==='sint'?Number(BigInt.asIntN(p.bits,raw)):Number(raw);
+ const value=n*(state==='value'?(p.scale??1):1);
+ v[state]=String(state==='value'&&p.scale&&p.scale<1?Number(value.toFixed(String(p.scale).split('.')[1]?.length??0)):value);
+ checkZ8(spec,v);return v;
 }

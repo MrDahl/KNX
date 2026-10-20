@@ -25,7 +25,7 @@ export function DatapointTypesList({onUseTelegram}:{onUseTelegram?:(scenario:Dpt
  let bits='';if(spec){try{bits=encodeDpt(selected,values);}catch{/* The controlled editor displays the validation error. */}}
  const choose=(id:string)=>{setSelected(id);setValues(DPT_INPUTS[id]?defaults(id):{});setHex('');setDecodeError('');setReceived('');};
  const clear=()=>{setQuery('');setFamily('all');setKind('all');setStatus('all');setPage(0);};
- const decode=()=>{try{const d=decodeDptHex(selected,hex);setValues(d.values);setReceived(d.bits);setDecodeError('');}catch(e){setDecodeError((e as Error).message);setReceived('');}};
+ const decode=()=>{try{const d=decodeDptHex(selected,hex,values);setValues(d.values);setReceived(d.bits);setDecodeError('');}catch(e){setDecodeError((e as Error).message);setReceived('');}};
  let offset=0;
  return <div className="space-y-6 text-slate-800">
   <section className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">

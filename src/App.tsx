@@ -1,15 +1,17 @@
 import {tr,i18n,setLanguage,type Language} from './i18n';
 import {useTranslation} from 'react-i18next';
-import {CaptureAnalyser} from './components/CaptureAnalyser';
 import type {CaptureScenario} from './knx/capture';
 import React, {useRef,useState} from 'react';
+import {LessonBoundary,lessons} from './components/LazyLessons';
 import {Sliders,Send,Network,Calculator,Layers,Shapes,FileSearch} from 'lucide-react';
 import {TelegramVisualizer} from './components/TelegramVisualizer';
-import {TopologyExplorer} from './components/TopologyExplorer';
-import {HopCountExplorer} from './components/HopCountExplorer';
-import {SendingSimulator} from './components/SendingSimulator';
-import {DatapointTypesList,DptScenario} from './components/DatapointTypesList';
-import {CadSymbols} from './components/CadSymbols';
+import type {DptScenario} from './components/DatapointTypesList';
+const CaptureAnalyser=lessons.CaptureAnalyser;
+const TopologyExplorer=lessons.TopologyExplorer;
+const HopCountExplorer=lessons.HopCountExplorer;
+const SendingSimulator=lessons.SendingSimulator;
+const DatapointTypesList=lessons.DatapointTypesList;
+const CadSymbols=lessons.CadSymbols;
 const navigation=[
  {id:'telegram',label:'Telegram',description:'Fields, bytes and signal',icon:Sliders},
  {id:'capture',label:'Capture analyser',description:'ETS recordings and DPT interpretation',icon:FileSearch},
@@ -23,9 +25,13 @@ type Page=typeof navigation[number]['id'];
 export default function App() {
  useTranslation();
  const [page,setPage]=useState<Page>('telegram');
+ const [captureVisited,setCaptureVisited]=useState(false);
+ const [languageBusy,setLanguageBusy]=useState(false);
+ const [languageError,setLanguageError]=useState('');
+ const changeLanguage=async(language:Language)=>{setLanguageBusy(true);setLanguageError('');try{await setLanguage(language);}catch{setLanguageError('Could not load the language. Please try again.');}finally{setLanguageBusy(false);}};
  const [scenario,setScenario]=useState<(DptScenario&{generate?:boolean;destination?:string;origin?:string;captureParams?:CaptureScenario['captureParams']})|null>(null);
  const heading=useRef<HTMLHeadingElement>(null);
- const navigate=(id:string)=>{if(!navigation.some(n=>n.id===id))return;setPage(id as Page);requestAnimationFrame(()=>{heading.current?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});});};
+ const navigate=(id:string)=>{if(!navigation.some(n=>n.id===id))return;if(id==='capture')setCaptureVisited(true);setPage(id as Page);requestAnimationFrame(()=>{heading.current?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});});};
  const selectDpt=(value:DptScenario)=>{setScenario(value);navigate('telegram');};
  const active=navigation.find(n=>n.id===page)!;
  return <div className="@container/app app-root">
@@ -37,16 +43,17 @@ export default function App() {
     <div className="nav-credit">Marc Sonne Dahl<br/>KNX++ Tutor<br/><span className="text-[11px]">{tr("Teaching tool · TP1")}</span></div>
    </nav>
    <div className="app-main min-w-0">
-    <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{tr(active.label)}</h1></div><label className="language-selector"><span>{i18n.language==='da'?'Sprog':'Language'}</span><select aria-label={i18n.language==='da'?'Sprog':'Language'} value={i18n.language} onChange={e=>void setLanguage(e.target.value as Language)}><option value="en" lang="en">English</option><option value="da" lang="da">Dansk</option></select></label></header>
+    <header className="workspace-heading"><div><p className="eyebrow">KNX TP Explorer</p><h1 ref={heading} tabIndex={-1} className="text-xl font-extrabold text-slate-900 outline-none">{tr(active.label)}</h1></div><label className="language-selector"><span>{i18n.language==='da'?'Sprog':'Language'}</span><select aria-label={i18n.language==='da'?'Sprog':'Language'} value={i18n.language} disabled={languageBusy} onChange={e=>void changeLanguage(e.target.value as Language)}><option value="en" lang="en">English</option><option value="da" lang="da">Dansk</option></select></label></header>
+    {languageError&&<p role="alert">{tr(languageError)}</p>}
     <main id="lesson-content">
-     {page==='symbols'&&<CadSymbols/>}
-     <div hidden={page!=='capture'}><CaptureAnalyser onUseTelegram={value=>{setScenario(value);navigate('telegram');}}/></div>
+     {page==='symbols'&&<LessonBoundary><CadSymbols/></LessonBoundary>}
+     {captureVisited&&<div hidden={page!=='capture'}><LessonBoundary><CaptureAnalyser onUseTelegram={value=>{setScenario(value);navigate('telegram');}}/></LessonBoundary></div>}
      <div hidden={page==='symbols'||page==='capture'}>
      <TelegramVisualizer scenario={scenario} showControls={page==='telegram'} onConfigure={()=>navigate('telegram')}>
-      {page==='objects'&&<SendingSimulator onTransmit={(destination,value)=>setScenario({id:'1.001',values:{value:value?'1':'0'},generate:true,destination,origin:'Objects simulator · Sensor 1.1.1'})}/>}
-      {page==='routing'&&<HopCountExplorer/>}
-      {page==='capacity'&&<TopologyExplorer/>}
-      {page==='dpt'&&<DatapointTypesList onUseTelegram={selectDpt}/>}
+      {page==='objects'&&<LessonBoundary><SendingSimulator onTransmit={(destination,value)=>setScenario({id:'1.001',values:{value:value?'1':'0'},generate:true,destination,origin:'Objects simulator · Sensor 1.1.1'})}/></LessonBoundary>}
+      {page==='routing'&&<LessonBoundary><HopCountExplorer/></LessonBoundary>}
+      {page==='capacity'&&<LessonBoundary><TopologyExplorer/></LessonBoundary>}
+      {page==='dpt'&&<LessonBoundary><DatapointTypesList onUseTelegram={selectDpt}/></LessonBoundary>}
 
      </TelegramVisualizer>
      </div>

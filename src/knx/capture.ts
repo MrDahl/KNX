@@ -47,7 +47,7 @@ export function parseCaptureXml(text:string,Parser:typeof DOMParser=DOMParser):C
 export function sizeBits(size:string):number|null {const m=size.match(/^(\d+)\s*(bits?|bytes?|octets?)$/i);return m?Number(m[1])*(/^bit/i.test(m[2])?1:8):null;}
 export function candidateDpts(row:CaptureRecord){
  if(row.error||!row.groupValue||row.apci===0)return [];
- return catalogue.filter(d=>{const size=DPT_INPUTS[d.id]?.size??sizeBits(d.size);return size!==null&&(row.compact?size<=6&&parseInt(row.payload!,16)<2**size:size===(row.payload!.replace(/ /g,'').length/2)*8);});
+ return catalogue.filter(d=>{if(DPT_INPUTS[d.id]?.telegramAllowed===false)return false;const size=DPT_INPUTS[d.id]?.size??sizeBits(d.size);return size!==null&&(row.compact?size<=6&&parseInt(row.payload!,16)<2**size:size===(row.payload!.replace(/ /g,'').length/2)*8);});
 }
 export function decodeCapture(row:CaptureRecord,id:string){
  if(!candidateDpts(row).some(d=>d.id===id))throw Error('This DPT does not fit the observed payload encoding.');

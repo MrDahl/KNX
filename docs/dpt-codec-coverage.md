@@ -364,3 +364,9 @@ The catalogue now includes the previously absent 249.600 (six-byte brightness/co
 ## DALI result and battery objects (2 additional codecs)
 
 DPT 245.600 (six bytes) and 246.600 (two bytes) were added from v02.02.01 clauses 6.12 and 6.13, bringing codec coverage to 319 subtypes. The DPT 248.600 layout is no longer marked as pending; only its KNX-level rated-duration scaling remains unconfirmed, and this is stated in its source note. DPT 8.010 keeps 327.66 % as its highest valid value because the standard reserves 7FFFh for invalid data.
+
+## Priority codec expansion
+
+52 additional exact subtypes bring coverage to **371/454** (83 reference-only). Added: 237.600; all catalogue entries in families 200–205 and 218; 217.001, 219.001, 225.001–003, 229.001, 238.001, 239.001, 240.800 and 241.800. The 42 Z8 subtypes use explicit status/command context, preserve ignored raw values, validate reserved codes, and are excluded from ordinary group telegrams. Signed integers and fixed-point scaling follow the detailed tables, correcting inherited floating-point descriptions. Large aggregate types retain their existing coverage.
+
+The 219.001 attributes follow its field table (four flags); 237.600 follows the matching AI encoding and address-range table; 240.800 follows its three-octet diagram. The conflicting text in each source remains documented in the workbench.

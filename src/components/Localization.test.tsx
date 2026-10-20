@@ -143,3 +143,18 @@ test('245.600 and 246.600 labels, options and notes are translated',async()=>{
   }
  }finally{await setLanguage('en');}
 });
+
+test('English semantic resources match the full translation source',async()=>{
+ const {default:semantic}=await import('../locales/semantic-en.json');
+ const expected=Object.fromEntries(Object.entries(en).filter(([key])=>/^(route|power|byte)\./.test(key)));
+ assert.deepEqual(semantic,expected);
+});
+test('remembered Danish loads before applying the preference; latest language request wins',async()=>{
+ const {initializeLanguage}=await import('../i18n');
+ const previous=globalThis.localStorage;
+ Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem:()=> 'da',setItem(){}}});
+ try{
+  await setLanguage('en');await initializeLanguage();assert.equal(i18n.language,'da');assert.equal(tr('Loading lesson…'),'Indlæser afsnit…');
+  await Promise.all([setLanguage('da'),setLanguage('en')]);assert.equal(i18n.language,'en');
+ }finally{Object.defineProperty(globalThis,'localStorage',{configurable:true,value:previous});await setLanguage('en');}
+});
