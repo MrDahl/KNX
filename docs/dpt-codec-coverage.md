@@ -1,6 +1,6 @@
 # DPT codec coverage
 
-The workbench implements **317 exact subtypes** from KNX Interworking Datapoint Types v02.02.01 (2021), up from 24. The initial expansion added 264 codecs; owner review adds a complete-timestamp subset for 247.600 and a raw-value codec for 248.600. Coverage is not a claim of KNX certification or support for later editions.
+The workbench implements **319 exact subtypes** from KNX Interworking Datapoint Types v02.02.01 (2021), up from 24. The initial expansion added 264 codecs; owner review adds a complete-timestamp subset for 247.600 and a raw-value codec for 248.600. Coverage is not a claim of KNX certification or support for later editions.
 
 ## Scope
 
@@ -9,6 +9,7 @@ The workbench implements **317 exact subtypes** from KNX Interworking Datapoint 
 - F32 editors handle finite values only. Signed 64-bit energy values use decimal strings and BigInt, preserving values beyond JavaScript's safe integer range.
 - Parameter-only and LTE structures can be inspected but cannot be handed off to ordinary group-value telegrams. Companion-DPT requirements are explained; this simulator does not verify a physical device's implementation.
 - The existing DPT 19.001 editor remains a complete, fault-free, unsynchronised timestamp subset. DPT 16.000 remains NULL-padded ASCII without embedded NULL.
+- **245.600 and 246.600 are enabled** (clauses 6.12 and 6.13; printed pages 187–189). In 245.600 the last duration-test result is in minutes at KNX level (0–510); no DALI unit conversion is applied. Reserved result codes, start method 3 and reserved bits are rejected.
 - **243.600 is enabled** with time → x → y → brightness → flags, confirmed by KNX Association support. The application note is pending. **247.600** supports complete, fault-free, unsynchronised timestamps, hours 0–23, with CLQ and all seven reserved bits zero; other valid timestamp states are outside this editor. **248.600** supports raw-byte encoding; its KNX mapping remains pending. A conditional DALI interpretation displays raw × 2 min, with 255 meaning 510 min or longer; encoded bytes remain unchanged. Other reference-only rows still require codec implementation and service-specific validation.
 
 ## Implemented counts by family
@@ -359,3 +360,7 @@ The catalogue now includes the previously absent 249.600 (six-byte brightness/co
 | 257.1202 | Value_ApparentPower_3 | 216 | Enabled |
 | 272.600 | Converter_Info | 198 | Enabled |
 | 276.1200 | ERL_Status | 222 | Enabled |
+
+## DALI result and battery objects (2 additional codecs)
+
+DPT 245.600 (six bytes) and 246.600 (two bytes) were added from v02.02.01 clauses 6.12 and 6.13, bringing codec coverage to 319 subtypes. The DPT 248.600 layout is no longer marked as pending; only its KNX-level rated-duration scaling remains unconfirmed, and this is stated in its source note. DPT 8.010 keeps 327.66 % as its highest valid value because the standard reserves 7FFFh for invalid data.

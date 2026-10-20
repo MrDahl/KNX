@@ -12185,7 +12185,7 @@
       191
     ],
     "unit": "Raw byte; DALI 2 min interpretation, KNX mapping unconfirmed",
-    "layoutPending": true,
+    "layoutPending": false,
     "changes": [
       {
         "action": "renamed+columns reset",
