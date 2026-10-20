@@ -60,7 +60,7 @@ Supported standard group frames can be reconstructed in the visualiser with orig
 
 The teaching content was developed against the supplied **KNX Basic, Advanced and Tutor course documentation**, the TP1 document **v01.02.02** used for the timing model, and **KNX Interworking Datapoint Types v02.02.01 (2021)**. Relevant chapters and per-type printed page references appear in the app. These documents and current manufacturer instructions remain the authority for design and commissioning; the repository does not grant rights to redistribute course or standard PDFs.
 
-The DPT catalogue is edition-specific, not a claim to cover every later KNX release. All 454 identities and overview formats were checked. The previously missing descriptions and size-corrected rows were researched, while **one entry still explicitly requires source clarification** (248.600 KNX rated-duration mapping). Other inherited descriptions are marked as such. Identity verification, description review and implemented codec coverage are deliberately separate.
+The DPT catalogue is edition-specific, not a claim to cover every later KNX release. All 454 identities and overview formats were checked. The previously missing descriptions and size-corrected rows were researched. **The KNX-level scaling of DPT 248.600’s rated duration remains unconfirmed**, as stated in its source note; its byte layout is implemented. Other inherited descriptions are marked as such. Identity verification, description review and implemented codec coverage are deliberately separate.
 
 The workbench implements **319 subtypes**. Parameter-only and LTE structures remain inspectable but are excluded from ordinary group-value transfer. See [codec coverage and source pages](docs/dpt-codec-coverage.md) for exact subtype coverage, restrictions and remaining work.
 
@@ -70,7 +70,7 @@ Report a technical discrepancy through [GitHub Issues](https://github.com/MrDahl
 
 ## Language support
 
-The current interface is English. The [English/Danish localization plan](docs/localization.md) describes translation resources, terminology review, locale-aware input and protocol-independent rendering. Danish support is planned, not yet implemented.
+The interface supports **English and Danish**. The English / Dansk selector remembers the chosen language and preserves entered values and simulation state. Danish numeric inputs accept decimal commas; KNX addresses, DPT identifiers and telegram bytes keep their protocol format. See [localization documentation](docs/localization.md) for translation coverage, terminology and maintenance.
 
 ## Development
 
@@ -112,3 +112,11 @@ The GitHub Pages workflow runs `npm test` and `npm run lint` before building and
 <p align="center">
   <img src="assets/made_in_dk.svg" alt="Made in Denmark" width="250">
 </p>
+
+## Licence and attribution
+
+The original application code and documentation are available under the [MIT Licence](LICENSE). The original CAD symbol SVGs in `public/symbols/`, created by Marc Sonne Dahl, are also available under MIT; retain the copyright and licence notice when redistributing them. See [symbol licensing](public/symbols/README.md#licence).
+
+Branding SVGs in `assets/` are excluded from this licence. Third-party dependencies, icons, course materials and standard documents remain subject to their owners’ terms; no trademark rights are granted.
+
+KNX is a trademark of KNX Association. KNX Explorer is an independent application and is not affiliated with, endorsed by, or certified by KNX Association.
