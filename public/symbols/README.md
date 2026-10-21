@@ -6,4 +6,6 @@ The catalogue contains generic English description slots. Add or adjust entries 
 
 ## Licence
 
-The original CAD symbol SVGs in this directory are copyright (c) 2026 Marc Sonne Dahl and are licensed under the [MIT Licence](../../LICENSE). You may reuse and modify them under those terms, retaining the copyright and licence notice. This permission covers the original drawings, not KNX trademarks or branding artwork elsewhere in the repository.
+These original CAD drawings and SVG symbols are copyright © 2026 Marc Sonne Dahl and are licensed under the [MIT License](LICENSE). You may use, modify and redistribute them in personal, educational and **commercial** drawings and projects. Retain the copyright and licence notice when redistributing the files or substantial copies.
+
+The application's noncommercial code licence does not restrict these standalone drawings. No rights to KNX or other third-party trademarks, logos or protected materials are granted.

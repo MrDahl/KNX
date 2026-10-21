@@ -48,7 +48,7 @@ test('automatic scenario generation does not inherit invalid builder addresses',
 });
 test('monitor changes between nonmodal pane and modal drawer, restores scroll and accepts Escape',async()=>{
  let r:any,resize:(entries:any[])=>void=()=>{};
- const dialog={open:false,modal:false,close(){this.open=false;this.modal=false;},show(){this.open=true;this.modal=false;},showModal(){this.open=true;this.modal=true;}};
+ const dialog={open:false,modal:false,close(){this.open=false;this.modal=false;},show(){throw Error('Desktop panel must not move focus with show()');},setAttribute(name:string){if(name==='open')this.open=true;},showModal(){this.open=true;this.modal=true;}};
  const oldDocument=(globalThis as any).document,oldRO=(globalThis as any).ResizeObserver;
  (globalThis as any).document={body:{style:{overflow:'auto'}}};
  (globalThis as any).ResizeObserver=class {constructor(fn:any){resize=fn;}observe(){}disconnect(){}};
@@ -65,4 +65,13 @@ test('monitor changes between nonmodal pane and modal drawer, restores scroll an
   await act(()=>resize([{contentRect:{width:1100}}]));assert.equal(dialog.open,true);assert.equal(dialog.modal,false);
   await act(()=>r.unmount());
  }finally{(globalThis as any).document=oldDocument;(globalThis as any).ResizeObserver=oldRO;}
+});
+
+
+test('initial app render starts at the top without refocusing the monitor',async()=>{
+ const calls:any[]=[];const previous=window.scrollTo;window.scrollTo=((value:any)=>calls.push(value)) as any;
+ let r:any;try{await act(()=>{r=create(<App/>);});assert.deepEqual(calls,[{top:0,left:0,behavior:'instant'}]);
+ await act(()=>r.update(<App/>));assert.equal(calls.length,1);
+ assert.equal(r.root.findAllByType('img').filter((n:any)=>n.props.alt==='KNX Explorer').length,2);
+ }finally{await act(()=>r.unmount());window.scrollTo=previous;}
 });

@@ -3012,5 +3012,9 @@
   "ref_de7e8d190295d4b2": "Ignoreres af denne kommando; det rå hovedfelt bevares.",
   "ref_c3702a596ae5c4b7": "Ude af drift: dette er ikke en måleværdi. Det rå hovedfelt bevares.",
   "ref_e1b1f30db89ce7f2": "Den overstyrede værdi er gyldig, også når fejlflaget er sat.",
-  "ref_c43b64ac3e1fd70f": "Normal status"
+  "ref_c43b64ac3e1fd70f": "Normal status",
+  "ref_bff155b200d51a9d": "Licens og rettigheder",
+  "ref_4008625e6c25ec5c": "Læs licensvilkårene",
+  "ref_342e8806c68b3cc2": "Appkode: ikke-kommerciel brug, ændring og deling med kreditering. CAD-tegninger af Marc Sonne Dahl: kommerciel brug tilladt under MIT.",
+  "ref_7436d78bc92553d0": "KNX og ETS er registrerede varemærker tilhørende KNX Association. Organisationens standarder, dokumentation, kursusmaterialer og branding er fortsat beskyttet af deres respektive rettigheder. Denne uafhængige app er ikke tilknyttet, godkendt eller certificeret af KNX Association."
 }

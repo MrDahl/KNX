@@ -2995,5 +2995,9 @@
   "Ignored by this command; raw main field is preserved.": "ref_de7e8d190295d4b2",
   "Out of service: this is not a measurement. Raw main field is preserved.": "ref_c3702a596ae5c4b7",
   "Overridden value is valid, including when Fault is also set.": "ref_e1b1f30db89ce7f2",
-  "Normal status": "ref_c43b64ac3e1fd70f"
+  "Normal status": "ref_c43b64ac3e1fd70f",
+  "Licence and attribution": "ref_bff155b200d51a9d",
+  "Read the licence terms": "ref_4008625e6c25ec5c",
+  "Application code: noncommercial use, modification and sharing with attribution. CAD drawings by Marc Sonne Dahl: commercial use permitted under MIT.": "ref_342e8806c68b3cc2",
+  "KNX and ETS are registered trademarks of KNX Association. Its standards, documentation, course materials and branding remain protected by their respective rights. This independent app is not affiliated with, endorsed by or certified by KNX Association.": "ref_7436d78bc92553d0"
 }
