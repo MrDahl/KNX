@@ -1,34 +1,75 @@
-MIT License
-
+KNX Explorer — Code, CAD Artwork and Third-Party Rights
 Copyright (c) 2026 Marc Sonne Dahl
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. APPLICATION CODE AND ORIGINAL DOCUMENTATION
+KNX Explorer Noncommercial Source Licence 1.0
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Subject to the conditions below, Marc Sonne Dahl grants you a worldwide,
+royalty-free, non-exclusive licence to use, copy, study, modify and distribute
+the original application code and original documentation in this version of
+KNX Explorer, in source or compiled form, solely for noncommercial purposes.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Noncommercial means not primarily intended for or directed toward commercial
+advantage or monetary compensation. Personal study, experimentation and
+noncommercial education are permitted. Selling the application, incorporating
+it into a commercial product or paid service, or using it to provide a
+commercial service requires separate written permission from Marc Sonne Dahl.
 
-Scope
+You must retain this licence and the copyright and attribution notices with
+copies or substantial portions of the code or documentation. Identify your
+modifications and do not imply that they are endorsed by Marc Sonne Dahl or
+KNX Association. Redistributed copies and modifications remain subject to
+these noncommercial conditions for the material covered by this licence.
+You may not sublicense that material under terms permitting commercial use.
 
-This licence covers the original application code, original documentation,
-and original CAD symbol SVGs in public/symbols, except where a file states
-otherwise. The CAD symbol artwork is copyright (c) 2026 Marc Sonne Dahl and
-is expressly offered under the MIT terms above.
+The source is available for inspection and reuse under these conditions.
+Because commercial use is restricted, this is a source-available licence,
+not an OSI-approved open-source licence and not the MIT License.
 
-Branding artwork in assets/*.svg is excluded from this licence; no reuse
-permission for that artwork is granted here. No trademark rights are granted.
-Third-party code, icons, specifications, course materials and other third-party
-content remain subject to their respective owners' terms. This licence does
-not grant rights to redistribute KNX course materials or standard documents.
+2. ORIGINAL DRAWINGS AND CAD FILES — COMMERCIAL USE PERMITTED
+
+The original device drawings and CAD symbol SVGs created by Marc Sonne Dahl
+in public/symbols/ are licensed separately under the MIT License, reproduced
+in public/symbols/LICENSE. They may be used, modified, incorporated into
+projects and redistributed, including commercially, subject to its notice
+requirements. The noncommercial restriction in section 1 does not apply to
+those standalone drawings and CAD assets.
+
+Branding artwork in assets/*.svg, including the KNX Explorer logo and personal
+branding, is excluded from these reuse grants. Permission to use the CAD
+symbols does not include permission to reuse application or third-party brands.
+
+3. KNX ASSOCIATION AND OTHER THIRD-PARTY RIGHTS
+
+KNX and ETS are registered trademarks of KNX Association. Copyright and other
+rights in KNX Association's standards, specifications, documentation, course
+materials, logos and other protected materials remain with KNX Association.
+No rights in those materials or trademarks are granted by this licence.
+
+The independently authored application code and original drawings remain
+copyright Marc Sonne Dahl; being about KNX does not transfer their ownership.
+Third-party dependencies, icons and other third-party content retain their
+own copyright and licence terms. Preserve their required notices. Nothing
+here overrides third-party licences or grants permission to redistribute
+KNX standards or course documents.
+
+KNX Explorer is an independent educational application. It is not affiliated
+with, endorsed by or certified by KNX Association. No certification, product
+compatibility approval or trademark permission is implied.
+
+4. EARLIER RELEASES
+
+This licence applies to versions distributed with this notice. It does not
+withdraw permissions already granted for copies previously released under
+MIT. The former notice is preserved in LICENSES/legacy-MIT.txt for reference.
+The new noncommercial restriction must not be presented as retroactively
+restricting those earlier MIT copies.
+
+5. DISCLAIMER
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE MATERIAL IS PROVIDED "AS IS",
+WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY ARISING FROM THE MATERIAL OR ITS USE, WHETHER IN CONTRACT, TORT
+OR OTHERWISE. Rights that cannot lawfully be excluded remain unaffected.

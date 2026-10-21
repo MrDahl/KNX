@@ -17,7 +17,7 @@ export function MonitorDock({children,controls,openRevision=0,actions}:{children
  useEffect(()=>{
   const d=dialog.current;if(!d)return;
   if(d.open)d.close();
-  if(compact&&open)d.showModal();else if(!compact&&!desktopClosed)d.show();
+  if(compact&&open)d.showModal();else if(!compact&&!desktopClosed)d.setAttribute('open',''); // Desktop panel must not run dialog focusing steps.
   if(compact&&open){const prev=document.body.style.overflow;document.body.style.overflow='hidden';return()=>{document.body.style.overflow=prev;};}
  },[compact,open,desktopClosed]);
  const close=()=>{if(compact)setOpen(false);else setDesktopClosed(true);};
