@@ -34,6 +34,8 @@ Short explanations stay visible. **Show details** sections provide layouts, assu
 - **Readable signals:** bit streams and waveforms scroll horizontally inside their own regions instead of shrinking to fit.
 - **Linked fields:** hover, tap or keyboard-focus a byte card to highlight the same field in the bit stream, explanation and waveform. Labels accompany colours.
 - **Inline DPT inspection:** select a byte, bit or field name in the existing workbench. Matching fields are highlighted across octet boundaries. Explanations distinguish raw values, padding and Z8 status/command meanings without modifying the value or opening another page.
+- **Telegram comparison:** pin a generated frame and compare it with subsequent frames in the same monitor. Changed bytes and bits are marked, semantic changes are listed, and check bytes remain aligned when payload lengths differ. Clear or replace the pinned frame at any time.
+- **Build your own:** the Telegram page starts with an empty monitor and editable settings. Example-loading buttons have been removed. Address hints and local validation guide input; priority, repetition and hop count are grouped under Telegram settings. Invalid edits keep the last valid frame visible.
 - **Page loading:** refresh starts at the top of the Telegram page. The desktop monitor opens without taking keyboard focus; the narrow-screen drawer keeps native modal focus behaviour.
 - **Shared state:** the generated telegram survives lesson navigation. Hop Count and Topology Capacity Explorer do not modify that frame. The Objects sensor generates its own frame.
 

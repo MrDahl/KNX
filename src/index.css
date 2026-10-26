@@ -124,3 +124,25 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .workspace-title { display:flex; align-items:center; gap:14px; min-width:0; }
 .header-logo { display:block; width:78px; height:auto; flex-shrink:0; }
 @container app (min-width: 72rem) { .header-logo { display:none; } }
+
+/* Inline comparison remains inside the monitor, including in the mobile drawer. */
+.frame-summary { display:flex; flex-direction:column; gap:.35rem; padding:1rem; border:1px solid #cbd5e1; border-radius:.75rem; background:#f8fafc; overflow-wrap:anywhere; }
+.frame-summary span { font-size:.875rem; }
+.frame-summary small { color:#475569; }
+.comparison-panel { border:1px solid #94a3b8; border-radius:.75rem; padding:.75rem; background:#fff; }
+.comparison-scroll { overflow-x:auto; margin:.75rem 0; }
+.comparison-columns { display:flex; width:max-content; gap:.25rem; padding:.25rem; }
+.comparison-column,.comparison-labels { display:flex; flex-direction:column; gap:.5rem; padding:.5rem; font-size:.75rem; }
+.comparison-column { min-width:3.5rem; border:1px solid #cbd5e1; border-radius:.5rem; background:#f8fafc; cursor:pointer; }
+.comparison-column strong { font-family:monospace; font-size:1rem; }
+.comparison-changed { background:#fffbeb; border:2px solid #b45309; padding:calc(.5rem - 1px); }
+.comparison-column small { font-size:.6rem; }
+.comparison-bit-detail { padding:.75rem; border-radius:.5rem; background:#f1f5f9; }
+.comparison-bit-detail span.changed-bit { background:#fde68a; color:#78350f; font-weight:800; text-decoration:underline; }
+.comparison-bit-detail div { font-family:monospace; line-height:2; }
+.byte-card:hover,.serial-character:hover,.comparison-column:hover { box-shadow:0 0 0 2px #64748b; }
+.byte-card:focus-visible,.serial-character:focus-visible,.comparison-column:focus-visible,summary:focus-visible,.lesson-button:focus-visible { outline:3px solid #15803d; outline-offset:3px; }
+.comparison-column[aria-pressed=true] { outline:2px solid #334155; outline-offset:1px; }
+.byte-updated { animation:byte-update 1.8s ease-out; }
+@keyframes byte-update { from { box-shadow:0 0 0 4px #d97706; } to { box-shadow:0 0 0 0 transparent; } }
+@media (prefers-reduced-motion:reduce) { .byte-updated { animation:none; outline:2px solid #d97706; } }
