@@ -3,7 +3,8 @@ import {useTranslation} from 'react-i18next';
 import React, { useEffect, useRef, useState } from "react";
 import { Sliders, Play, Layers, AlertTriangle, Clock, CornerDownRight, Zap } from "lucide-react";
 import { APCICode, TelegramParams, TelegramByte, KNXAddressIndividual, KNXAddressGroup } from "../types";
-import { APCI_DEFS, DPT_DEFS, PRESET_TELEGRAMS } from "../data";
+import { APCI_DEFS, DPT_DEFS } from "../data";
+import {snapshot, type FrameSnapshot} from '../knx/telegramComparison';
 import { MonitorDock } from "./MonitorDock";
 import { TelegramMonitor } from "./TelegramMonitor";
 import { telegramTiming, DEFAULT_NEXT_ACCESS, type NextAccess } from "../knx/tp1Timing";
@@ -96,7 +97,8 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
   const [selectedByte, setSelectedByte] = useState(0);
   const [openRevision,setOpenRevision] = useState(0);
   const [frameOrigin,setFrameOrigin] = useState<string|undefined>();
-  const [currentPreset, setCurrentPreset] = useState(-1);
+  const [frame,setFrame] = useState<FrameSnapshot|null>(null);
+  const [pinned,setPinned] = useState<FrameSnapshot|null>(null);
   const [constructedBytes, setLogicalBytes] = useState<TelegramByte[]>([]);
   const [compiled, setCompiled] = useState<{signature: string; stream: string; params: TelegramParams} | null>(null);
   const [error, setError] = useState("");
@@ -106,38 +108,28 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
     const next:TelegramParams=scenario.captureParams??(scenario.generate?{repeatFlag:'1',targetType:'1',command:APCICode.GroupValueWrite,source:{area:1,line:1,device:scenario.destination?1:10},destination:{main,middle,sub},hopCount:6,priority:'11',dptType:scenario.id,ackType:'CC'}:{...params,dptType:scenario.id,command:APCICode.GroupValueWrite});
     setParams(next);
     if(scenario.captureParams)setResponse('NONE');
-    setDptValues({...scenario.values});setCurrentPreset(-1);setCompiled(null);setLogicalBytes([]);setError('');
+    setDptValues({...scenario.values});setError('');
     setFrameOrigin(scenario.generate?scenario.origin:undefined);
     if(scenario.generate){
-      try{const payload=encodeDpt(scenario.id,scenario.values),result=buildStandardGroupTelegram(next,payload);setLogicalBytes(result.cards);setSelectedByte(0);setCompiled({signature:JSON.stringify([next,payload]),stream:result.stream,params:next});setOpenRevision(v=>v+1);}catch(e){setError(e instanceof Error?e.message:'Cannot generate the scenario telegram.');}
+      try{const payload=encodeDpt(scenario.id,scenario.values),result=buildStandardGroupTelegram(next,payload);setFrame(snapshot(result.cards,next,payload,scenario.values));setLogicalBytes(result.cards);setSelectedByte(0);setCompiled({signature:JSON.stringify([next,payload]),stream:result.stream,params:next});setOpenRevision(v=>v+1);}catch(e){setError(e instanceof Error?e.message:'Cannot generate the scenario telegram.');}
     }
   }, [scenario]);
-  const updateParams: typeof setParams = next => { setParams(next); setCurrentPreset(-1); setError(''); };
+  const updateParams: typeof setParams = next => { setParams(next);  setError(''); };
   const signature = JSON.stringify([params, dptValue]);
   const isGenerated = compiled !== null;
   const isDirty = !!compiled && (compiled.signature !== signature);
   const isRead = params.command === APCICode.GroupValueRead;
-  const applyPreset = (idx: number) => {
-    const p = PRESET_TELEGRAMS[idx];
-    setParams({...p.params, source: {...p.params.source}, destination: {...p.params.destination}} as TelegramParams);
-    // Correct this tool's presets without modifying the shared catalogue in this step.
-    const values=defaults(p.params.dptType);
-    if(p.params.dptType==='9.001')values.value='23.5';
-    if(p.params.dptType==='5.001')values.value='75';
-    if(p.params.dptType==='1.001')values.value=p.payloadValue;
-    setDptValues(values);
-    setCurrentPreset(idx); setError("");
-  };
   const handleGenerateClick = () => {
-    setFrameOrigin(undefined);
     try {
       if (!isRead && !dptValue) throw new Error('Correct the invalid DPT value before generating.');
       const result = buildStandardGroupTelegram(params, dptValue);
+      setFrameOrigin(undefined);
+      setFrame(snapshot(result.cards,params,dptValue,dptValues));
       setLogicalBytes(result.cards); setSelectedByte(0);setOpenRevision(v=>v+1);
       setCompiled({signature, stream: result.stream, params: {...params}}); setError("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Cannot generate this telegram.");
-      setCompiled(null); setLogicalBytes([]);
+      // Keep the last valid frame visible when input is invalid.
     }
   };
   const handleDptSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -146,7 +138,7 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
     // Use the semantic defaults for this exact subtype.
     const values=defaults(id);
     setDptValues(values);
-    setCurrentPreset(-1); setError("");
+     setError("");
   };
   const addressErrors = ([
     ['Source area', params.source.area, 15],
@@ -160,38 +152,28 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
   const timing = telegramTiming(totalCharactersCount, nextAccess);
   const totalTransmitBitsCount = timing.frameBits, transmissionMs = timing.frameMs;
   const getAckPhysicalBitStream = () => compiled && response !== 'NONE' ? serial(bits(parseInt(response, 16))) : "";
-  const showReadExample = (reply:boolean) => {
-    setFrameOrigin(undefined);
-    const p:TelegramParams = {repeatFlag:'1',targetType:'1',command:reply?APCICode.GroupValueResponse:APCICode.GroupValueRead,
-      source:{area:1,line:1,device:reply?20:10},destination:{main:1,middle:0,sub:1},hopCount:6,priority:'11',dptType:'9.001',ackType:'CC'};
-    const values={value:'23.5'}, payload=encodeDpt('9.001',values),result=buildStandardGroupTelegram(p,payload);
-    setParams(p);setDptValues(values);setCurrentPreset(-1);setError('');setResponse('CC');setSelectedByte(0);
-    setOpenRevision(v=>v+1);setLogicalBytes(result.cards);setCompiled({signature:JSON.stringify([p,payload]),stream:result.stream,params:p});
-  };
-
   const inputClass="lesson-input";
   const controls = <div className="space-y-4">
     <div hidden={!showControls} className="space-y-4">
       <section className="lesson-card space-y-4">
         <div><p className="eyebrow">{tr("01 · Telegram")}</p><h2 className="text-2xl font-extrabold text-slate-900">{tr("TP1 telegram configuration")}</h2><p className="text-sm text-slate-600 mt-2">{tr("Configure the source, destination, service and datapoint value to inspect the resulting bytes, serial bits and TP1 waveform.")}</p></div>
         <details className="detail-box"><summary>{tr("Show details · scope of this simulator")}</summary><p className="text-sm">{tr("Standard plain TP1 group-value telegrams: Read, Response and Write. Maximum 14 value octets. Management services, extended frames and KNX Secure are not implemented here.")}</p></details>
-        <div><h3 className="text-sm font-bold mb-2">{tr("Example telegrams")}</h3><div className="grid @md:grid-cols-2 gap-2">{PRESET_TELEGRAMS.map((t,idx)=><button key={idx} aria-pressed={currentPreset===idx} className={`lesson-button text-left ${currentPreset===idx?'bg-green-50 border-green-700':''}`} onClick={()=>applyPreset(idx)}>{tr(t.name.replace('(High Priority)','(Alarm Priority)'))}</button>)}</div></div>
+
         <label className="block text-sm font-semibold">{tr("Service")}<select className={inputClass} aria-label={tr("APCI group-value service")} value={params.command} onChange={e=>updateParams(p=>({...p,command:e.target.value as APCICode}))}>{APCI_DEFS.filter(c=>GROUP_SERVICES.includes(c.code)).map(c=><option key={c.code} value={c.code}>{tr(c.name)}</option>)}</select></label>
-        <fieldset className="field-config field-source"><legend>{tr("Source · individual address")}</legend><div className="grid grid-cols-3 gap-2">{(['area','line','device'] as const).map((part,i)=><label key={part} className="text-xs capitalize">{tr(part)}<input className={inputClass} type="number" min="0" max={i===2?255:15} aria-label={tr(`Source ${part}`)} aria-invalid={!Number.isInteger(params.source[part])||params.source[part]<0||params.source[part]>(i===2?255:15)} value={Number.isNaN(params.source[part])?'':params.source[part]} onChange={e=>updateParams(p=>({...p,source:{...p.source,[part]:e.target.value===''?NaN:Number(e.target.value)}}))}/></label>)}</div></fieldset>
-        <fieldset className="field-config field-destination"><legend>{tr("Destination · group address")}</legend><div className="grid grid-cols-3 gap-2">{(['main','middle','sub'] as const).map((part,i)=><label key={part} className="text-xs capitalize">{tr(part)}<input className={inputClass} type="number" min="0" max={[31,7,255][i]} aria-label={tr(['Main group','Middle group','Subgroup'][i])} aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup)[part])||(params.destination as KNXAddressGroup)[part]<0||(params.destination as KNXAddressGroup)[part]>[31,7,255][i]} value={Number.isNaN((params.destination as KNXAddressGroup)[part])?'':(params.destination as KNXAddressGroup)[part]} onChange={e=>updateParams(p=>({...p,destination:{...(p.destination as KNXAddressGroup),[part]:e.target.value===''?NaN:Number(e.target.value)}}))}/></label>)}</div></fieldset>
-        <div className="field-config field-data space-y-3"><label className="text-sm font-semibold block">{tr("Datapoint type")}<select disabled={isRead} aria-label={tr("Datapoint type")} className={inputClass} value={params.dptType} onChange={handleDptSelectChange}>{STANDARD_DPTS.map(d=><option key={d.id} value={d.id}>{d.id} · {tr(DPT_INPUTS[d.id].name)}</option>)}</select></label>{isRead?<p className="text-sm">{tr("Read requests carry no value. The chosen DPT does not change their bytes.")}</p>:<DptValueEditor id={params.dptType} values={dptValues} onChange={v=>{setDptValues(v);setCurrentPreset(-1);setError('');}}/>}</div>
-        <details className="detail-box"><summary>{tr("Show details · priority, repetition and hop count")}</summary><div className="grid @md:grid-cols-2 gap-4 pt-3">
+        <fieldset className="field-config field-source"><legend>{tr("Source · individual address")}</legend><p className="text-xs mb-2">{tr("Device address: area.line.device.")}</p><div className="grid grid-cols-3 gap-2">{(['area','line','device'] as const).map((part,i)=><label key={part} className="text-xs capitalize">{tr(part)}<input className={inputClass} type="number" min="0" max={i===2?255:15} aria-label={tr(`Source ${part}`)} aria-invalid={!Number.isInteger(params.source[part])||params.source[part]<0||params.source[part]>(i===2?255:15)} value={Number.isNaN(params.source[part])?'':params.source[part]} onChange={e=>updateParams(p=>({...p,source:{...p.source,[part]:e.target.value===''?NaN:Number(e.target.value)}}))}/></label>)}</div>{addressErrors.filter(m=>m.startsWith('Source')).map(m=><p role="alert" className="text-xs text-red-800 mt-2" key={m}>{tr(m)}</p>)}</fieldset>
+        <fieldset className="field-config field-destination"><legend>{tr("Destination · group address")}</legend><p className="text-xs mb-2">{tr("Group address: main/middle/sub. Choose a nonzero address.")}</p><div className="grid grid-cols-3 gap-2">{(['main','middle','sub'] as const).map((part,i)=><label key={part} className="text-xs capitalize">{tr(part)}<input className={inputClass} type="number" min="0" max={[31,7,255][i]} aria-label={tr(['Main group','Middle group','Subgroup'][i])} aria-invalid={!Number.isInteger((params.destination as KNXAddressGroup)[part])||(params.destination as KNXAddressGroup)[part]<0||(params.destination as KNXAddressGroup)[part]>[31,7,255][i]} value={Number.isNaN((params.destination as KNXAddressGroup)[part])?'':(params.destination as KNXAddressGroup)[part]} onChange={e=>updateParams(p=>({...p,destination:{...(p.destination as KNXAddressGroup),[part]:e.target.value===''?NaN:Number(e.target.value)}}))}/></label>)}</div>{addressErrors.filter(m=>!m.startsWith('Source')).map(m=><p role="alert" className="text-xs text-red-800 mt-2" key={m}>{tr(m)}</p>)}{Object.values(params.destination).every(v=>v===0)&&<p role="alert" className="text-xs text-red-800 mt-2">{tr('0/0/0 is reserved for broadcast; choose a nonzero group address.')}</p>}</fieldset>
+        <div className="field-config field-data space-y-3"><label className="text-sm font-semibold block">{tr("Datapoint type")}<select disabled={isRead} aria-label={tr("Datapoint type")} className={inputClass} value={params.dptType} onChange={handleDptSelectChange}>{STANDARD_DPTS.map(d=><option key={d.id} value={d.id}>{d.id} · {tr(DPT_INPUTS[d.id].name)}</option>)}</select></label>{isRead?<p className="text-sm">{tr("Read requests carry no value. The chosen DPT does not change their bytes.")}</p>:<DptValueEditor id={params.dptType} values={dptValues} onChange={v=>{setDptValues(v);setError('');}}/>}</div>
+        <details className="detail-box"><summary>{tr("Telegram settings")}<span className="block text-xs font-normal mt-1">{tr("Priority")}: {tr({'00':'System (00)','10':'Alarm / urgent (10)','01':'High / normal (01)','11':'Low (11)'}[params.priority])} · {tr(params.repeatFlag==='1'?'Original':'Repeated')} · {tr("Hop count")}: {params.hopCount}</span></summary><div className="grid @md:grid-cols-2 gap-4 pt-3">
           <label className="text-sm">{tr("Repeat flag")}<select className={inputClass} aria-label={tr("Repeat flag")} value={params.repeatFlag} onChange={e=>updateParams(p=>({...p,repeatFlag:e.target.value as '0'|'1'}))}><option value="1">{tr("Original")}</option><option value="0">{tr("Repeated")}</option></select></label>
           <label className="text-sm">{tr("Priority")}<select className={inputClass} aria-label={tr("Telegram priority")} value={params.priority} onChange={e=>updateParams(p=>({...p,priority:e.target.value as TelegramParams['priority']}))}><option value="00">{tr("System (00)")}</option><option value="10">{tr("Alarm / urgent (10)")}</option><option value="01">{tr("High / normal (01)")}</option><option value="11">{tr("Low (11)")}</option></select></label>
           <label className="text-sm">{tr("Hop count")}<select aria-label={tr("Hop count")} className={inputClass} value={params.hopCount} onChange={e=>updateParams(p=>({...p,hopCount:Number(e.target.value)}))}>{Array.from({length:8},(_,i)=><option key={i} value={i}>{i}{tr(i===7?' · special value':'')}</option>)}</select></label>
           <p className="text-xs text-slate-600">{tr("HC 0 permits local reception but no forwarding. HC 7 is special, not a seven-hop budget. This tool uses group destinations only.")}</p>
         </div></details>
         {error&&<p role="alert" className="text-sm text-red-800 bg-red-50 p-3 rounded-lg">{tr(error)}</p>}
-        {addressErrors.length>0&&<div role="alert" className="text-sm text-red-800">{addressErrors.map(m=><p key={m}>{tr(m)}</p>)}</div>}
         {isDirty&&<p className="text-sm text-amber-900">{tr("Modified input: the monitor still shows the previous telegram.")}</p>}
         <button className="primary-button generate-inline" onClick={handleGenerateClick}><Play size={17}/><span>{tr("Generate Telegram")}</span></button>
       </section>
-      <details className="detail-box lesson-card" aria-label={tr("Read and response example")}><summary>{tr("Show details · read → response example")}</summary><div className="space-y-3 pt-3 text-sm"><p>{tr("1.1.10 asks group 1/0/1 for its value. Sensor 1.1.20 answers with 23.5 °C (DPT 9.001). These are separate telegrams; an application response is not a link-layer ACK.")}</p><div className="flex flex-wrap gap-2"><button className="lesson-button" onClick={()=>showReadExample(false)}>{tr("1 · Load read request (no value)")}</button><button className="lesson-button" onClick={()=>showReadExample(true)}>{tr("2 · Load temperature response (23.5 °C)")}</button></div><p className="text-xs text-slate-500">{tr("These examples generate immediately. Whether a response occurs depends on object configuration; no fixed response delay is implied.")}</p></div></details>
+
     </div>
     {!showControls&&children}
   </div>;
@@ -232,6 +214,6 @@ export function TelegramVisualizer({scenario,showControls=true,children,onConfig
           <p className="text-xs text-slate-600">{tr("For simultaneous group acknowledgements, the Tutor course gives BUSY → NAK → ACK priority. A group ACK cannot identify which individual receivers acknowledged. Negative or absent responses can cause repetitions; these are not included in the displayed frame and acknowledgement. Reference: Tutor §3.6.4.")}</p>
         </aside>;
   return <MonitorDock controls={controls} openRevision={openRevision} actions={showControls?<button className="primary-button generate-mobile" onClick={handleGenerateClick}><Play size={17}/>{tr("Generate Telegram")}</button>:<button className="lesson-button configure-mobile" onClick={onConfigure}>{tr("Build telegram")}</button>}>
-    <TelegramMonitor bytes={constructedBytes} stream={compiled?.stream??''} selected={selectedByte} onSelect={setSelectedByte} dirty={isDirty} response={response} ackBits={getAckPhysicalBitStream()} nextAccess={nextAccess} timingDetails={timingDetails} origin={frameOrigin}/>
+    <TelegramMonitor frame={frame} pinned={pinned} onPin={()=>frame&&setPinned(structuredClone(frame))} onClear={()=>setPinned(null)} revision={openRevision} bytes={constructedBytes} stream={compiled?.stream??''} selected={selectedByte} onSelect={setSelectedByte} dirty={isDirty} response={response} ackBits={getAckPhysicalBitStream()} nextAccess={nextAccess} timingDetails={timingDetails} origin={frameOrigin}/>
   </MonitorDock>;
 }
